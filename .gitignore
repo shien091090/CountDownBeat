@@ -1,0 +1,15 @@
+﻿Library
+Temp
+Logs
+UserSettings
+BlockadeWrights.sln
+obj/Debug
+Assembly-CSharp-Editor.csproj
+Assembly-CSharp.csproj
+.idea
+MatchingGame.sln.DotSettings.user
+Builds
+Assets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
+fmod_editor.log
+*.csproj
+machinggamebundle.com
