@@ -8,10 +8,10 @@ namespace GameCore
 
         public void Init(int startCountDownValue)
         {
-            StartCountDownValue = startCountDownValue < 0 ?
-                0 :
-                startCountDownValue;
+            if (startCountDownValue <= 0)
+                return;
 
+            StartCountDownValue = startCountDownValue;
             CurrentCountDownValue = StartCountDownValue;
             CurrentState = ScoreBallState.InCountDown;
         }

@@ -34,7 +34,19 @@ namespace GameCore.UnitTests
             Assert.AreEqual(expectedCurrentCountDownValue, currentCountDownValue);
         }
 
+        [Test]
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-10)]
         //設定初始倒數數字, 若數字小於0則不做事
+        public void init_with_negative_value(int startCountDownValue)
+        {
+            scoreBall.Init(startCountDownValue);
+
+            CurrentCountDownValueShouldBe(0);
+            CurrentStateShouldBe(ScoreBallState.None);
+        }
+        
         //收到Beat事件時, 倒數數字減一
         //收到Beat事件時, 倒數數字減至0, 發送Damage事件並切換狀態為"Hide"
         //拖曳時, 凍結倒數數字並切換狀態"Freeze"
