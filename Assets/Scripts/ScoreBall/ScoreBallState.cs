@@ -4,6 +4,7 @@ namespace GameCore
     {
         None,
         InCountDown,
-        Hide
+        Hide,
+        Freeze
     }
 }

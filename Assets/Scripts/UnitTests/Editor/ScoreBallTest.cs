@@ -75,6 +75,23 @@ namespace GameCore.UnitTests
             CurrentCountDownValueShouldBe(0);
             CurrentStateShouldBe(ScoreBallState.Hide);
         }
+        
+        [Test]
+        //拖曳時, 凍結倒數數字並切換狀態"Freeze"
+        public void freeze_when_drag()
+        {
+            scoreBall.Init(20);
+
+            scoreBall.DragAndFreeze();
+
+            CurrentCountDownValueShouldBe(20);
+            CurrentStateShouldBe(ScoreBallState.Freeze);
+            
+            CallBeatEventCallback();
+            
+            CurrentCountDownValueShouldBe(20);
+            CurrentStateShouldBe(ScoreBallState.Freeze);
+        }
 
         private void InitEventHandlerMock()
         {
@@ -118,7 +135,6 @@ namespace GameCore.UnitTests
             Assert.AreEqual(expectedCurrentCountDownValue, currentCountDownValue);
         }
 
-        //拖曳時, 凍結倒數數字並切換狀態"Freeze"
         //成功結算, 切換狀態為"Hide"
     }
 }

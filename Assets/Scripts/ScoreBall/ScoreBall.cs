@@ -11,6 +11,8 @@ namespace GameCore
         public int CurrentCountDownValue { get; private set; }
         public ScoreBallState CurrentState { get; private set; }
 
+        private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
+
         public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
         {
             this.eventRegister = eventRegister;
@@ -27,6 +29,11 @@ namespace GameCore
             CurrentState = ScoreBallState.InCountDown;
 
             RegisterEvent();
+        }
+
+        public void DragAndFreeze()
+        {
+            CurrentState = ScoreBallState.Freeze;
         }
 
         private void CheckDamageAndHide()
@@ -47,6 +54,9 @@ namespace GameCore
 
         private void OnBeat(BeatEvent eventInfo)
         {
+            if (IsCountDownInProcess == false)
+                return;
+
             CurrentCountDownValue--;
             CheckDamageAndHide();
         }
