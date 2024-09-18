@@ -36,14 +36,25 @@ namespace GameCore
             CurrentState = ScoreBallState.Freeze;
         }
 
+        public void SuccessSettle()
+        {
+            Hide();
+        }
+
         private void CheckDamageAndHide()
         {
             if (CurrentCountDownValue > 0)
                 return;
 
+            Hide();
+            eventInvoker.SendEvent(new DamageEvent());
+        }
+
+        private void Hide()
+        {
+            StartCountDownValue = 0;
             CurrentCountDownValue = 0;
             CurrentState = ScoreBallState.Hide;
-            eventInvoker.SendEvent(new DamageEvent());
         }
 
         private void RegisterEvent()
