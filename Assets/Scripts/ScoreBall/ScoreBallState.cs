@@ -3,6 +3,7 @@ namespace GameCore
     public enum ScoreBallState
     {
         None,
-        InCountDown
+        InCountDown,
+        Hide
     }
 }

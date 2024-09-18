@@ -9,6 +9,7 @@ namespace GameCore.UnitTests
     {
         private ScoreBall scoreBall;
         private IEventRegister eventRegister;
+        private IEventInvoker eventInvoker;
         private Action<BeatEvent> beatEventCallback;
 
         [SetUp]
@@ -16,7 +17,7 @@ namespace GameCore.UnitTests
         {
             InitEventHandlerMock();
 
-            scoreBall = new(eventRegister);
+            scoreBall = new ScoreBall(eventRegister, eventInvoker);
         }
 
         [Test]
@@ -62,10 +63,24 @@ namespace GameCore.UnitTests
             CurrentCountDownValueShouldBe(19);
         }
 
+        [Test]
+        //收到Beat事件時, 倒數數字減至0, 發送Damage事件並切換狀態為"Hide"
+        public void count_down_to_zero_and_send_damage_event()
+        {
+            scoreBall.Init(1);
+
+            CallBeatEventCallback();
+
+            ShouldSendDamageEvent();
+            CurrentCountDownValueShouldBe(0);
+            CurrentStateShouldBe(ScoreBallState.Hide);
+        }
+
         private void InitEventHandlerMock()
         {
             beatEventCallback = null;
 
+            eventInvoker = Substitute.For<IEventInvoker>();
             eventRegister = Substitute.For<IEventRegister>();
 
             eventRegister.When(x => x.Register(Arg.Any<Action<BeatEvent>>())).Do(x =>
@@ -78,6 +93,11 @@ namespace GameCore.UnitTests
         private void CallBeatEventCallback()
         {
             beatEventCallback.Invoke(new BeatEvent());
+        }
+
+        private void ShouldSendDamageEvent(int expectedCallTimes = 1)
+        {
+            eventInvoker.Received(expectedCallTimes).SendEvent(Arg.Any<DamageEvent>());
         }
 
         private void ShouldRegisterBeatEvent()
@@ -98,7 +118,6 @@ namespace GameCore.UnitTests
             Assert.AreEqual(expectedCurrentCountDownValue, currentCountDownValue);
         }
 
-        //收到Beat事件時, 倒數數字減至0, 發送Damage事件並切換狀態為"Hide"
         //拖曳時, 凍結倒數數字並切換狀態"Freeze"
         //成功結算, 切換狀態為"Hide"
     }

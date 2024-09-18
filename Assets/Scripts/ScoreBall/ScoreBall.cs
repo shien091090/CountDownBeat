@@ -5,14 +5,16 @@ namespace GameCore
     public class ScoreBall
     {
         private readonly IEventRegister eventRegister;
+        private readonly IEventInvoker eventInvoker;
 
         public int StartCountDownValue { get; private set; }
         public int CurrentCountDownValue { get; private set; }
         public ScoreBallState CurrentState { get; private set; }
 
-        public ScoreBall(IEventRegister eventRegister)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
         {
             this.eventRegister = eventRegister;
+            this.eventInvoker = eventInvoker;
         }
 
         public void Init(int startCountDownValue)
@@ -27,6 +29,16 @@ namespace GameCore
             RegisterEvent();
         }
 
+        private void CheckDamageAndHide()
+        {
+            if (CurrentCountDownValue > 0)
+                return;
+
+            CurrentCountDownValue = 0;
+            CurrentState = ScoreBallState.Hide;
+            eventInvoker.SendEvent(new DamageEvent());
+        }
+
         private void RegisterEvent()
         {
             eventRegister.Unregister<BeatEvent>(OnBeat);
@@ -36,6 +48,7 @@ namespace GameCore
         private void OnBeat(BeatEvent eventInfo)
         {
             CurrentCountDownValue--;
+            CheckDamageAndHide();
         }
     }
 }
