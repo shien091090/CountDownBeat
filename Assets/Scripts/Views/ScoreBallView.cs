@@ -10,6 +10,8 @@ namespace GameCore
     [RequireComponent(typeof(EventTrigger))]
     public class ScoreBallView : MonoBehaviour
     {
+        [Inject] private IDeltaTimeGetter deltaTimeGetter;
+
         [SerializeField] private float checkDoubleClickTime;
         [SerializeField] private float checkDoubleClickCoolDownTime;
 
@@ -31,11 +33,11 @@ namespace GameCore
         private void Update()
         {
             if (isWaitDoubleClick)
-                waitDoubleClickTimer += Time.deltaTime;
+                waitDoubleClickTimer += deltaTimeGetter.deltaTime;
 
             if (isDoubleClickCoolDown)
             {
-                doubleClickCoolDownTimer += Time.deltaTime;
+                doubleClickCoolDownTimer += deltaTimeGetter.deltaTime;
                 if (doubleClickCoolDownTimer >= checkDoubleClickCoolDownTime)
                     isDoubleClickCoolDown = false;
             }
