@@ -8,15 +8,17 @@ using Zenject;
 namespace GameCore
 {
     [RequireComponent(typeof(EventTrigger))]
-    public class ScoreBallView : MonoBehaviour
+    public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
         [Inject] private IDeltaTimeGetter deltaTimeGetter;
+        [Inject] private IGameSetting gameSetting;
 
         [SerializeField] private float checkDoubleClickTime;
         [SerializeField] private float checkDoubleClickCoolDownTime;
 
-        private EventTrigger eventTrigger;
         private Debugger debugger;
+        private ScoreBallPresenter presenter;
+        
         private float waitDoubleClickTimer;
         private float doubleClickCoolDownTimer;
         private bool isClicked;
@@ -25,9 +27,7 @@ namespace GameCore
 
         private void Awake()
         {
-            eventTrigger = GetComponent<EventTrigger>();
             debugger = new Debugger(GameConst.DEBUGGER_KEY_SCORE_BALL_VIEW);
-            InitData();
         }
 
         private void Update()
@@ -50,12 +50,21 @@ namespace GameCore
             isClicked = false;
             isWaitDoubleClick = false;
             isDoubleClickCoolDown = false;
+
+            // debugger.ShowLog($"startCountDownValue: {gameSetting.ScoreBallStartCountDownValue}");
+        }
+
+        public void BindPresenter(ScoreBallPresenter presenter)
+        {
+            this.presenter = presenter;
+            presenter.BindView(this);
+            
+            InitData();
         }
 
         private void MoveFollowMouse()
         {
             Vector3 mousePosition = Input.mousePosition;
-            // mousePosition.z = 10;
             transform.position = mousePosition;
         }
 
@@ -63,14 +72,14 @@ namespace GameCore
         {
             if (waitDoubleClickTimer <= checkDoubleClickTime && isWaitDoubleClick)
             {
-                debugger.ShowLog("OnDoubleClick");
+                // debugger.ShowLog("OnDoubleClick");
                 isDoubleClickCoolDown = true;
                 doubleClickCoolDownTimer = 0;
             }
-            else
-                debugger.ShowLog(isDoubleClickCoolDown ?
-                    "OnClickDown(DoubleClickCoolDown)" :
-                    "OnClickDown");
+            // else
+                // debugger.ShowLog(isDoubleClickCoolDown ?
+                    // "OnClickDown(DoubleClickCoolDown)" :
+                    // "OnClickDown");
 
             waitDoubleClickTimer = 0;
             isClicked = true;
