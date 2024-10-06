@@ -4,13 +4,14 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class GameSceneInstaller : ZenjectGameObjectSpawner
+    public class GameSceneInstaller : SceneInitializeInstaller
     {
         [SerializeField] private ObjectPoolManager objectPoolManager;
 
-        public override void InstallBindings()
+        protected override void ExecuteInstaller()
         {
             Container.Bind<IGameObjectPool>().FromInstance(objectPoolManager).AsSingle();
+            Container.Bind<ICountDownBeatGameModel>().To<CountDownBeatGameModel>().AsSingle();
         }
     }
 }

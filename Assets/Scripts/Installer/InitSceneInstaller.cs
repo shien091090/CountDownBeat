@@ -14,5 +14,4 @@ namespace GameCore
             Container.Bind(typeof(IEventInvoker), typeof(IEventRegister)).To<ArchitectureEventHandler>().AsSingle();
         }
     }
-    
 }
