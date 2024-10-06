@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eade1973005463481706da879d91283, type: 3}
-  m_Name: ExternalSettingInstaller
+  m_Script: {fileID: 11500000, guid: 5e4a3b0c01824a7e9c4eb3234bec0a9a, type: 3}
+  m_Name: GameSetting
   m_EditorClassIdentifier: 
-  sceneProcessSetting: {fileID: 11400000, guid: 84f1520f0d1694448b446b1e3d157a31, type: 2}
-  gameSetting: {fileID: 11400000, guid: d67eecfaac058d2458fe50770241c11b, type: 2}
+  scoreBallStartCountDownValue: 20
