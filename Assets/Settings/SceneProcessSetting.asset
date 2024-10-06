@@ -21,9 +21,72 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: sceneRepositionSettings
+    - Name: sceneNameDefines
+      Entry: 7
+      Data: 0|SNShien.Common.ProcessTools.SceneNameSetting[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 1|SNShien.Common.ProcessTools.SceneNameSetting, Assembly-CSharp
+    - Name: sceneName
+      Entry: 1
+      Data: InitScene
+    - Name: sceneBundlePath
       Entry: 6
       Data: 
-  sceneNameDefines:
-  - InitScene
-  - MainScene
+    - Name: sceneResourceType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|SNShien.Common.ProcessTools.SceneNameSetting, Assembly-CSharp
+    - Name: sceneName
+      Entry: 1
+      Data: GameScene
+    - Name: sceneBundlePath
+      Entry: 6
+      Data: 
+    - Name: sceneResourceType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: sceneRepositionSettings
+      Entry: 7
+      Data: 3|SNShien.Common.ProcessTools.SceneRepositionSetting[], Assembly-CSharp
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 4|SNShien.Common.ProcessTools.SceneRepositionSetting, Assembly-CSharp
+    - Name: repositionActionKey
+      Entry: 1
+      Data: EnterGame
+    - Name: loadSceneName
+      Entry: 1
+      Data: GameScene
+    - Name: unloadSceneName
+      Entry: 1
+      Data: '{Empty}'
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
