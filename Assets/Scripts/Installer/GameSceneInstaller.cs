@@ -10,8 +10,8 @@ namespace GameCore
 
         protected override void ExecuteInstaller()
         {
-            Container.Bind<IGameObjectPool>().FromInstance(objectPoolManager).AsSingle();
-            Container.Bind<ICountDownBeatGameModel>().To<CountDownBeatGameModel>().AsSingle();
+            BindModelFromInstance<IGameObjectPool, ObjectPoolManager>(objectPoolManager);
+            BindModel<ICountDownBeatGameModel, CountDownBeatGameModel>();
         }
     }
 }
