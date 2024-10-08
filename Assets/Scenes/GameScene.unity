@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectPoolManager: {fileID: 1554966043}
-  viewManager: {fileID: 0}
+  viewManager: {fileID: 1145942349}
 --- !u!1 &1145942348
 GameObject:
   m_ObjectHideFlags: 0
