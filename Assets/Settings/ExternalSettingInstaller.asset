@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneProcessSetting: {fileID: 11400000, guid: 84f1520f0d1694448b446b1e3d157a31, type: 2}
   gameSetting: {fileID: 11400000, guid: d67eecfaac058d2458fe50770241c11b, type: 2}
+  viewPrefabSetting: {fileID: 11400000, guid: aab5ddc3687d9d04f888df5894b13e81, type: 2}
