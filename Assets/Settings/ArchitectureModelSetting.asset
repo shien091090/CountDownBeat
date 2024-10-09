@@ -22,6 +22,9 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   modelDefineList:
-  - orderNum: 1
-  - orderNum: 2
-  - orderNum: 3
+  - modelName: ViewManager
+    orderNum: 1
+  - modelName: ObjectPoolManager
+    orderNum: 2
+  - modelName: CountDownBeatGameModel
+    orderNum: 3
