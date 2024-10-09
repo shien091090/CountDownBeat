@@ -1,11 +1,11 @@
 using SNShien.Common.MonoBehaviorTools;
-using Zenject;
+using UnityEngine;
 
 namespace GameCore
 {
-    public class CountDownBeatGameView : IArchitectureView
+    public class CountDownBeatGameView : MonoBehaviour, IArchitectureView
     {
-        [Inject] private IGameObjectPool objectPoolManager;
+        [SerializeField] private ObjectPoolManager objectPoolManager;
 
         public void UpdateView()
         {
