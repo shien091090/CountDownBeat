@@ -2,7 +2,7 @@ namespace GameCore
 {
     public interface IScoreBallView
     {
-        void InitData();
+        void Init();
         void SetCountDownNumberText(string text);
         void SetInCountDownColor();
         void SetFreezeColor();

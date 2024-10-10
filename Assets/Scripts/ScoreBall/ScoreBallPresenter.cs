@@ -1,4 +1,3 @@
-using System;
 using SNShien.Common.ProcessTools;
 
 namespace GameCore
@@ -46,14 +45,19 @@ namespace GameCore
         {
             this.view = view;
 
-            view.InitData();
+            view.Init();
             scoreBall = new ScoreBall(this, eventRegister, eventInvoker);
             scoreBall.Init(gameSetting.ScoreBallStartCountDownValue);
         }
 
-        public void OnDrag()
+        public void StartDrag()
         {
-            scoreBall.DragAndFreeze();
+            scoreBall.SetDragState(true);
+        }
+
+        public void DragOver()
+        {
+            scoreBall.SetDragState(false);
         }
     }
 }

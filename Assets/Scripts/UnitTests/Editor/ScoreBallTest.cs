@@ -83,7 +83,7 @@ namespace GameCore.UnitTests
         public void freeze_when_drag()
         {
             scoreBall.Init(20);
-            scoreBall.DragAndFreeze();
+            scoreBall.SetDragState(true);
 
             CurrentCountDownValueShouldBe(20);
             CurrentStateShouldBe(ScoreBallState.Freeze);
@@ -99,7 +99,7 @@ namespace GameCore.UnitTests
         public void update_state_when_drag()
         {
             scoreBall.Init(20);
-            scoreBall.DragAndFreeze();
+            scoreBall.SetDragState(true);
 
             ShouldPresenterUpdateState(1, ScoreBallState.Freeze);
         }
@@ -109,8 +109,8 @@ namespace GameCore.UnitTests
         public void update_state_once_when_drag()
         {
             scoreBall.Init(20);
-            scoreBall.DragAndFreeze();
-            scoreBall.DragAndFreeze();
+            scoreBall.SetDragState(true);
+            scoreBall.SetDragState(true);
 
             ShouldPresenterUpdateState(1, ScoreBallState.Freeze);
         }
@@ -127,7 +127,23 @@ namespace GameCore.UnitTests
         }
         
         [Test]
-        //拖曳後放開, 從"Freeze"切換狀態為"InCountDOwn"
+        //取消拖曳狀態, 切換狀態為"InCountDOwn", 數字繼續倒數
+        public void cancel_drag_and_switch_state()
+        {
+            scoreBall.Init(10);
+            scoreBall.SetDragState(true);
+            
+            CallBeatEventCallback();
+            
+            scoreBall.SetDragState(false);
+
+            CurrentCountDownValueShouldBe(10);
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+            
+            CallBeatEventCallback();
+            
+            CurrentCountDownValueShouldBe(9);
+        }
 
         private void InitEventHandlerMock()
         {

@@ -3,33 +3,23 @@ using SNShien.Common.AdapterTools;
 using SNShien.Common.TesterTools;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zenject;
 
 namespace GameCore
 {
-    [RequireComponent(typeof(EventTrigger))]
     public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
         [Inject] private IDeltaTimeGetter deltaTimeGetter;
-        [Inject] private IGameSetting gameSetting;
-
-        [SerializeField] private float checkDoubleClickTime;
-        [SerializeField] private float checkDoubleClickCoolDownTime;
         [SerializeField] private Color inCountDownColor;
         [SerializeField] private Color freezeColor;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
 
-        private Debugger debugger;
-        private ScoreBallPresenter presenter;
 
-        private float waitDoubleClickTimer;
-        private float doubleClickCoolDownTimer;
-        private bool isClicked;
-        private bool isWaitDoubleClick;
-        private bool isDoubleClickCoolDown;
+        private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_SCORE_BALL_VIEW);
+        private IScoreBallPresenter presenter;
+        private OperableUI operableUI;
 
         public void SetCountDownNumberText(string text)
         {
@@ -51,81 +41,42 @@ namespace GameCore
             gameObject.SetActive(false);
         }
 
-        public void InitData()
+        public void Init()
         {
-            waitDoubleClickTimer = 0;
-            doubleClickCoolDownTimer = 0;
-            isClicked = false;
-            isWaitDoubleClick = false;
-            isDoubleClickCoolDown = false;
+            operableUI = gameObject.GetComponent<OperableUI>();
+            operableUI.Init();
+            RegisterEvent();
             SetInCountDownColor();
-
-            // debugger.ShowLog($"startCountDownValue: {gameSetting.ScoreBallStartCountDownValue}");
         }
 
         private void Update()
         {
-            if (isWaitDoubleClick)
-                waitDoubleClickTimer += deltaTimeGetter.deltaTime;
-
-            if (isDoubleClickCoolDown)
-            {
-                doubleClickCoolDownTimer += deltaTimeGetter.deltaTime;
-                if (doubleClickCoolDownTimer >= checkDoubleClickCoolDownTime)
-                    isDoubleClickCoolDown = false;
-            }
+            operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
         }
 
-        public void BindPresenter(ScoreBallPresenter presenter)
+        public void BindPresenter(IScoreBallPresenter presenter)
         {
             this.presenter = presenter;
             presenter.BindView(this);
         }
 
-        private void Awake()
+        private void RegisterEvent()
         {
-            debugger = new Debugger(GameConst.DEBUGGER_KEY_SCORE_BALL_VIEW);
+            operableUI.OnStartDragEvent -= StartDrag;
+            operableUI.OnStartDragEvent += StartDrag;
+
+            operableUI.OnDragOverEvent -= DragOver;
+            operableUI.OnDragOverEvent += DragOver;
         }
 
-        private void MoveFollowMouse()
+        private void DragOver()
         {
-            Vector3 mousePosition = Input.mousePosition;
-            transform.position = mousePosition;
+            presenter.DragOver();
         }
 
-        public void OnClickDown()
+        private void StartDrag()
         {
-            if (waitDoubleClickTimer <= checkDoubleClickTime && isWaitDoubleClick)
-            {
-                // debugger.ShowLog("OnDoubleClick");
-                isDoubleClickCoolDown = true;
-                doubleClickCoolDownTimer = 0;
-            }
-            // else
-            // debugger.ShowLog(isDoubleClickCoolDown ?
-            // "OnClickDown(DoubleClickCoolDown)" :
-            // "OnClickDown");
-
-            waitDoubleClickTimer = 0;
-            isClicked = true;
-            isWaitDoubleClick = false;
-        }
-
-        public void OnClickUp()
-        {
-            isClicked = false;
-
-            if (isDoubleClickCoolDown == false)
-                isWaitDoubleClick = true;
-        }
-
-        public void OnDrag()
-        {
-            if (isClicked == false)
-                return;
-
-            MoveFollowMouse();
-            presenter.OnDrag();
+            presenter.StartDrag();
         }
     }
 }

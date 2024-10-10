@@ -143,10 +143,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8648412707860751730}
+  - component: {fileID: 5396217647606669445}
+  - component: {fileID: 2568228128492450656}
   - component: {fileID: 3911554893897019076}
   - component: {fileID: 8131123876151790920}
-  - component: {fileID: 5013063657371252398}
-  - component: {fileID: 5396217647606669445}
+  - component: {fileID: 1120050436895664717}
   m_Layer: 5
   m_Name: ScoreBall
   m_TagString: Untagged
@@ -174,6 +175,40 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5396217647606669445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5671283499733113348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45a373f80fcc214c892b64bbe176d8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inCountDownColor: {r: 1, g: 1, b: 1, a: 1}
+  freezeColor: {r: 0.320719, g: 0.46092632, b: 0.87169814, a: 1}
+  tmp_countDownNum: {fileID: 520220510072512755}
+  img_back: {fileID: 8131123876151790920}
+--- !u!114 &2568228128492450656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5671283499733113348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758ab44765df48f8ad0862c26972921d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isShowDebugLog: 1
+  enableClick: 1
+  enableDoubleClick: 1
+  enableDrag: 1
+  checkDoubleClickTime: 0.5
+  checkDoubleClickCoolDownTime: 0.5
 --- !u!222 &3911554893897019076
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -212,7 +247,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5013063657371252398
+--- !u!114 &1120050436895664717
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,70 +259,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5396217647606669445}
-          m_TargetAssemblyTypeName: GameCore.ScoreBallView, Assembly-CSharp
-          m_MethodName: OnClickDown
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5396217647606669445}
-          m_TargetAssemblyTypeName: GameCore.ScoreBallView, Assembly-CSharp
-          m_MethodName: OnClickUp
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 5
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5396217647606669445}
-          m_TargetAssemblyTypeName: GameCore.ScoreBallView, Assembly-CSharp
-          m_MethodName: OnDrag
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
---- !u!114 &5396217647606669445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5671283499733113348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a45a373f80fcc214c892b64bbe176d8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  checkDoubleClickTime: 0.5
-  checkDoubleClickCoolDownTime: 0.5
-  inCountDownColor: {r: 1, g: 1, b: 1, a: 1}
-  freezeColor: {r: 0.320719, g: 0.46092632, b: 0.87169814, a: 1}
-  tmp_countDownNum: {fileID: 520220510072512755}
-  img_back: {fileID: 8131123876151790920}
+  m_Delegates: []

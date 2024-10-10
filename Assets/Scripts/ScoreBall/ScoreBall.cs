@@ -6,7 +6,7 @@ namespace GameCore
     {
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
-        private IScoreBallPresenter presenter;
+        private readonly IScoreBallPresenter presenter;
 
         public int StartCountDownValue { get; private set; }
         public int CurrentCountDownValue { get; private set; }
@@ -33,9 +33,11 @@ namespace GameCore
             RegisterEvent();
         }
 
-        public void DragAndFreeze()
+        public void SetDragState(bool isFreeze)
         {
-            UpdateCurrentState(ScoreBallState.Freeze);
+            UpdateCurrentState(isFreeze ?
+                ScoreBallState.Freeze :
+                ScoreBallState.InCountDown);
         }
 
         public void SuccessSettle()
