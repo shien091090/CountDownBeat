@@ -54,7 +54,11 @@ namespace GameCore
 
         private void UpdateCurrentState(ScoreBallState newState)
         {
+            if (CurrentState == newState)
+                return;
+
             CurrentState = newState;
+            presenter.UpdateState(newState);
         }
 
         private void UpdateCurrentCountDownValue(int newValue)

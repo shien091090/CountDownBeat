@@ -4,6 +4,7 @@ using SNShien.Common.TesterTools;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Zenject;
 
 namespace GameCore
@@ -16,7 +17,10 @@ namespace GameCore
 
         [SerializeField] private float checkDoubleClickTime;
         [SerializeField] private float checkDoubleClickCoolDownTime;
+        [SerializeField] private Color inCountDownColor;
+        [SerializeField] private Color freezeColor;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
+        [SerializeField] private Image img_back;
 
         private Debugger debugger;
         private ScoreBallPresenter presenter;
@@ -26,6 +30,38 @@ namespace GameCore
         private bool isClicked;
         private bool isWaitDoubleClick;
         private bool isDoubleClickCoolDown;
+
+        public void SetCountDownNumberText(string text)
+        {
+            tmp_countDownNum.text = text;
+        }
+
+        public void SetInCountDownColor()
+        {
+            img_back.color = inCountDownColor;
+        }
+
+        public void SetFreezeColor()
+        {
+            img_back.color = freezeColor;
+        }
+
+        public void Close()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void InitData()
+        {
+            waitDoubleClickTimer = 0;
+            doubleClickCoolDownTimer = 0;
+            isClicked = false;
+            isWaitDoubleClick = false;
+            isDoubleClickCoolDown = false;
+            SetInCountDownColor();
+
+            // debugger.ShowLog($"startCountDownValue: {gameSetting.ScoreBallStartCountDownValue}");
+        }
 
         private void Update()
         {
@@ -40,28 +76,10 @@ namespace GameCore
             }
         }
 
-        private void InitData()
-        {
-            waitDoubleClickTimer = 0;
-            doubleClickCoolDownTimer = 0;
-            isClicked = false;
-            isWaitDoubleClick = false;
-            isDoubleClickCoolDown = false;
-
-            // debugger.ShowLog($"startCountDownValue: {gameSetting.ScoreBallStartCountDownValue}");
-        }
-
-        public void SetCountDownNumberText(string text)
-        {
-            tmp_countDownNum.text = text;
-        }
-
         public void BindPresenter(ScoreBallPresenter presenter)
         {
             this.presenter = presenter;
             presenter.BindView(this);
-
-            InitData();
         }
 
         private void Awake()
@@ -107,6 +125,7 @@ namespace GameCore
                 return;
 
             MoveFollowMouse();
+            presenter.OnDrag();
         }
     }
 }

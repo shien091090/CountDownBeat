@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.ProcessTools;
 
 namespace GameCore
@@ -9,7 +10,7 @@ namespace GameCore
         private readonly IGameSetting gameSetting;
 
         private ScoreBall scoreBall;
-        private ScoreBallView view;
+        private IScoreBallView view;
 
         public ScoreBallPresenter(IEventRegister eventRegister, IEventInvoker eventInvoker, IGameSetting gameSetting)
         {
@@ -23,11 +24,36 @@ namespace GameCore
             view.SetCountDownNumberText(value.ToString());
         }
 
-        public void BindView(ScoreBallView view)
+        public void UpdateState(ScoreBallState state)
+        {
+            switch (state)
+            {
+                case ScoreBallState.InCountDown:
+                    view.SetInCountDownColor();
+                    break;
+
+                case ScoreBallState.Hide:
+                    view.Close();
+                    break;
+
+                case ScoreBallState.Freeze:
+                    view.SetFreezeColor();
+                    break;
+            }
+        }
+
+        public void BindView(IScoreBallView view)
         {
             this.view = view;
+
+            view.InitData();
             scoreBall = new ScoreBall(this, eventRegister, eventInvoker);
             scoreBall.Init(gameSetting.ScoreBallStartCountDownValue);
+        }
+
+        public void OnDrag()
+        {
+            scoreBall.DragAndFreeze();
         }
     }
 }

@@ -287,4 +287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkDoubleClickTime: 0.5
   checkDoubleClickCoolDownTime: 0.5
+  inCountDownColor: {r: 1, g: 1, b: 1, a: 1}
+  freezeColor: {r: 0.320719, g: 0.46092632, b: 0.87169814, a: 1}
   tmp_countDownNum: {fileID: 520220510072512755}
+  img_back: {fileID: 8131123876151790920}

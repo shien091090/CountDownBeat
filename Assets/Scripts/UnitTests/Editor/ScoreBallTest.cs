@@ -95,6 +95,27 @@ namespace GameCore.UnitTests
         }
 
         [Test]
+        //拖曳時, 通知Presenter更新狀態(inCountDown -> Freeze)
+        public void update_state_when_drag()
+        {
+            scoreBall.Init(20);
+            scoreBall.DragAndFreeze();
+
+            ShouldPresenterUpdateState(1, ScoreBallState.Freeze);
+        }
+        
+        [Test]
+        //拖曳時重複刷新狀態, Presenter只更新一次
+        public void update_state_once_when_drag()
+        {
+            scoreBall.Init(20);
+            scoreBall.DragAndFreeze();
+            scoreBall.DragAndFreeze();
+
+            ShouldPresenterUpdateState(1, ScoreBallState.Freeze);
+        }
+
+        [Test]
         //成功結算, 切換狀態為"Hide"
         public void success_settle_and_hide()
         {
@@ -104,6 +125,9 @@ namespace GameCore.UnitTests
             CurrentCountDownValueShouldBe(0);
             CurrentStateShouldBe(ScoreBallState.Hide);
         }
+        
+        [Test]
+        //拖曳後放開, 從"Freeze"切換狀態為"InCountDOwn"
 
         private void InitEventHandlerMock()
         {
@@ -122,6 +146,11 @@ namespace GameCore.UnitTests
         private void CallBeatEventCallback()
         {
             beatEventCallback.Invoke(new BeatEvent());
+        }
+
+        private void ShouldPresenterUpdateState(int expectedCallTimes, ScoreBallState expectedNewState)
+        {
+            presenter.Received(expectedCallTimes).UpdateState(expectedNewState);
         }
 
         private void ShouldSendDamageEvent(int expectedCallTimes = 1)
