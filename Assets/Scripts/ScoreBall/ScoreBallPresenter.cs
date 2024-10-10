@@ -52,12 +52,12 @@ namespace GameCore
 
         public void StartDrag()
         {
-            scoreBall.SetDragState(true);
+            scoreBall.SetFreezeState(true);
         }
 
         public void DragOver()
         {
-            scoreBall.SetDragState(false);
+            scoreBall.SetFreezeState(false);
         }
     }
 }

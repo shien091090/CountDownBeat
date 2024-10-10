@@ -33,7 +33,7 @@ namespace GameCore
             RegisterEvent();
         }
 
-        public void SetDragState(bool isFreeze)
+        public void SetFreezeState(bool isFreeze)
         {
             UpdateCurrentState(isFreeze ?
                 ScoreBallState.Freeze :

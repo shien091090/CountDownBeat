@@ -80,10 +80,10 @@ namespace GameCore.UnitTests
 
         [Test]
         //拖曳時, 凍結倒數數字並切換狀態"Freeze"
-        public void freeze_when_drag()
+        public void set_freeze_state_and_stop_count_down()
         {
             scoreBall.Init(20);
-            scoreBall.SetDragState(true);
+            scoreBall.SetFreezeState(true);
 
             CurrentCountDownValueShouldBe(20);
             CurrentStateShouldBe(ScoreBallState.Freeze);
@@ -96,21 +96,10 @@ namespace GameCore.UnitTests
 
         [Test]
         //拖曳時, 通知Presenter更新狀態(inCountDown -> Freeze)
-        public void update_state_when_drag()
+        public void update_state_when_set_freeze()
         {
             scoreBall.Init(20);
-            scoreBall.SetDragState(true);
-
-            ShouldPresenterUpdateState(1, ScoreBallState.Freeze);
-        }
-        
-        [Test]
-        //拖曳時重複刷新狀態, Presenter只更新一次
-        public void update_state_once_when_drag()
-        {
-            scoreBall.Init(20);
-            scoreBall.SetDragState(true);
-            scoreBall.SetDragState(true);
+            scoreBall.SetFreezeState(true);
 
             ShouldPresenterUpdateState(1, ScoreBallState.Freeze);
         }
@@ -125,23 +114,23 @@ namespace GameCore.UnitTests
             CurrentCountDownValueShouldBe(0);
             CurrentStateShouldBe(ScoreBallState.Hide);
         }
-        
+
         [Test]
         //取消拖曳狀態, 切換狀態為"InCountDOwn", 數字繼續倒數
-        public void cancel_drag_and_switch_state()
+        public void cancel_freeze_then_continue_count_down()
         {
             scoreBall.Init(10);
-            scoreBall.SetDragState(true);
-            
+            scoreBall.SetFreezeState(true);
+
             CallBeatEventCallback();
-            
-            scoreBall.SetDragState(false);
+
+            scoreBall.SetFreezeState(false);
 
             CurrentCountDownValueShouldBe(10);
             CurrentStateShouldBe(ScoreBallState.InCountDown);
-            
+
             CallBeatEventCallback();
-            
+
             CurrentCountDownValueShouldBe(9);
         }
 
