@@ -6,6 +6,7 @@ namespace GameCore
     {
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
+        private IScoreBallPresenter presenter;
 
         public int StartCountDownValue { get; private set; }
         public int CurrentCountDownValue { get; private set; }
@@ -13,8 +14,9 @@ namespace GameCore
 
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
+        public ScoreBall(IScoreBallPresenter presenter, IEventRegister eventRegister, IEventInvoker eventInvoker)
         {
+            this.presenter = presenter;
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
         }
@@ -25,15 +27,15 @@ namespace GameCore
                 return;
 
             StartCountDownValue = startCountDownValue;
-            CurrentCountDownValue = StartCountDownValue;
-            CurrentState = ScoreBallState.InCountDown;
+            UpdateCurrentCountDownValue(StartCountDownValue);
+            UpdateCurrentState(ScoreBallState.InCountDown);
 
             RegisterEvent();
         }
 
         public void DragAndFreeze()
         {
-            CurrentState = ScoreBallState.Freeze;
+            UpdateCurrentState(ScoreBallState.Freeze);
         }
 
         public void SuccessSettle()
@@ -50,11 +52,22 @@ namespace GameCore
             eventInvoker.SendEvent(new DamageEvent());
         }
 
+        private void UpdateCurrentState(ScoreBallState newState)
+        {
+            CurrentState = newState;
+        }
+
+        private void UpdateCurrentCountDownValue(int newValue)
+        {
+            CurrentCountDownValue = newValue;
+            presenter.UpdateCountDownNumber(CurrentCountDownValue);
+        }
+
         private void Hide()
         {
             StartCountDownValue = 0;
             CurrentCountDownValue = 0;
-            CurrentState = ScoreBallState.Hide;
+            UpdateCurrentState(ScoreBallState.Hide);
         }
 
         private void RegisterEvent()
@@ -68,7 +81,7 @@ namespace GameCore
             if (IsCountDownInProcess == false)
                 return;
 
-            CurrentCountDownValue--;
+            UpdateCurrentCountDownValue(CurrentCountDownValue - 1);
             CheckDamageAndHide();
         }
     }

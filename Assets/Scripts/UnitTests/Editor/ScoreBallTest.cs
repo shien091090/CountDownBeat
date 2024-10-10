@@ -11,13 +11,15 @@ namespace GameCore.UnitTests
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
         private Action<BeatEvent> beatEventCallback;
+        private IScoreBallPresenter presenter;
 
         [SetUp]
         public void Setup()
         {
             InitEventHandlerMock();
+            presenter = Substitute.For<IScoreBallPresenter>();
 
-            scoreBall = new ScoreBall(eventRegister, eventInvoker);
+            scoreBall = new ScoreBall(presenter, eventRegister, eventInvoker);
         }
 
         [Test]
@@ -85,9 +87,9 @@ namespace GameCore.UnitTests
 
             CurrentCountDownValueShouldBe(20);
             CurrentStateShouldBe(ScoreBallState.Freeze);
-            
+
             CallBeatEventCallback();
-            
+
             CurrentCountDownValueShouldBe(20);
             CurrentStateShouldBe(ScoreBallState.Freeze);
         }
