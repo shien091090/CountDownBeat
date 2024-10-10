@@ -14,6 +14,7 @@ namespace GameCore
             Container.Bind<IGameObjectSpawner>().To<GameObjectSpawner>().AsSingle();
             BindModelFromInstance<IViewManager, ViewManager>(viewManager);
             BindModel<ICountDownBeatGameModel, CountDownBeatGameModel>();
+            BindModel<IBeaterModel, BeaterModel>();
         }
     }
 }

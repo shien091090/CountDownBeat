@@ -24,7 +24,7 @@ MonoBehaviour:
   modelDefineList:
   - modelName: ViewManager
     orderNum: 1
-  - modelName: ObjectPoolManager
+  - modelName: BeaterModel
     orderNum: 2
   - modelName: CountDownBeatGameModel
     orderNum: 3
