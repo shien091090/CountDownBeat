@@ -45,6 +45,14 @@ namespace GameCore
             Hide();
         }
 
+        public void ResetToBeginning()
+        {
+            if (CurrentState == ScoreBallState.Hide)
+                return;
+
+            CurrentCountDownValue = StartCountDownValue;
+        }
+
         private void CheckDamageAndHide()
         {
             if (CurrentCountDownValue > 0)
@@ -71,7 +79,6 @@ namespace GameCore
 
         private void Hide()
         {
-            StartCountDownValue = 0;
             CurrentCountDownValue = 0;
             UpdateCurrentState(ScoreBallState.Hide);
         }

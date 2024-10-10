@@ -116,7 +116,7 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //取消拖曳狀態, 切換狀態為"InCountDOwn", 數字繼續倒數
+        //取消拖曳狀態, 切換狀態為"InCountDown", 數字繼續倒數
         public void cancel_freeze_then_continue_count_down()
         {
             scoreBall.Init(10);
@@ -132,6 +132,36 @@ namespace GameCore.UnitTests
             CallBeatEventCallback();
 
             CurrentCountDownValueShouldBe(9);
+        }
+        
+        [Test]
+        //重設倒數數字, 數字恢復到起始值
+        public void reset_count_down_value()
+        {
+            scoreBall.Init(10);
+            
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            
+            CurrentCountDownValueShouldBe(7);
+
+            scoreBall.ResetToBeginning();
+
+            CurrentCountDownValueShouldBe(10);
+        }
+        
+        [Test]
+        //重設倒數數字, 若狀態為"Hide"則不做事
+        public void do_not_reset_count_down_value_when_hide()
+        {
+            scoreBall.Init(10);
+            scoreBall.SuccessSettle();
+            
+            scoreBall.ResetToBeginning();
+
+            CurrentCountDownValueShouldBe(0);
+            CurrentStateShouldBe(ScoreBallState.Hide);
         }
 
         private void InitEventHandlerMock()
