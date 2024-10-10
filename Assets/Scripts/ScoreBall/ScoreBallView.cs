@@ -67,6 +67,14 @@ namespace GameCore
 
             operableUI.OnDragOverEvent -= DragOver;
             operableUI.OnDragOverEvent += DragOver;
+
+            operableUI.OnDoubleClickEvent -= DoubleClick;
+            operableUI.OnDoubleClickEvent += DoubleClick;
+        }
+
+        private void DoubleClick()
+        {
+            presenter.DoubleClick();
         }
 
         private void DragOver()

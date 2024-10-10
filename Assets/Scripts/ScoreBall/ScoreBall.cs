@@ -50,7 +50,7 @@ namespace GameCore
             if (CurrentState == ScoreBallState.Hide)
                 return;
 
-            CurrentCountDownValue = StartCountDownValue;
+            UpdateCurrentCountDownValue(StartCountDownValue);
         }
 
         private void CheckDamageAndHide()

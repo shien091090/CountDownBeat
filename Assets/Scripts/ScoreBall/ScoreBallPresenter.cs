@@ -55,6 +55,11 @@ namespace GameCore
             scoreBall.SetFreezeState(true);
         }
 
+        public void DoubleClick()
+        {
+            scoreBall.ResetToBeginning();
+        }
+
         public void DragOver()
         {
             scoreBall.SetFreezeState(false);

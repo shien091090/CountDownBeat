@@ -7,5 +7,6 @@ namespace GameCore
         void BindView(IScoreBallView view);
         void DragOver();
         void StartDrag();
+        void DoubleClick();
     }
 }
