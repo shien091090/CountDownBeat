@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: GameSetting
   m_EditorClassIdentifier: 
   scoreBallStartCountDownValue: 20
+  scoreBallSpawnTimeThreshold: 2
   beatTimeThreshold: 2

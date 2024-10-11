@@ -26,5 +26,5 @@ MonoBehaviour:
     orderNum: 1
   - modelName: BeaterModel
     orderNum: 2
-  - modelName: CountDownBeatGameModel
+  - modelName: ScoreBallHandler
     orderNum: 3

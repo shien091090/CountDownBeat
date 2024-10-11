@@ -164,8 +164,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2736793925488302668}
   - component: {fileID: 4071649801798243691}
+  - component: {fileID: 8717068490900877294}
   m_Layer: 5
-  m_Name: CountDownBeatGameView
+  m_Name: ScoreBallHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -205,3 +206,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectPoolManager: {fileID: 2067908497014706549}
+--- !u!114 &8717068490900877294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7850605610804480675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 181a30cc0cf74d0ab35bde7ea67e6194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
