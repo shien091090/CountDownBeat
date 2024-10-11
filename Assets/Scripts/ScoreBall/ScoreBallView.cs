@@ -1,5 +1,5 @@
-using System;
 using SNShien.Common.AdapterTools;
+using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.TesterTools;
 using TMPro;
 using UnityEngine;
