@@ -1,6 +1,7 @@
 using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
+using UnityEngine;
 using Zenject;
 
 namespace GameCore
@@ -15,6 +16,7 @@ namespace GameCore
         private BeaterPresenter presenter;
         private float beatTimeThreshold;
         private float currentTimer;
+        private bool isAlreadyBeatHalfEvent;
 
         public void ExecuteModelInit()
         {
@@ -26,12 +28,22 @@ namespace GameCore
 
         public void UpdatePerFrame()
         {
+            if (beatTimeThreshold == 0)
+                return;
+
             currentTimer += deltaTimeGetter.deltaTime;
             if (currentTimer >= beatTimeThreshold)
             {
                 currentTimer -= beatTimeThreshold;
+                isAlreadyBeatHalfEvent = false;
+                
                 eventInvoker.SendEvent(new BeatEvent());
                 presenter.PlayBeatAnimation();
+            }
+            else if (currentTimer >= beatTimeThreshold / 2 && isAlreadyBeatHalfEvent == false)
+            {
+                isAlreadyBeatHalfEvent = true;
+                eventInvoker.SendEvent(new HalfBeatEvent());
             }
         }
 
@@ -39,6 +51,7 @@ namespace GameCore
         {
             beatTimeThreshold = gameSetting.BeatTimeThreshold;
             currentTimer = 0;
+            isAlreadyBeatHalfEvent = false;
         }
     }
 }
