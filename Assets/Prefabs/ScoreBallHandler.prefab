@@ -218,3 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181a30cc0cf74d0ab35bde7ea67e6194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isShowEditorDrawer: 1
+  rectMin: {x: 142.9797, y: 73.561005}
+  rectMax: {x: 967.7213, y: 515.2137}
+  rectColor: {r: 0, g: 1, b: 0, a: 1}

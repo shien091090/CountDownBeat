@@ -9,7 +9,7 @@ namespace GameCore
         [SerializeField] private ObjectPoolManager objectPoolManager;
 
         private IScoreBallHandlerPresenter presenter;
-        private RandomAreaGetter randomAreaGetter;
+        private RandomPositionInRect randomPositionInRect;
 
         public void UpdateView()
         {
@@ -27,13 +27,13 @@ namespace GameCore
 
         public void Spawn(IScoreBallPresenter scoreBallPresenter)
         {
-            ScoreBallView scoreBall = objectPoolManager.SpawnGameObject<ScoreBallView>(GameConst.PREFAB_NAME_SCORE_BALL, randomAreaGetter.GetRandomPosition());
+            ScoreBallView scoreBall = objectPoolManager.SpawnGameObject<ScoreBallView>(GameConst.PREFAB_NAME_SCORE_BALL, randomPositionInRect.GetRandomPosition());
             scoreBall.BindPresenter(scoreBallPresenter);
         }
 
         private void Awake()
         {
-            randomAreaGetter = gameObject.GetComponent<RandomAreaGetter>();
+            randomPositionInRect = gameObject.GetComponent<RandomPositionInRect>();
         }
     }
 }
