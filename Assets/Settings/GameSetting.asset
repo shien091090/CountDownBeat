@@ -15,3 +15,4 @@ MonoBehaviour:
   scoreBallStartCountDownValue: 20
   scoreBallSpawnTimeThreshold: 2
   beatTimeThreshold: 2
+  successSettleScore: 1

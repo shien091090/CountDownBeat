@@ -5,5 +5,6 @@ namespace GameCore
         int ScoreBallStartCountDownValue { get; }
         float ScoreBallSpawnBeatFreq { get; }
         float BeatTimeThreshold { get; }
+        int SuccessSettleScore { get; }
     }
 }
