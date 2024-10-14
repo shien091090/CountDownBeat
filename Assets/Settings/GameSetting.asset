@@ -16,3 +16,5 @@ MonoBehaviour:
   scoreBallSpawnTimeThreshold: 2
   beatTimeThreshold: 2
   successSettleScore: 1
+  spawnCatchNetFreq: 3
+  catchNetLimit: 5

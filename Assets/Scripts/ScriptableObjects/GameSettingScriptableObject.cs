@@ -9,10 +9,14 @@ namespace GameCore
         [SerializeField] private float scoreBallSpawnTimeThreshold;
         [SerializeField] private float beatTimeThreshold;
         [SerializeField] private int successSettleScore;
+        [SerializeField] private int spawnCatchNetFreq;
+        [SerializeField] private int catchNetLimit;
 
         public int ScoreBallStartCountDownValue => scoreBallStartCountDownValue;
         public float ScoreBallSpawnBeatFreq => scoreBallSpawnTimeThreshold;
         public float BeatTimeThreshold => beatTimeThreshold;
         public int SuccessSettleScore => successSettleScore;
+        public int SpawnCatchNetFreq => spawnCatchNetFreq;
+        public int CatchNetLimit => catchNetLimit;
     }
 }
