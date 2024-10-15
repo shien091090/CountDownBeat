@@ -10,13 +10,16 @@ namespace GameCore.UnitTests
         private CatchNet catchNet;
         private IEventInvoker eventInvoker;
         private IGameSetting gameSetting;
+        private ICatchNetPresenter presenter;
 
         [SetUp]
         public void Setup()
         {
             eventInvoker = Substitute.For<IEventInvoker>();
             gameSetting = Substitute.For<IGameSetting>();
-            catchNet = new CatchNet(eventInvoker, gameSetting);
+            presenter = Substitute.For<ICatchNetPresenter>();
+
+            catchNet = new CatchNet(presenter, eventInvoker, gameSetting);
         }
 
         [Test]
@@ -44,11 +47,11 @@ namespace GameCore.UnitTests
         public void do_nothing_when_trigger_catch_and_not_working()
         {
             catchNet.TriggerCatch(10);
-            
+
             CurrentStateShouldBe(CatchNetState.None);
             ShouldSendGetScoreEvent(0);
         }
-        
+
         [Test]
         //觸發捕獲判斷, 若數字一致則切換狀態為"SuccessSettle", 並發送得分事件
         public void trigger_catch_and_number_match()
@@ -59,7 +62,7 @@ namespace GameCore.UnitTests
             CurrentStateShouldBe(CatchNetState.SuccessSettle);
             ShouldSendGetScoreEvent(1);
         }
-        
+
         [Test]
         [TestCase(1)]
         [TestCase(5)]
@@ -68,7 +71,7 @@ namespace GameCore.UnitTests
         public void verify_get_score_event_when_success_settle(int score)
         {
             GivenScoreWhenSuccessSettle(score);
-            
+
             catchNet.Init(10);
             catchNet.TriggerCatch(10);
 
@@ -76,16 +79,16 @@ namespace GameCore.UnitTests
             LastGetScoreEventShouldBe(score);
         }
 
-        private void LastGetScoreEventShouldBe(int expectedScore)
-        {
-            IArchitectureEvent eventArg = (IArchitectureEvent) eventInvoker.ReceivedCalls().Last(x=>x.GetMethodInfo().Name == "SendEvent").GetArguments()[0];
-            GetScoreEvent getScoreEvent = eventArg as GetScoreEvent;
-            Assert.AreEqual(expectedScore, getScoreEvent.Score);
-        }
-
         private void GivenScoreWhenSuccessSettle(int score)
         {
             gameSetting.SuccessSettleScore.Returns(score);
+        }
+
+        private void LastGetScoreEventShouldBe(int expectedScore)
+        {
+            IArchitectureEvent eventArg = (IArchitectureEvent)eventInvoker.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SendEvent").GetArguments()[0];
+            GetScoreEvent getScoreEvent = eventArg as GetScoreEvent;
+            Assert.AreEqual(expectedScore, getScoreEvent.Score);
         }
 
         private void ShouldSendGetScoreEvent(int expectedCallTimes)

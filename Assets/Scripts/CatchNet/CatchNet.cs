@@ -2,35 +2,42 @@ using SNShien.Common.ProcessTools;
 
 namespace GameCore
 {
-    public class CatchNet
+    public class CatchNet : ICatchNet
     {
+        public int TargetNumber { get; private set; }
+        
         private readonly IEventInvoker eventInvoker;
         private readonly IGameSetting gameSetting;
+        private readonly ICatchNetPresenter presenter;
 
-        public int TargetNumber { get; private set; }
         public CatchNetState CurrentState { get; private set; }
 
-        public CatchNet(IEventInvoker eventInvoker, IGameSetting gameSetting)
+        public CatchNet(ICatchNetPresenter presenter, IEventInvoker eventInvoker, IGameSetting gameSetting)
         {
+            this.presenter = presenter;
             this.eventInvoker = eventInvoker;
             this.gameSetting = gameSetting;
+
             CurrentState = CatchNetState.None;
+            presenter.BindModel(this);
         }
 
         public void Init(int targetNumber)
         {
             TargetNumber = targetNumber;
+
             UpdateState(CatchNetState.Working);
+            presenter.RefreshCatchNumber();
         }
 
         public void TriggerCatch(int number)
         {
             if (CurrentState != CatchNetState.Working)
                 return;
-            
+
             if (number != TargetNumber)
                 return;
-            
+
             UpdateState(CatchNetState.SuccessSettle);
             eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
         }
@@ -38,6 +45,7 @@ namespace GameCore
         private void UpdateState(CatchNetState newState)
         {
             CurrentState = newState;
+            presenter.UpdateState(CurrentState);
         }
     }
 }

@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
+using UnityEngine;
 using Zenject;
 
 namespace GameCore.UnitTests
@@ -13,6 +15,9 @@ namespace GameCore.UnitTests
         public override void Setup()
         {
             base.Setup();
+
+            IEventInvoker eventInvoker = Substitute.For<IEventInvoker>();
+            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
 
             InitGameSettingMock();
             Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
@@ -37,19 +42,24 @@ namespace GameCore.UnitTests
         private void InitCatchNetPresenterMock()
         {
             presenter = Substitute.For<ICatchNetHandlerPresenter>();
+            catchNetView = Substitute.For<ICatchNetView>();
 
-            presenter.When(x => x.SpawnCatchNet()).Do(callInfo =>
+            presenter.When(x => x.SpawnCatchNet(Arg.Any<ICatchNetPresenter>())).Do(callInfo =>
             {
                 GivenCurrentCatchNetCount(presenter.CurrentCatchNetCount + 1);
+
+                ICatchNetPresenter catchNetPresenter = (ICatchNetPresenter)callInfo.Args()[0];
+                catchNetPresenter.BindView(catchNetView);
             });
         }
 
         private CatchNetHandler catchNetHandler;
         private IEventRegister eventRegister;
         private IGameSetting gameSetting;
+        private ICatchNetHandlerPresenter presenter;
+        private ICatchNetView catchNetView;
 
         private Action<BeatEvent> beatEventCallback;
-        private ICatchNetHandlerPresenter presenter;
 
         [Test]
         //每固定次數Beat時, 生成捕獲網
@@ -124,6 +134,24 @@ namespace GameCore.UnitTests
             ShouldSpawnCatchNet(5);
         }
 
+        [Test]
+        //生成捕獲網, 驗證捕獲數字
+        public void spawn_catch_net_then_verify_target_number()
+        {
+            GivenCatchNetNumberRange(1, 5);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+
+            // LastRefreshCatchNetNumberShouldBe(1, 5);
+        }
+
+        private void GivenCatchNetNumberRange(int min, int max)
+        {
+            gameSetting.CatchNetNumberRange.Returns(new Vector2Int(min, max));
+        }
+
         private void GivenCurrentCatchNetCount(int count)
         {
             presenter.CurrentCatchNetCount.Returns(count);
@@ -137,9 +165,9 @@ namespace GameCore.UnitTests
         private void ShouldSpawnCatchNet(int expectedCallTimes)
         {
             if (expectedCallTimes == 0)
-                presenter.DidNotReceive().SpawnCatchNet();
+                presenter.DidNotReceive().SpawnCatchNet(Arg.Any<CatchNetPresenter>());
             else
-                presenter.Received(expectedCallTimes).SpawnCatchNet();
+                presenter.Received(expectedCallTimes).SpawnCatchNet(Arg.Any<CatchNetPresenter>());
         }
 
         private void InitEventHandlerMock()

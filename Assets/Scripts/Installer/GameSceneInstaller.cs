@@ -12,9 +12,12 @@ namespace GameCore
         protected override void ExecuteInstaller()
         {
             Container.Bind<IGameObjectSpawner>().To<GameObjectSpawner>().AsSingle();
+            Container.Bind<ICatchNetHandlerPresenter>().To<CatchNetHandlerPresenter>().AsSingle();
+            
             BindModelFromInstance<IViewManager, ViewManager>(viewManager);
             BindModel<IScoreBallHandler, ScoreBallHandler>();
             BindModel<IBeaterModel, BeaterModel>();
+            BindModel<ICatchNetHandler, CatchNetHandler>();
         }
     }
 }

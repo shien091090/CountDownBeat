@@ -11,6 +11,7 @@ namespace GameCore
         [SerializeField] private int successSettleScore;
         [SerializeField] private int spawnCatchNetFreq;
         [SerializeField] private int catchNetLimit;
+        [SerializeField] private Vector2Int catchNetNumberRange;
 
         public int ScoreBallStartCountDownValue => scoreBallStartCountDownValue;
         public float ScoreBallSpawnBeatFreq => scoreBallSpawnTimeThreshold;
@@ -18,5 +19,6 @@ namespace GameCore
         public int SuccessSettleScore => successSettleScore;
         public int SpawnCatchNetFreq => spawnCatchNetFreq;
         public int CatchNetLimit => catchNetLimit;
+        public Vector2Int CatchNetNumberRange => catchNetNumberRange;
     }
 }
