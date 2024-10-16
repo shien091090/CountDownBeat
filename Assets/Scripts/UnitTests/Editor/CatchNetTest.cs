@@ -37,19 +37,21 @@ namespace GameCore.UnitTests
         public void do_nothing_when_trigger_catch_and_number_not_match()
         {
             catchNet.Init(10);
-            catchNet.TriggerCatch(5);
+            bool tryTriggerCatch = catchNet.TryTriggerCatch(5);
 
             ShouldSendGetScoreEvent(0);
+            Assert.IsFalse(tryTriggerCatch);
         }
 
         [Test]
         //當狀態不為"Working"時觸發捕獲判斷, 不做事
         public void do_nothing_when_trigger_catch_and_not_working()
         {
-            catchNet.TriggerCatch(10);
+            bool tryTriggerCatch = catchNet.TryTriggerCatch(10);
 
             CurrentStateShouldBe(CatchNetState.None);
             ShouldSendGetScoreEvent(0);
+            Assert.IsFalse(tryTriggerCatch);
         }
 
         [Test]
@@ -57,10 +59,11 @@ namespace GameCore.UnitTests
         public void trigger_catch_and_number_match()
         {
             catchNet.Init(10);
-            catchNet.TriggerCatch(10);
+            bool tryTriggerCatch = catchNet.TryTriggerCatch(10);
 
             CurrentStateShouldBe(CatchNetState.SuccessSettle);
             ShouldSendGetScoreEvent(1);
+            Assert.IsTrue(tryTriggerCatch);
         }
 
         [Test]
@@ -73,7 +76,7 @@ namespace GameCore.UnitTests
             GivenScoreWhenSuccessSettle(score);
 
             catchNet.Init(10);
-            catchNet.TriggerCatch(10);
+            catchNet.TryTriggerCatch(10);
 
             ShouldSendGetScoreEvent(1);
             LastGetScoreEventShouldBe(score);

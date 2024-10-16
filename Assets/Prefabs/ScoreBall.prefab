@@ -144,10 +144,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8648412707860751730}
   - component: {fileID: 5396217647606669445}
+  - component: {fileID: 9017564755014472801}
   - component: {fileID: 2568228128492450656}
   - component: {fileID: 3911554893897019076}
   - component: {fileID: 8131123876151790920}
   - component: {fileID: 1120050436895664717}
+  - component: {fileID: 1350600590495781377}
   m_Layer: 5
   m_Name: ScoreBall
   m_TagString: Untagged
@@ -191,6 +193,19 @@ MonoBehaviour:
   freezeColor: {r: 0.320719, g: 0.46092632, b: 0.87169814, a: 1}
   tmp_countDownNum: {fileID: 520220510072512755}
   img_back: {fileID: 8131123876151790920}
+--- !u!114 &9017564755014472801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5671283499733113348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a64f25de1b466d9527b351f1ca2178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handleType: 0
 --- !u!114 &2568228128492450656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,3 +275,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Delegates: []
+--- !u!58 &1350600590495781377
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5671283499733113348}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 41.8

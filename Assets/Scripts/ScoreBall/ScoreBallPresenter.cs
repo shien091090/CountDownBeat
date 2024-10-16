@@ -4,11 +4,13 @@ namespace GameCore
 {
     public class ScoreBallPresenter : IScoreBallPresenter
     {
+        public int CurrentCountDownValue => model.CurrentCountDownValue;
+
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
         private readonly IGameSetting gameSetting;
 
-        private ScoreBall scoreBall;
+        private ScoreBall model;
         private IScoreBallView view;
 
         public ScoreBallPresenter(IEventRegister eventRegister, IEventInvoker eventInvoker, IGameSetting gameSetting)
@@ -46,23 +48,28 @@ namespace GameCore
             this.view = view;
 
             view.Init();
-            scoreBall = new ScoreBall(this, eventRegister, eventInvoker);
-            scoreBall.Init(gameSetting.ScoreBallStartCountDownValue);
+            model = new ScoreBall(this, eventRegister, eventInvoker);
+            model.Init(gameSetting.ScoreBallStartCountDownValue);
         }
 
         public void StartDrag()
         {
-            scoreBall.SetFreezeState(true);
+            model.SetFreezeState(true);
         }
 
         public void DoubleClick()
         {
-            scoreBall.ResetToBeginning();
+            model.ResetToBeginning();
+        }
+
+        public void TriggerCatch()
+        {
+            model.SuccessSettle();
         }
 
         public void DragOver()
         {
-            scoreBall.SetFreezeState(false);
+            model.SetFreezeState(false);
         }
     }
 }

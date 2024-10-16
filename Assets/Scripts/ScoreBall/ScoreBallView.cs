@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.TesterTools;
@@ -8,6 +9,7 @@ using Zenject;
 
 namespace GameCore
 {
+    [RequireComponent(typeof(Collider2DAdapterComponent))]
     public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
         [Inject] private IDeltaTimeGetter deltaTimeGetter;
@@ -16,10 +18,12 @@ namespace GameCore
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
 
+        public int GetCurrentCountDownValue => presenter.CurrentCountDownValue;
 
         private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_SCORE_BALL_VIEW);
         private IScoreBallPresenter presenter;
         private OperableUI operableUI;
+        private Collider2DAdapterComponent colliderComponent;
 
         public void SetCountDownNumberText(string text)
         {
@@ -41,12 +45,23 @@ namespace GameCore
             gameObject.SetActive(false);
         }
 
+        public void TriggerCatch()
+        {
+            presenter.TriggerCatch();
+        }
+
         public void Init()
         {
             operableUI = gameObject.GetComponent<OperableUI>();
             operableUI.Init();
             RegisterEvent();
             SetInCountDownColor();
+        }
+
+        private void Awake()
+        {
+            colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
 
         private void Update()

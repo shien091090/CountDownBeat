@@ -30,16 +30,17 @@ namespace GameCore
             presenter.RefreshCatchNumber();
         }
 
-        public void TriggerCatch(int number)
+        public bool TryTriggerCatch(int number)
         {
             if (CurrentState != CatchNetState.Working)
-                return;
+                return false;
 
             if (number != TargetNumber)
-                return;
+                return false;
 
             UpdateState(CatchNetState.SuccessSettle);
             eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
+            return true;
         }
 
         private void UpdateState(CatchNetState newState)
