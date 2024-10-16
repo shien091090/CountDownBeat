@@ -18,3 +18,4 @@ MonoBehaviour:
   successSettleScore: 1
   spawnCatchNetFreq: 3
   catchNetLimit: 5
+  catchNetNumberRange: {x: 5, y: 20}

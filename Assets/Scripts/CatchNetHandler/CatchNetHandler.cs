@@ -1,6 +1,7 @@
+using System;
 using SNShien.Common.ProcessTools;
-using UnityEngine;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace GameCore
 {
@@ -12,6 +13,8 @@ namespace GameCore
         [Inject] private ICatchNetHandlerPresenter presenter;
 
         private int beatCounter;
+        
+        public event Action<CatchNet> OnSpawnCatchNet;
 
         public void ExecuteModelInit()
         {
@@ -39,7 +42,9 @@ namespace GameCore
             CatchNet catchNet = new CatchNet(catchNetPresenter, eventInvoker, gameSetting);
 
             presenter.SpawnCatchNet(catchNetPresenter);
-            catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y));
+            catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
+
+            OnSpawnCatchNet?.Invoke(catchNet);
         }
 
         private void OnBeatEvent(BeatEvent eventInfo)

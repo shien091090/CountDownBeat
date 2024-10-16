@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
@@ -30,6 +31,9 @@ namespace GameCore.UnitTests
 
             Container.Bind<CatchNetHandler>().AsSingle();
             catchNetHandler = Container.Resolve<CatchNetHandler>();
+
+            spawnCatchNetEventCallback = Substitute.For<Action<CatchNet>>();
+            catchNetHandler.OnSpawnCatchNet += spawnCatchNetEventCallback;
         }
 
         private void InitGameSettingMock()
@@ -60,6 +64,7 @@ namespace GameCore.UnitTests
         private ICatchNetView catchNetView;
 
         private Action<BeatEvent> beatEventCallback;
+        private Action<CatchNet> spawnCatchNetEventCallback;
 
         [Test]
         //每固定次數Beat時, 生成捕獲網
@@ -139,12 +144,25 @@ namespace GameCore.UnitTests
         public void spawn_catch_net_then_verify_target_number()
         {
             GivenCatchNetNumberRange(1, 5);
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(100);
 
             catchNetHandler.ExecuteModelInit();
 
-            CallBeatEventCallback();
+            List<int> tempTargetNumList = new List<int>();
+            for (int i = 0; i < 100; i++)
+            {
+                CallBeatEventCallback();
+                CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
+                tempTargetNumList.Add(arg.TargetNumber);
+            }
 
-            // LastRefreshCatchNetNumberShouldBe(1, 5);
+            tempTargetNumList = tempTargetNumList.Distinct().ToList();
+            Assert.AreEqual(5, tempTargetNumList.Count);
+            for (int i = 1; i <= 5; i++)
+            {
+                Assert.IsTrue(tempTargetNumList.Contains(i));
+            }
         }
 
         private void GivenCatchNetNumberRange(int min, int max)

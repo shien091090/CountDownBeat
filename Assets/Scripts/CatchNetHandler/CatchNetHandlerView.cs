@@ -23,10 +23,10 @@ namespace GameCore
         {
         }
 
-        public void Spawn(ICatchNetPresenter presenter)
+        public void Spawn(ICatchNetPresenter catchNetPresenter)
         {
             CatchNetView catchNet = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET);
-            catchNet.BindPresenter(presenter);
+            catchNet.BindPresenter(catchNetPresenter);
         }
     }
 

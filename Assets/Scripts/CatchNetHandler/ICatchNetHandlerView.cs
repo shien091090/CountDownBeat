@@ -4,6 +4,6 @@ namespace GameCore
 {
     public interface ICatchNetHandlerView : IArchitectureView
     {
-        void Spawn(ICatchNetPresenter presenter);
+        void Spawn(ICatchNetPresenter catchNetPresenter);
     }
 }
