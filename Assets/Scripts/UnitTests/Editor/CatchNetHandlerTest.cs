@@ -48,7 +48,7 @@ namespace GameCore.UnitTests
             presenter = Substitute.For<ICatchNetHandlerPresenter>();
             catchNetView = Substitute.For<ICatchNetView>();
 
-            presenter.When(x => x.SpawnCatchNet(Arg.Any<ICatchNetPresenter>())).Do(callInfo =>
+            presenter.When(x => x.TrySpawnCatchNet(Arg.Any<ICatchNetPresenter>())).Do(callInfo =>
             {
                 GivenCurrentCatchNetCount(presenter.CurrentCatchNetCount + 1);
 
@@ -183,9 +183,9 @@ namespace GameCore.UnitTests
         private void ShouldSpawnCatchNet(int expectedCallTimes)
         {
             if (expectedCallTimes == 0)
-                presenter.DidNotReceive().SpawnCatchNet(Arg.Any<CatchNetPresenter>());
+                presenter.DidNotReceive().TrySpawnCatchNet(Arg.Any<CatchNetPresenter>());
             else
-                presenter.Received(expectedCallTimes).SpawnCatchNet(Arg.Any<CatchNetPresenter>());
+                presenter.Received(expectedCallTimes).TrySpawnCatchNet(Arg.Any<CatchNetPresenter>());
         }
 
         private void InitEventHandlerMock()

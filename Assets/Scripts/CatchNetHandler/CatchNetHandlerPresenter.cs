@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using SNShien.Common.MonoBehaviorTools;
+using UnityEngine;
 using Zenject;
 
 namespace GameCore
@@ -7,14 +9,35 @@ namespace GameCore
     {
         [Inject] private IViewManager viewManager;
 
-        public int CurrentCatchNetCount { get; }
+        public int CurrentCatchNetCount { get; private set; }
 
         private ICatchNetHandler model;
         private ICatchNetHandlerView view;
+        private Dictionary<int, bool> posStateDict;
 
-        public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
+        public void Init()
         {
-            view.Spawn(catchNetPresenter);
+            CurrentCatchNetCount = 0;
+            InitPosStateDict();
+        }
+
+        public bool TrySpawnCatchNet(ICatchNetPresenter catchNetPresenter)
+        {
+            List<int> enableSpawnIndexList = new List<int>();
+            foreach ((int index, bool isSpawned) in posStateDict)
+            {
+                if (isSpawned == false)
+                    enableSpawnIndexList.Add(index);
+            }
+            
+            if(enableSpawnIndexList.Count == 0)
+                return false;
+            
+            int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
+            int spawnPosIndex = enableSpawnIndexList[indexListIndex];
+            view.Spawn(catchNetPresenter, spawnPosIndex);
+            CurrentCatchNetCount++;
+            return true;
         }
 
         public void BindModel(ICatchNetHandler model)
@@ -30,6 +53,15 @@ namespace GameCore
         public void OpenView()
         {
             viewManager.OpenView<CatchNetHandlerView>(this);
+        }
+
+        private void InitPosStateDict()
+        {
+            posStateDict = new Dictionary<int, bool>();
+            for (int i = 0; i < view.RandomSpawnPositionList.Count; i++)
+            {
+                posStateDict.Add(i, false);
+            }
         }
     }
 }
