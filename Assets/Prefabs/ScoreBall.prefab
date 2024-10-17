@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758ab44765df48f8ad0862c26972921d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isShowDebugLog: 1
+  isShowDebugLog: 0
   enableClick: 1
   enableDoubleClick: 1
   enableDrag: 1
