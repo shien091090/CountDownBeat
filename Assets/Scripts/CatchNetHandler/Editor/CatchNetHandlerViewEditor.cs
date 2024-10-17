@@ -12,6 +12,8 @@ namespace GameCore
             CatchNetHandlerView component = (CatchNetHandlerView)target;
             if (component.IsShowEditorDrawer == false)
                 return;
+            
+            component.CheckCreateRandomSpawnPositionList();
 
             if (component.RandomSpawnPositionList == null ||
                 component.RandomSpawnPositionList.Count == 0)

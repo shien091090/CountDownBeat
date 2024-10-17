@@ -27,8 +27,8 @@ namespace GameCore
             RegisterEvent();
 
             presenter.BindModel(this);
-            presenter.Init();
             presenter.OpenView();
+            presenter.Init();
         }
 
         private void RegisterEvent()
@@ -42,7 +42,7 @@ namespace GameCore
             CatchNetPresenter catchNetPresenter = new CatchNetPresenter();
             CatchNet catchNet = new CatchNet(catchNetPresenter, eventInvoker, gameSetting);
 
-            presenter.TrySpawnCatchNet(catchNetPresenter);
+            presenter.SpawnCatchNet(catchNetPresenter);
             catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
 
             OnSpawnCatchNet?.Invoke(catchNet);

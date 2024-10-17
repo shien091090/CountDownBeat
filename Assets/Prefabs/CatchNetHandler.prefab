@@ -204,6 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5acd1adba2214a92ab426313ced79ff6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSetting: {fileID: 11400000, guid: d67eecfaac058d2458fe50770241c11b, type: 2}
   objectPoolManager: {fileID: 2067908497014706549}
   isShowEditorDrawer: 1
   randomSpawnPositionList:

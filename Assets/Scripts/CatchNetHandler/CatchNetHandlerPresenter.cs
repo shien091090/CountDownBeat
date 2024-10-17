@@ -21,7 +21,7 @@ namespace GameCore
             InitPosStateDict();
         }
 
-        public bool TrySpawnCatchNet(ICatchNetPresenter catchNetPresenter)
+        public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
         {
             List<int> enableSpawnIndexList = new List<int>();
             foreach ((int index, bool isSpawned) in posStateDict)
@@ -29,15 +29,14 @@ namespace GameCore
                 if (isSpawned == false)
                     enableSpawnIndexList.Add(index);
             }
-            
-            if(enableSpawnIndexList.Count == 0)
-                return false;
-            
+
+            if (enableSpawnIndexList.Count == 0)
+                return;
+
             int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
             int spawnPosIndex = enableSpawnIndexList[indexListIndex];
             view.Spawn(catchNetPresenter, spawnPosIndex);
             CurrentCatchNetCount++;
-            return true;
         }
 
         public void BindModel(ICatchNetHandler model)
