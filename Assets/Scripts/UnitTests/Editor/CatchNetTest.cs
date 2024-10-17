@@ -11,6 +11,7 @@ namespace GameCore.UnitTests
         private IEventInvoker eventInvoker;
         private IGameSetting gameSetting;
         private ICatchNetPresenter presenter;
+        private ICatchNetHandlerPresenter catchNetHandlerPresenter;
 
         [SetUp]
         public void Setup()
@@ -18,8 +19,9 @@ namespace GameCore.UnitTests
             eventInvoker = Substitute.For<IEventInvoker>();
             gameSetting = Substitute.For<IGameSetting>();
             presenter = Substitute.For<ICatchNetPresenter>();
+            catchNetHandlerPresenter = Substitute.For<ICatchNetHandlerPresenter>();
 
-            catchNet = new CatchNet(presenter, eventInvoker, gameSetting);
+            catchNet = new CatchNet(presenter, catchNetHandlerPresenter, eventInvoker, gameSetting);
         }
 
         [Test]

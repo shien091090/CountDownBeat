@@ -9,12 +9,14 @@ namespace GameCore
         private readonly IEventInvoker eventInvoker;
         private readonly IGameSetting gameSetting;
         private readonly ICatchNetPresenter presenter;
+        private readonly ICatchNetHandlerPresenter catchNetHandlerPresenter;
 
         public CatchNetState CurrentState { get; private set; }
 
-        public CatchNet(ICatchNetPresenter presenter, IEventInvoker eventInvoker, IGameSetting gameSetting)
+        public CatchNet(ICatchNetPresenter presenter, ICatchNetHandlerPresenter catchNetHandlerPresenter, IEventInvoker eventInvoker, IGameSetting gameSetting)
         {
             this.presenter = presenter;
+            this.catchNetHandlerPresenter = catchNetHandlerPresenter;
             this.eventInvoker = eventInvoker;
             this.gameSetting = gameSetting;
 
@@ -40,6 +42,7 @@ namespace GameCore
 
             UpdateState(CatchNetState.SuccessSettle);
             eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
+            catchNetHandlerPresenter.FreeUpPosAndRefreshCurrentCount(presenter.SpawnPosIndex);
             return true;
         }
 

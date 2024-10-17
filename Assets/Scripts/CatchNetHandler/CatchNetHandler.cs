@@ -13,7 +13,7 @@ namespace GameCore
         [Inject] private ICatchNetHandlerPresenter presenter;
 
         private int beatCounter;
-        
+
         public event Action<CatchNet> OnSpawnCatchNet;
 
         public void ExecuteModelInit()
@@ -40,7 +40,7 @@ namespace GameCore
         private void SpawnCatchNet()
         {
             CatchNetPresenter catchNetPresenter = new CatchNetPresenter();
-            CatchNet catchNet = new CatchNet(catchNetPresenter, eventInvoker, gameSetting);
+            CatchNet catchNet = new CatchNet(catchNetPresenter, presenter, eventInvoker, gameSetting);
 
             presenter.SpawnCatchNet(catchNetPresenter);
             catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));

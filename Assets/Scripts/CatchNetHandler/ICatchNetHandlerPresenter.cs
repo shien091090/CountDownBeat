@@ -8,5 +8,6 @@ namespace GameCore
         void BindModel(ICatchNetHandler model);
         void BindView(ICatchNetHandlerView view);
         void OpenView();
+        void FreeUpPosAndRefreshCurrentCount(int spawnIndex);
     }
 }

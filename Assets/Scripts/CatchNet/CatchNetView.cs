@@ -32,5 +32,10 @@ namespace GameCore
         {
             tmp_catchNumber.text = catchNumberText;
         }
+
+        public void Close()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

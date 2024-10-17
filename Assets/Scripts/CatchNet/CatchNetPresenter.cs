@@ -4,15 +4,24 @@ namespace GameCore
 {
     public class CatchNetPresenter : ICatchNetPresenter
     {
+        public int SpawnPosIndex { get; private set; }
         private ICatchNet model;
         private ICatchNetView view;
 
         public CatchNetPresenter()
         {
+            SpawnPosIndex = -1;
+        }
+
+        public void SetSpawnPosIndex(int spawnPosIndex)
+        {
+            this.SpawnPosIndex = spawnPosIndex;
         }
 
         public void UpdateState(CatchNetState currentState)
         {
+            if (currentState == CatchNetState.SuccessSettle)
+                view.Close();
         }
 
         public void RefreshCatchNumber()
