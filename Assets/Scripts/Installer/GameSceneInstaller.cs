@@ -13,11 +13,14 @@ namespace GameCore
         {
             Container.Bind<IGameObjectSpawner>().To<GameObjectSpawner>().AsSingle();
             Container.Bind<ICatchNetHandlerPresenter>().To<CatchNetHandlerPresenter>().AsSingle();
+            Container.Bind<IScoreBoardPresenter>().To<ScoreBoardPresenter>().AsSingle();
             
             BindModelFromInstance<IViewManager, ViewManager>(viewManager);
             BindModel<IScoreBallHandler, ScoreBallHandler>();
             BindModel<IBeaterModel, BeaterModel>();
             BindModel<ICatchNetHandler, CatchNetHandler>();
+            BindModel<IScoreBoardModel, ScoreBoardModel>();
         }
     }
+
 }

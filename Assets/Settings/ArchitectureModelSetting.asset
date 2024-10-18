@@ -32,4 +32,6 @@ MonoBehaviour:
   - modelName: ScoreBallHandler
     orderNum: 3
   - modelName: CatchNetHandler
-    orderNum: 3
+    orderNum: 4
+  - modelName: ScoreBoardModel
+    orderNum: 5
