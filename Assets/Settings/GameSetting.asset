@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreBallStartCountDownValue: 20
   scoreBallSpawnTimeThreshold: 2
-  beatTimeThreshold: 2
   successSettleScore: 1
   spawnCatchNetFreq: 3
   catchNetLimit: 5
-  catchNetNumberRange: {x: 5, y: 20}
+  catchNetNumberRange: {x: 5, y: 17}

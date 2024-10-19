@@ -34,11 +34,6 @@ namespace GameCore
             go_beatHint.SetActive(isActive);
         }
 
-        private void Update()
-        {
-            beaterPresenter.UpdatePerFrame();
-        }
-
         private IEnumerator Cor_PlayBeatAnimation()
         {
             SetBeatHintActive(true);

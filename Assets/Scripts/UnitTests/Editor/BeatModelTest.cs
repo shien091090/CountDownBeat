@@ -1,9 +1,10 @@
+using FMOD.Studio;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.AdapterTools;
+using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
-using UnityEngine;
 using Zenject;
 
 namespace GameCore.UnitTests
@@ -16,47 +17,64 @@ namespace GameCore.UnitTests
         {
             base.Setup();
 
-            gameSetting = Substitute.For<IGameSetting>();
-            Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
-
             InitViewManagerMock();
             Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
 
-            deltaTimeGetter = Substitute.For<IDeltaTimeGetter>();
-            Container.Bind<IDeltaTimeGetter>().FromInstance(deltaTimeGetter).AsSingle();
-
             InitEventInvokerMock();
             Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
+
+            InitAudioManagerMock();
+            Container.Bind<IAudioManager>().FromInstance(audioManager).AsSingle();
 
             Container.Bind<BeaterModel>().AsSingle();
             beaterModel = Container.Resolve<BeaterModel>();
         }
 
-        private BeaterModel beaterModel;
-        private IGameSetting gameSetting;
-        private IViewManager viewManager;
-        private IDeltaTimeGetter deltaTimeGetter;
-        private IEventInvoker eventInvoker;
+        private void InitAudioManagerMock()
+        {
+            audioManager = Substitute.For<IAudioManager>();
+            callbackSetting = new FmodAudioCallbackSetting();
 
-        private int beatEventTriggerTimes;
-        private int halfBeatEventTriggerTimes;
+            audioManager.PlayWithCallback(Arg.Any<string>()).Returns(callbackSetting);
+        }
+
+        private BeaterModel beaterModel;
+        private IViewManager viewManager;
+        private IEventInvoker eventInvoker;
+        private IAudioManager audioManager;
+        private FmodAudioCallbackSetting callbackSetting;
+
+        [Test]
+        //當收到音樂節拍事件時，應該發送BeatEvent事件
+        public void send_beat_event_when_receive_bgm_beat_callback()
+        {
+            beaterModel.ExecuteModelInit();
+
+            ShouldPlayWithCallBack(GameConst.AUDIO_NAME_BGM_1, 0);
+
+            CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+
+            ShouldSendBeatEvent(1);
+        }
+
+        private void ShouldSendBeatEvent(int expectedCallTimes)
+        {
+            eventInvoker.Received(expectedCallTimes).SendEvent(Arg.Any<BeatEvent>());
+        }
+
+        private void CallAudioCallback(EVENT_CALLBACK_TYPE type)
+        {
+            callbackSetting.TryCallback(type);
+        }
+
+        private void ShouldPlayWithCallBack(string expectedAudioKey, int expectedTrackIndex, int expectedCallTimes = 1)
+        {
+            audioManager.Received(expectedCallTimes).PlayWithCallback(expectedAudioKey, expectedTrackIndex);
+        }
 
         private void InitEventInvokerMock()
         {
-            beatEventTriggerTimes = 0;
-            halfBeatEventTriggerTimes = 0;
-
             eventInvoker = Substitute.For<IEventInvoker>();
-
-            eventInvoker.When(x => x.SendEvent(Arg.Is<BeatEvent>(x => x is BeatEvent))).Do(callInfo =>
-            {
-                beatEventTriggerTimes++;
-            });
-
-            eventInvoker.When(x => x.SendEvent(Arg.Is<HalfBeatEvent>(x => x is HalfBeatEvent))).Do(callInfo =>
-            {
-                halfBeatEventTriggerTimes++;
-            });
         }
 
         private void InitViewManagerMock()
@@ -70,124 +88,6 @@ namespace GameCore.UnitTests
                 BeaterPresenter beaterPresenter = (BeaterPresenter)args[0];
                 beaterPresenter.BindView(view);
             });
-        }
-
-        [Test]
-        //更新幀畫面後未達到節拍時間點, 不發送事件
-        public void update_frame_not_reach_beat_time()
-        {
-            GivenBeatTimeThresholdSetting(1);
-            GivenDeltaTime(0.9f);
-
-            beaterModel.ExecuteModelInit();
-            beaterModel.UpdatePerFrame();
-
-            ShouldSendBeatEvent(0);
-        }
-
-        [Test]
-        //更新幀畫面後達節拍時間點, 發送事件
-        public void update_frame_reach_beat_time()
-        {
-            GivenBeatTimeThresholdSetting(1);
-            GivenDeltaTime(1);
-
-            beaterModel.ExecuteModelInit();
-            beaterModel.UpdatePerFrame();
-
-            ShouldSendBeatEvent(1);
-        }
-
-        [Test]
-        //更新幀畫面後達節拍時間點, 且超過的時間會計算至下次節拍
-        public void update_frame_reach_beat_time_and_exceed()
-        {
-            GivenBeatTimeThresholdSetting(1);
-            GivenDeltaTime(0.7f);
-
-            beaterModel.ExecuteModelInit();
-            beaterModel.UpdatePerFrame();
-            beaterModel.UpdatePerFrame();
-            beaterModel.UpdatePerFrame();
-
-            ShouldSendBeatEvent(2);
-        }
-
-        [Test]
-        //節拍頻率設為0, 更新幀畫面時不做事
-        public void beat_time_threshold_is_0()
-        {
-            GivenBeatTimeThresholdSetting(0);
-            GivenDeltaTime(0.7f);
-
-            beaterModel.ExecuteModelInit();
-            beaterModel.UpdatePerFrame();
-            beaterModel.UpdatePerFrame();
-            beaterModel.UpdatePerFrame();
-
-            ShouldSendBeatEvent(0);
-        }
-
-        [Test]
-        //更新幀畫面後未達到一半節拍時間點, 不發送事件
-        public void update_frame_not_reach_half_beat_time()
-        {
-            GivenBeatTimeThresholdSetting(1);
-            GivenDeltaTime(0.4f);
-
-            beaterModel.ExecuteModelInit();
-            beaterModel.UpdatePerFrame();
-
-            ShouldSendHalfBeatEvent(0);
-        }
-
-        [Test]
-        //更新幀畫面後達一半節拍時間點, 發送事件
-        public void update_frame_reach_half_beat_time()
-        {
-            GivenBeatTimeThresholdSetting(1);
-            GivenDeltaTime(0.5f);
-
-            beaterModel.ExecuteModelInit();
-            beaterModel.UpdatePerFrame();
-
-            ShouldSendHalfBeatEvent(1);
-        }
-
-        [Test]
-        //更新幀畫面後達一半節拍時間點, 且超過的時間會計算至下次節拍
-        public void update_frame_reach_half_beat_time_and_exceed()
-        {
-            GivenBeatTimeThresholdSetting(1);
-            GivenDeltaTime(0.4f);
-
-            beaterModel.ExecuteModelInit();
-            beaterModel.UpdatePerFrame();
-            beaterModel.UpdatePerFrame();
-            beaterModel.UpdatePerFrame();
-            beaterModel.UpdatePerFrame();
-
-            ShouldSendHalfBeatEvent(2);
-        }
-
-        private void ShouldSendHalfBeatEvent(int expectedSendTimes)
-        {
-            Assert.AreEqual(expectedSendTimes, halfBeatEventTriggerTimes);
-        }
-
-        private void ShouldSendBeatEvent(int expectedSendTimes)
-        {
-            Assert.AreEqual(expectedSendTimes, beatEventTriggerTimes);
-        }
-
-        private void GivenDeltaTime(float deltaTime)
-        {
-            deltaTimeGetter.deltaTime.Returns(deltaTime);
-        }
-
-        private void GivenBeatTimeThresholdSetting(float beatTimeThreshold)
-        {
-            gameSetting.BeatTimeThreshold.Returns(beatTimeThreshold);
         }
     }
 }

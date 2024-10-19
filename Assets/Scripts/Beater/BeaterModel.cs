@@ -1,7 +1,7 @@
-using SNShien.Common.AdapterTools;
+using FMOD.Studio;
+using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
-using UnityEngine;
 using Zenject;
 
 namespace GameCore
@@ -9,49 +9,35 @@ namespace GameCore
     public class BeaterModel : IBeaterModel
     {
         [Inject] private IViewManager viewManager;
-        [Inject] private IGameSetting gameSetting;
-        [Inject] private IDeltaTimeGetter deltaTimeGetter;
         [Inject] private IEventInvoker eventInvoker;
+        [Inject] private IAudioManager audioManager;
 
         private BeaterPresenter presenter;
-        private float beatTimeThreshold;
         private float currentTimer;
         private bool isAlreadyBeatHalfEvent;
 
         public void ExecuteModelInit()
         {
-            Init();
+            InitView();
+            InitPlayBgm();
+        }
 
+        private void InitPlayBgm()
+        {
+            audioManager
+                .PlayWithCallback(GameConst.AUDIO_NAME_BGM_1)
+                .Register(EVENT_CALLBACK_TYPE.TIMELINE_BEAT, OnBeat);
+        }
+
+        private void OnBeat()
+        {
+            eventInvoker.SendEvent(new BeatEvent());
+        }
+
+        private void InitView()
+        {
             presenter = new BeaterPresenter(this);
             viewManager.OpenView<BeaterView>(presenter);
-        }
-
-        public void UpdatePerFrame()
-        {
-            if (beatTimeThreshold == 0)
-                return;
-
-            currentTimer += deltaTimeGetter.deltaTime;
-            if (currentTimer >= beatTimeThreshold)
-            {
-                currentTimer -= beatTimeThreshold;
-                isAlreadyBeatHalfEvent = false;
-                
-                eventInvoker.SendEvent(new BeatEvent());
-                presenter.PlayBeatAnimation();
-            }
-            else if (currentTimer >= beatTimeThreshold / 2 && isAlreadyBeatHalfEvent == false)
-            {
-                isAlreadyBeatHalfEvent = true;
-                eventInvoker.SendEvent(new HalfBeatEvent());
-            }
-        }
-
-        private void Init()
-        {
-            beatTimeThreshold = gameSetting.BeatTimeThreshold;
-            currentTimer = 0;
-            isAlreadyBeatHalfEvent = false;
         }
     }
 }
