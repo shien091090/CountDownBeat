@@ -20,44 +20,10 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: stageContents
-      Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[GameCore.StageSettingContent, GameCore]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 3
-    - Name: 
-      Entry: 7
-      Data: 1|GameCore.StageSettingContent, GameCore
-    - Name: stageTitle
-      Entry: 1
-      Data: 1213
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 2|GameCore.StageSettingContent, GameCore
-    - Name: stageTitle
-      Entry: 1
-      Data: SSBB
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 3|GameCore.StageSettingContent, GameCore
-    - Name: stageTitle
-      Entry: 1
-      Data: WWA
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
+  stageContentList:
+  - stageTitle: bgm_1
+    fmodEventReference: {fileID: 3393214851364271574, guid: bed67f63065a78f46b53637a49eec04f, type: 2}
+    bpm: 0
+    audioKey: bgm_1
+    spawnBeatIndexList: 
