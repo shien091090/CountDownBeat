@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FMODUnity;
 using Sirenix.OdinInspector;
@@ -40,9 +41,23 @@ namespace GameCore
         [OnValueChanged("OnChangeSpawnBeatSettingData")]
         public bool[,] spawnBeatSettingData;
 
+
         private readonly StageSettingScriptableObject stageSetting;
         private readonly StageSettingContent settingContent;
         private readonly Debugger debugger;
+
+        [BoxGroup("Split/Left/基本設定")]
+        [LabelWidth(140)]
+        [ShowInInspector]
+        public double TestNum
+        {
+            get
+            {
+                double testNum = Math.Abs(UnityEditor.EditorApplication.timeSinceStartup);
+                debugger.ShowLog(testNum.ToString());
+                return testNum;
+            }
+        }
 
         private static bool DrawColoredEnumElement(Rect rect, bool value)
         {
@@ -72,19 +87,16 @@ namespace GameCore
         {
             fmodEventReference = settingContent.FmodEventReference;
             audioKey = settingContent.AudioKey;
-
-            if (fmodEventReference != null)
-                timeLength = ConvertTimeLength(fmodEventReference.Length);
-
             bpm = settingContent.Bpm;
-            RefreshBeatAmount();
 
+            CheckRefreshBySetEventReference();
             AutoCreateSpawnBeatSetting();
             ParseSpawnBeatSetting(settingContent.SpawnBeatIndexList);
+            ParseSpawnScoreBallAmount();
         }
 
         [VerticalGroup("Split/Left")]
-        [Button("自動生成")]
+        [Button("自動生成", ButtonSizes.Large, Icon = SdfIconType.PlusCircleFill)]
         [EnableIf("@beatAmount > 0")]
         public void AutoCreateSpawnBeatSetting()
         {
@@ -102,6 +114,18 @@ namespace GameCore
         private int ConvertBeatAmount(int length, int bpm)
         {
             return (int)(length / 60000f * bpm);
+        }
+
+        private List<int> ConvertSpawnBeatIndexList(bool[,] spawnBeatSettingData)
+        {
+            List<int> indexList = new List<int>();
+            for (int i = 0; i < spawnBeatSettingData.GetLength(1); i++)
+            {
+                if (spawnBeatSettingData[0, i])
+                    indexList.Add(i);
+            }
+
+            return indexList;
         }
 
         private void ParseSpawnBeatSetting(List<int> spawnBeatIndexList)
@@ -128,6 +152,22 @@ namespace GameCore
             }
         }
 
+        private void CheckRefreshBySetEventReference()
+        {
+            if (fmodEventReference == null)
+            {
+                eventReferenceName = string.Empty;
+                timeLength = string.Empty;
+                beatAmount = 0;
+            }
+            else
+            {
+                eventReferenceName = fmodEventReference.name;
+                timeLength = ConvertTimeLength(fmodEventReference.Length);
+                RefreshBeatAmount();
+            }
+        }
+
         private void RefreshBeatAmount()
         {
             if (fmodEventReference == null || bpm == 0)
@@ -145,6 +185,8 @@ namespace GameCore
         private void OnChangeSpawnBeatSettingData()
         {
             ParseSpawnScoreBallAmount();
+            settingContent.SetSpawnBeatIndexList(ConvertSpawnBeatIndexList(spawnBeatSettingData));
+            EditorUtility.SetDirty(stageSetting);
         }
 
         private void OnSetBpm()
@@ -156,18 +198,7 @@ namespace GameCore
 
         private void OnSetEventReference()
         {
-            if (fmodEventReference == null)
-            {
-                eventReferenceName = string.Empty;
-                timeLength = string.Empty;
-                beatAmount = 0;
-            }
-            else
-            {
-                eventReferenceName = fmodEventReference.name;
-                timeLength = ConvertTimeLength(fmodEventReference.Length);
-                RefreshBeatAmount();
-            }
+            CheckRefreshBySetEventReference();
 
             settingContent.SetFmodEventReference(fmodEventReference);
             EditorUtility.SetDirty(stageSetting);

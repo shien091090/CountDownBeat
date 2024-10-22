@@ -27,6 +27,7 @@ namespace GameCore
 
             InitMenuTree();
             AddBaseSettingInTree();
+            CheckAddStageSettingsInTree();
             return tree;
         }
 
@@ -53,6 +54,17 @@ namespace GameCore
                 return;
             }
 
+            CheckAddStageSettingsInTree();
+
+            debugger.ShowLog("RefreshMenuTree");
+            tree.UpdateMenuTree();
+        }
+
+        private void CheckAddStageSettingsInTree()
+        {
+            if (stageSettingBaseWindow.GetStageSetting == null)
+                return;
+            
             StageSettingScriptableObject stageSetting = stageSettingBaseWindow.GetStageSetting;
             List<string> titles = stageSetting.StageTitles;
 
@@ -61,9 +73,6 @@ namespace GameCore
                 string title = titles[i];
                 tree.Add($"基本設定/{title}", new SingleStageSettingWindow(stageSetting, stageSetting.stageContentList[i]));
             }
-
-            debugger.ShowLog("RefreshMenuTree");
-            tree.UpdateMenuTree();
         }
 
 

@@ -16,7 +16,7 @@ namespace GameCore
             this.mainEditor = mainEditor;
         }
 
-        [Button("新增關卡")]
+        [Button("新增關卡", ButtonSizes.Large, Icon = SdfIconType.PlusCircleFill)]
         [ShowIf("@stageSetting != null")]
         public void AddStage()
         {

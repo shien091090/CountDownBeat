@@ -34,5 +34,10 @@ namespace GameCore
         {
             this.bpm = bpm;
         }
+
+        public void SetSpawnBeatIndexList(List<int> indexList)
+        {
+            this.spawnBeatIndexList = indexList;
+        }
     }
 }
