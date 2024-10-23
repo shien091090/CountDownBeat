@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FMOD.Studio;
 using NSubstitute;
 using NUnit.Framework;
@@ -16,6 +17,9 @@ namespace GameCore.UnitTests
         public override void Setup()
         {
             base.Setup();
+
+            stageSetting = Substitute.For<IStageSetting>();
+            Container.Bind<IStageSetting>().FromInstance(stageSetting).AsSingle();
 
             InitViewManagerMock();
             Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
@@ -43,6 +47,7 @@ namespace GameCore.UnitTests
         private IEventInvoker eventInvoker;
         private IAudioManager audioManager;
         private FmodAudioCallbackSetting callbackSetting;
+        private IStageSetting stageSetting;
 
         [Test]
         //當收到音樂節拍事件時，應該發送BeatEvent事件
@@ -55,6 +60,41 @@ namespace GameCore.UnitTests
             CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
 
             ShouldSendBeatEvent(1);
+        }
+
+        [Test]
+        //初始化時會取得關卡設定
+        public void get_stage_setting_when_init()
+        {
+            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, 120, new List<int> { 3, 5, 7 });
+
+            beaterModel.ExecuteModelInit();
+
+            StageSettingContentShouldBe(GameConst.AUDIO_NAME_BGM_1, 120, new List<int> { 3, 5, 7 });
+        }
+
+        private void StageSettingContentShouldBe(string expectedAudioKey, int expectedBpm, List<int> expectedSpawnBeatIndexList)
+        {
+            StageSettingContent stageSettingContent = beaterModel.CurrentStageSettingContent;
+            Assert.AreEqual(expectedAudioKey, stageSettingContent.AudioKey);
+            Assert.AreEqual(expectedBpm, stageSettingContent.Bpm);
+            
+            List<int> spawnBeatIndexList = stageSettingContent.SpawnBeatIndexList;
+            Assert.AreEqual(expectedSpawnBeatIndexList.Count, spawnBeatIndexList.Count);
+            for (int i = 0; i < expectedSpawnBeatIndexList.Count; i++)
+            {
+                Assert.AreEqual(expectedSpawnBeatIndexList[i], spawnBeatIndexList[i]);
+            }
+        }
+
+        private void GivenStageSettingContent(string audioKey, int bpm, List<int> spawnBeatIndexList)
+        {
+            StageSettingContent stageSettingContent = new StageSettingContent();
+            stageSettingContent.SetAudioKey(audioKey);
+            stageSettingContent.SetBpm(bpm);
+            stageSettingContent.SetSpawnBeatIndexList(spawnBeatIndexList);
+
+            stageSetting.GetStageSettingContent(audioKey).Returns(stageSettingContent);
         }
 
         private void ShouldSendBeatEvent(int expectedCallTimes)

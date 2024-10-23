@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace GameCore
 {
-    public class StageSettingScriptableObject : SerializedScriptableObject
+    public class StageSettingScriptableObject : SerializedScriptableObject, IStageSetting
     {
         [SerializeField] public List<StageSettingContent> stageContentList;
 
@@ -30,6 +31,14 @@ namespace GameCore
 
                 return titleList;
             }
+        }
+
+        public StageSettingContent GetStageSettingContent(string audioKey)
+        {
+            if (stageContentList == null || stageContentList.Count == 0)
+                return null;
+            else
+                return stageContentList.FirstOrDefault(x => x.AudioKey == audioKey);
         }
 
         public void AddStage()
