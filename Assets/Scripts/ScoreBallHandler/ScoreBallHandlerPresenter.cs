@@ -1,14 +1,14 @@
+using SNShien.Common.MonoBehaviorTools;
+using Zenject;
+
 namespace GameCore
 {
     public class ScoreBallHandlerPresenter : IScoreBallHandlerPresenter
     {
-        private readonly IScoreBallHandler model;
-        private IScoreBallHandlerView view;
+        [Inject] private IViewManager viewManager;
 
-        public ScoreBallHandlerPresenter(IScoreBallHandler model)
-        {
-            this.model = model;
-        }
+        private IScoreBallHandler model;
+        private IScoreBallHandlerView view;
 
         public void Spawn(IScoreBallPresenter scoreBallPresenter)
         {
@@ -18,6 +18,16 @@ namespace GameCore
         public void BindView(IScoreBallHandlerView view)
         {
             this.view = view;
+        }
+
+        public void BindModel(IScoreBallHandler model)
+        {
+            this.model = model;
+        }
+
+        public void OpenView()
+        {
+            viewManager.OpenView<ScoreBallHandlerView>(this);
         }
     }
 }

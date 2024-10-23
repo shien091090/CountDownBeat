@@ -1,5 +1,5 @@
-using SNShien.Common.AdapterTools;
-using SNShien.Common.MonoBehaviorTools;
+using System;
+using System.Collections.Generic;
 using SNShien.Common.ProcessTools;
 using Zenject;
 
@@ -7,28 +7,41 @@ namespace GameCore
 {
     public class ScoreBallHandler : IScoreBallHandler
     {
+        [Inject] private IScoreBallHandlerPresenter presenter;
         [Inject] private IEventRegister eventRegister;
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IGameSetting gameSetting;
-        [Inject] private IViewManager viewManager;
+        [Inject] private IBeaterModel beaterModel;
 
-        private IScoreBallHandlerPresenter presenter;
-        private int beatCounter;
-        private float spawnBeatFreq;
+        private List<int> tempSpawnBeatIndexList;
+        private int currentBeatIndex;
+
+        public event Action OnSpawnScoreBall;
 
         public void ExecuteModelInit()
         {
             Init();
-
-            this.presenter = new ScoreBallHandlerPresenter(this);
-            viewManager.OpenView<ScoreBallHandlerView>(presenter);
         }
 
         private void Init()
         {
-            beatCounter = 0;
-            spawnBeatFreq = gameSetting.ScoreBallSpawnBeatFreq;
+            InitData();
+            InitPresenter();
             RegisterEvent();
+        }
+
+        private void InitPresenter()
+        {
+            presenter.BindModel(this);
+            presenter.OpenView();
+        }
+
+        private void InitData()
+        {
+            currentBeatIndex = 0;
+
+            tempSpawnBeatIndexList = new List<int>();
+            tempSpawnBeatIndexList.AddRange(beaterModel.CurrentStageSettingContent.SpawnBeatIndexList);
         }
 
         private void RegisterEvent()
@@ -40,15 +53,17 @@ namespace GameCore
         private void SpawnScoreBall()
         {
             presenter.Spawn(new ScoreBallPresenter(eventRegister, eventInvoker, gameSetting));
+
+            OnSpawnScoreBall?.Invoke();
         }
 
         private void OnBeatEvent(BeatEvent eventInfo)
         {
-            beatCounter++;
-            
-            if (beatCounter >= spawnBeatFreq)
+            currentBeatIndex++;
+
+            if (tempSpawnBeatIndexList.Contains(currentBeatIndex))
             {
-                beatCounter = 0;
+                tempSpawnBeatIndexList.Remove(currentBeatIndex);
                 SpawnScoreBall();
             }
         }

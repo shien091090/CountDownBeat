@@ -4,5 +4,7 @@ namespace GameCore
     {
         void Spawn(IScoreBallPresenter scoreBallPresenter);
         void BindView(IScoreBallHandlerView view);
+        void BindModel(IScoreBallHandler model);
+        void OpenView();
     }
 }
