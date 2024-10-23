@@ -23,7 +23,14 @@ MonoBehaviour:
     SerializationNodes: []
   stageContentList:
   - stageTitle: bgm_1
-    fmodEventReference: {fileID: 6164345771782220277, guid: cc4d348e3e96b224684f06c71ec4938d, type: 2}
-    bpm: 110
+    fmodEventReference:
+      Guid:
+        Data1: -231751487
+        Data2: 1109064515
+        Data3: -1062888286
+        Data4: 1731725017
+      Path: event:/CoundDownBeat/BGM_1
+    bpm: 120
+    countDownBeatFreq: 2
     audioKey: bgm_1
-    spawnBeatIndexList: 030000000600000007000000080000000d000000
+    spawnBeatIndexList: 020000000300000008000000090000000a0000000d0000000e0000000f00000010000000190000001a0000001b0000001c0000001d000000

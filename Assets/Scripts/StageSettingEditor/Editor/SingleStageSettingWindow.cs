@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using FMODUnity;
 using Sirenix.OdinInspector;
@@ -26,7 +25,7 @@ namespace GameCore
         public int spawnScoreBallAmount;
 
         [HorizontalGroup("Split", Width = 350)] [LabelWidth(140)] [BoxGroup("Split/Left/手動設定", CenterLabel = true)] [OnValueChanged("OnSetEventReference")] [Required]
-        public EditorEventRef fmodEventReference;
+        public EventReference fmodEventReference;
 
         [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [Required] [OnValueChanged("OnSetAudioKey")]
         public string audioKey;
@@ -46,6 +45,7 @@ namespace GameCore
 
         private readonly StageSettingContent settingContent;
         private readonly Debugger debugger;
+        private EditorEventRef editorEventRef;
 
         private static bool DrawColoredEnumElement(Rect rect, bool value)
         {
@@ -74,6 +74,7 @@ namespace GameCore
         private void InitData(StageSettingContent settingContent)
         {
             fmodEventReference = settingContent.FmodEventReference;
+            editorEventRef = EventManager.EventFromGUID(fmodEventReference.Guid);
             audioKey = settingContent.AudioKey;
             bpm = settingContent.Bpm;
             countDownBeatFreq = settingContent.CountDownBeatFreq;
@@ -146,24 +147,24 @@ namespace GameCore
 
         private void CheckRefreshBySetEventReference()
         {
-            if (fmodEventReference == null)
+            if (editorEventRef == null)
             {
                 timeLength = string.Empty;
                 beatAmount = 0;
             }
             else
             {
-                timeLength = ConvertTimeLength(fmodEventReference.Length);
+                timeLength = ConvertTimeLength(editorEventRef.Length);
                 RefreshBeatAmount();
             }
         }
 
         private void RefreshBeatAmount()
         {
-            if (fmodEventReference == null || bpm == 0)
+            if (editorEventRef == null || bpm == 0)
                 return;
 
-            beatAmount = ConvertBeatAmount(fmodEventReference.Length, bpm);
+            beatAmount = ConvertBeatAmount(editorEventRef.Length, bpm);
         }
 
         private void OnSetCountDownBeatFreq()
@@ -194,6 +195,7 @@ namespace GameCore
 
         private void OnSetEventReference()
         {
+            editorEventRef = EventManager.EventFromGUID(fmodEventReference.Guid);
             CheckRefreshBySetEventReference();
 
             settingContent.SetFmodEventReference(fmodEventReference);

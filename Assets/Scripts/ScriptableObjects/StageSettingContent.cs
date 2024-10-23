@@ -8,20 +8,20 @@ namespace GameCore
     public class StageSettingContent
     {
         [SerializeField] private string stageTitle;
-        [SerializeField] private EditorEventRef fmodEventReference;
+        [SerializeField] private EventReference fmodEventReference;
         [SerializeField] private int bpm;
         [SerializeField] private int countDownBeatFreq;
         [SerializeField] private string audioKey;
         [SerializeField] private List<int> spawnBeatIndexList;
 
         public string StageTitle => stageTitle;
-        public EditorEventRef FmodEventReference => fmodEventReference;
+        public EventReference FmodEventReference => fmodEventReference;
         public int Bpm => bpm;
         public string AudioKey => audioKey;
         public List<int> SpawnBeatIndexList => spawnBeatIndexList;
         public int CountDownBeatFreq => countDownBeatFreq;
 
-        public void SetFmodEventReference(EditorEventRef fmodEventReference)
+        public void SetFmodEventReference(EventReference fmodEventReference)
         {
             this.fmodEventReference = fmodEventReference;
         }

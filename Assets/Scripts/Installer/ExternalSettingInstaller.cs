@@ -12,6 +12,7 @@ namespace GameCore
         [SerializeField] private GameSettingScriptableObject gameSetting;
         [SerializeField] private ViewPrefabScriptableObject viewPrefabSetting;
         [SerializeField] private ArchitectureModelSettingScriptableObject modelSetting;
+        [SerializeField] private StageSettingScriptableObject stageSetting;
 
         public override void InstallBindings()
         {
@@ -19,6 +20,7 @@ namespace GameCore
             Container.Bind<IGameSetting>().FromInstance(gameSetting);
             Container.Bind<IViewPrefabSetting>().FromInstance(viewPrefabSetting);
             Container.Bind<IArchitectureModelSetting>().FromInstance(modelSetting);
+            Container.Bind<IStageSetting>().FromInstance(stageSetting);
         }
     }
 }
