@@ -14,25 +14,28 @@ namespace GameCore
     {
         private const string DEBUGGER_KEY = "SingleStageSettingWindow";
 
-        [VerticalGroup("Split/Left")] [InfoBox("先設定EventReference、填入BPM，再按下'自動生成'")] [LabelWidth(140)] [ReadOnly]
-        public string eventReferenceName;
+        [VerticalGroup("Split/Left")] [ShowInInspector] [ReadOnly] private StageSettingScriptableObject stageSetting;
 
-        [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] public string timeLength;
+        [BoxGroup("Split/Left/自動聯動設定")] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")]
+        public string timeLength;
 
-        [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] [GUIColor("#6FF06D")]
+        [BoxGroup("Split/Left/自動聯動設定")] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] [GUIColor("#6FF06D")]
         public int beatAmount;
 
-        [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] [GUIColor("#6FF06D")]
+        [BoxGroup("Split/Left/自動聯動設定")] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] [GUIColor("#6FF06D")]
         public int spawnScoreBallAmount;
 
-        [HorizontalGroup("Split", Width = 350)] [LabelWidth(140)] [BoxGroup("Split/Left/基本設定", CenterLabel = true)] [OnValueChanged("OnSetEventReference")] [Required]
+        [HorizontalGroup("Split", Width = 350)] [LabelWidth(140)] [BoxGroup("Split/Left/手動設定", CenterLabel = true)] [OnValueChanged("OnSetEventReference")] [Required]
         public EditorEventRef fmodEventReference;
 
-        [BoxGroup("Split/Left/基本設定")] [LabelWidth(140)] [Required] [OnValueChanged("OnSetAudioKey")]
+        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [Required] [OnValueChanged("OnSetAudioKey")]
         public string audioKey;
 
-        [BoxGroup("Split/Left/基本設定")] [LabelWidth(140)] [MinValue(1)] [OnValueChanged("OnSetBpm")]
+        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [MinValue(1)] [OnValueChanged("OnSetBpm")]
         public int bpm;
+
+        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [MinValue(1)] [OnValueChanged("OnSetCountDownBeatFreq")]
+        public int countDownBeatFreq;
 
         [HorizontalGroup("Split", Width = 140)]
         [VerticalGroup("Split/Right")]
@@ -41,23 +44,8 @@ namespace GameCore
         [OnValueChanged("OnChangeSpawnBeatSettingData")]
         public bool[,] spawnBeatSettingData;
 
-
-        private readonly StageSettingScriptableObject stageSetting;
         private readonly StageSettingContent settingContent;
         private readonly Debugger debugger;
-
-        [BoxGroup("Split/Left/基本設定")]
-        [LabelWidth(140)]
-        [ShowInInspector]
-        public double TestNum
-        {
-            get
-            {
-                double testNum = Math.Abs(UnityEditor.EditorApplication.timeSinceStartup);
-                debugger.ShowLog(testNum.ToString());
-                return testNum;
-            }
-        }
 
         private static bool DrawColoredEnumElement(Rect rect, bool value)
         {
@@ -88,6 +76,7 @@ namespace GameCore
             fmodEventReference = settingContent.FmodEventReference;
             audioKey = settingContent.AudioKey;
             bpm = settingContent.Bpm;
+            countDownBeatFreq = settingContent.CountDownBeatFreq;
 
             CheckRefreshBySetEventReference();
             AutoCreateSpawnBeatSetting();
@@ -130,12 +119,15 @@ namespace GameCore
 
         private void ParseSpawnBeatSetting(List<int> spawnBeatIndexList)
         {
-            if (spawnBeatIndexList == null || spawnBeatIndexList.Count == 0)
+            if (spawnBeatIndexList == null ||
+                spawnBeatIndexList.Count == 0 ||
+                beatAmount == 0)
                 return;
 
             foreach (int index in spawnBeatIndexList)
             {
-                spawnBeatSettingData[0, index] = true;
+                if (index >= 0 && index < beatAmount)
+                    spawnBeatSettingData[0, index] = true;
             }
         }
 
@@ -156,13 +148,11 @@ namespace GameCore
         {
             if (fmodEventReference == null)
             {
-                eventReferenceName = string.Empty;
                 timeLength = string.Empty;
                 beatAmount = 0;
             }
             else
             {
-                eventReferenceName = fmodEventReference.name;
                 timeLength = ConvertTimeLength(fmodEventReference.Length);
                 RefreshBeatAmount();
             }
@@ -174,6 +164,12 @@ namespace GameCore
                 return;
 
             beatAmount = ConvertBeatAmount(fmodEventReference.Length, bpm);
+        }
+
+        private void OnSetCountDownBeatFreq()
+        {
+            settingContent.SetCountDownBeatFreq(countDownBeatFreq);
+            EditorUtility.SetDirty(stageSetting);
         }
 
         private void OnSetAudioKey()
