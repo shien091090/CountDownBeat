@@ -7,7 +7,6 @@ Assembly-CSharp-Editor.csproj
 Assembly-CSharp.csproj
 .idea
 Builds
-Assets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
 fmod_editor.log
 *.csproj
 CountDownBeat.sln

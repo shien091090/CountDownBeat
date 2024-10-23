@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8361039663297596637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: FmodAudioAssets/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 638651091394861086
+  FileSizes:
+  - Name: 
+    Value: 2104
+  Exists: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
+  m_Name: FMODStudioCache
+  m_EditorClassIdentifier: 
+  EditorBanks:
+  - {fileID: -8361039663297596637}
+  - {fileID: 5197809021642547039}
+  - {fileID: 1046032811476635511}
+  EditorEvents:
+  - {fileID: 6164345771782220277}
+  EditorParameters:
+  - {fileID: 7585419494626267940}
+  - {fileID: 5290106984469348789}
+  MasterBanks:
+  - {fileID: 1046032811476635511}
+  StringsBanks:
+  - {fileID: -8361039663297596637}
+  cacheTime: 638651091394861086
+  cacheVersion: 131601
+--- !u!114 &1046032811476635511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: FmodAudioAssets/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 638620845542407716
+  FileSizes: []
+  Exists: 1
+--- !u!114 &5197809021642547039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/CountDownBeat.bank
+  m_EditorClassIdentifier: 
+  Path: FmodAudioAssets/CountDownBeat.bank
+  Name: CountDownBeat
+  StudioPath: bank:/CountDownBeat
+  lastModified: 638651091394551916
+  FileSizes: []
+  Exists: 1
+--- !u!114 &5290106984469348789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/BGMFadeInTimes
+  m_EditorClassIdentifier: 
+  Name: BGMFadeInTimes
+  StudioPath: parameter:/BGMFadeInTimes
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 810091283
+    data2: 3201050567
+  Type: 0
+  IsGlobal: 1
+  Labels: []
+  Exists: 1
+--- !u!114 &6164345771782220277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/CoundDownBeat/BGM_1
+  m_EditorClassIdentifier: 
+  Path: event:/CoundDownBeat/BGM_1
+  Guid:
+    Data1: -231751487
+    Data2: 1109064515
+    Data3: -1062888286
+    Data4: 1731725017
+  Banks:
+  - {fileID: 5197809021642547039}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 150177
+--- !u!114 &7585419494626267940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/BGMFadeOutTimes
+  m_EditorClassIdentifier: 
+  Name: BGMFadeOutTimes
+  StudioPath: parameter:/BGMFadeOutTimes
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 2017670090
+    data2: 1704485961
+  Type: 0
+  IsGlobal: 1
+  Labels: []
+  Exists: 1
