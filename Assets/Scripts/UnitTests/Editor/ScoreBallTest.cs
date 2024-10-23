@@ -55,14 +55,25 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //收到Beat事件時, 倒數數字減一
-        public void count_down_when_receive_beat_event()
+        //收到Beat事件時, 若為倒數拍點, 則倒數數字減一
+        public void count_down_when_receive_beat_event_and_is_count_down_beat()
         {
             scoreBall.Init(20);
 
-            CallBeatEventCallback();
+            CallBeatEventCallback(true);
 
             CurrentCountDownValueShouldBe(19);
+        }
+        
+        [Test]
+        //收到Beat事件時, 若不是倒數拍點, 則不做事
+        public void do_nothing_when_receive_beat_event_and_not_count_down_beat()
+        {
+            scoreBall.Init(20);
+
+            CallBeatEventCallback(false);
+
+            CurrentCountDownValueShouldBe(20);
         }
 
         [Test]
@@ -178,9 +189,9 @@ namespace GameCore.UnitTests
             });
         }
 
-        private void CallBeatEventCallback()
+        private void CallBeatEventCallback(bool isCountDownBeat = true)
         {
-            beatEventCallback.Invoke(new BeatEvent(false));
+            beatEventCallback.Invoke(new BeatEvent(isCountDownBeat));
         }
 
         private void ShouldPresenterUpdateState(int expectedCallTimes, ScoreBallState expectedNewState)

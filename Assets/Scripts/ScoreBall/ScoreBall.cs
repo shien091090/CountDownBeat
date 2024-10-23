@@ -91,7 +91,8 @@ namespace GameCore
 
         private void OnBeat(BeatEvent eventInfo)
         {
-            if (IsCountDownInProcess == false)
+            if (IsCountDownInProcess == false ||
+                eventInfo.isCountDownBeat == false)
                 return;
 
             UpdateCurrentCountDownValue(CurrentCountDownValue - 1);
