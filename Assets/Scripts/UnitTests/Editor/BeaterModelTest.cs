@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using FMOD.Studio;
 using NSubstitute;
-using NSubstitute.Core;
 using NUnit.Framework;
 using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
-using UnityEngine;
 using Zenject;
 
 namespace GameCore.UnitTests
 {
     [TestFixture]
-    public class BeatModelTest : ZenjectUnitTestFixture
+    public class BeaterModelTest : ZenjectUnitTestFixture
     {
         [SetUp]
         public override void Setup()
