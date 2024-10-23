@@ -1,3 +1,4 @@
+using System;
 using FMOD.Studio;
 using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
@@ -14,8 +15,7 @@ namespace GameCore
         [Inject] private IStageSetting stageSetting;
 
         private BeaterPresenter presenter;
-        private float currentTimer;
-        private bool isAlreadyBeatHalfEvent;
+        private int beatCounter;
 
         public StageSettingContent CurrentStageSettingContent { get; private set; }
 
@@ -34,16 +34,27 @@ namespace GameCore
 
         private void StartStage(string audioKey)
         {
+            CurrentStageSettingContent = stageSetting.GetStageSettingContent(audioKey) ?? throw new NullReferenceException();
+
             audioManager
                 .PlayWithCallback(audioKey)
                 .Register(EVENT_CALLBACK_TYPE.TIMELINE_BEAT, OnBeat);
 
-            CurrentStageSettingContent = stageSetting.GetStageSettingContent(audioKey);
+            beatCounter = 0;
         }
 
         private void OnBeat()
         {
-            eventInvoker.SendEvent(new BeatEvent());
+            beatCounter++;
+            
+            bool isCountDownBeat = false;
+            if (beatCounter >= CurrentStageSettingContent.CountDownBeatFreq)
+            {
+                isCountDownBeat = true;
+                beatCounter = 0;
+            }
+
+            eventInvoker.SendEvent(new BeatEvent(isCountDownBeat));
         }
     }
 }

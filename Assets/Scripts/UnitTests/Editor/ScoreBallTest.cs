@@ -180,7 +180,7 @@ namespace GameCore.UnitTests
 
         private void CallBeatEventCallback()
         {
-            beatEventCallback.Invoke(new BeatEvent());
+            beatEventCallback.Invoke(new BeatEvent(false));
         }
 
         private void ShouldPresenterUpdateState(int expectedCallTimes, ScoreBallState expectedNewState)

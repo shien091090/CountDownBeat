@@ -10,6 +10,7 @@ namespace GameCore
         [SerializeField] private string stageTitle;
         [SerializeField] private EditorEventRef fmodEventReference;
         [SerializeField] private int bpm;
+        [SerializeField] private int countDownBeatFreq;
         [SerializeField] private string audioKey;
         [SerializeField] private List<int> spawnBeatIndexList;
 
@@ -18,6 +19,7 @@ namespace GameCore
         public int Bpm => bpm;
         public string AudioKey => audioKey;
         public List<int> SpawnBeatIndexList => spawnBeatIndexList;
+        public int CountDownBeatFreq => countDownBeatFreq;
 
         public void SetFmodEventReference(EditorEventRef fmodEventReference)
         {
@@ -38,6 +40,11 @@ namespace GameCore
         public void SetSpawnBeatIndexList(List<int> indexList)
         {
             this.spawnBeatIndexList = indexList;
+        }
+
+        public void SetCountDownBeatFreq(int freq)
+        {
+            countDownBeatFreq = freq;
         }
     }
 }
