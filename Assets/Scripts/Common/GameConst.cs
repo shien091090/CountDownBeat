@@ -9,6 +9,6 @@ namespace GameCore
         public const string PREFAB_NAME_CATCH_NET = "CatchNet";
         
         public const string SCENE_REPOSITION_ACTION_ENTER_GAME = "EnterGame";
-        public const string AUDIO_NAME_BGM_1 = "BGM_1";
+        public const string AUDIO_NAME_BGM_1 = "bgm1";
     }
 }

@@ -22,7 +22,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   stageContentList:
-  - stageTitle: bgm_1
+  - stageTitle: bgm1
     fmodEventReference:
       Guid:
         Data1: -231751487
@@ -32,5 +32,5 @@ MonoBehaviour:
       Path: event:/CoundDownBeat/BGM_1
     bpm: 120
     countDownBeatFreq: 2
-    audioKey: bgm_1
+    audioKey: bgm1
     spawnBeatIndexList: 020000000300000008000000090000000a0000000d0000000e0000000f00000010000000190000001a0000001b0000001c0000001d000000
