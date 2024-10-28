@@ -25,10 +25,10 @@ namespace GameCore
         {
         }
 
-        public void Spawn(IScoreBallPresenter scoreBallPresenter)
+        public IScoreBallView Spawn()
         {
-            ScoreBallView scoreBall = objectPoolManager.SpawnGameObject<ScoreBallView>(GameConst.PREFAB_NAME_SCORE_BALL, randomPositionInRect.GetRandomPosition());
-            scoreBall.BindPresenter(scoreBallPresenter);
+            IScoreBallView scoreBallView = objectPoolManager.SpawnGameObject<ScoreBallView>(GameConst.PREFAB_NAME_SCORE_BALL, randomPositionInRect.GetRandomPosition());
+            return scoreBallView;
         }
 
         private void Awake()

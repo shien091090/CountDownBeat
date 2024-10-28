@@ -58,21 +58,30 @@ namespace GameCore
             SetInCountDownColor();
         }
 
-        private void Awake()
-        {
-            colliderComponent = GetComponent<Collider2DAdapterComponent>();
-            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
-        }
-
         private void Update()
         {
             operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
         }
 
-        public void BindPresenter(IScoreBallPresenter presenter)
+        public bool CheckCreatePresenter(out IScoreBallPresenter scoreBallPresenter)
         {
-            this.presenter = presenter;
-            presenter.BindView(this);
+            if (presenter != null)
+            {
+                scoreBallPresenter = presenter;
+                return true;
+            }
+            else
+            {
+                scoreBallPresenter = new ScoreBallPresenter();
+                scoreBallPresenter.BindView(this);
+                return false;
+            }
+        }
+
+        private void Awake()
+        {
+            colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
 
         private void RegisterEvent()

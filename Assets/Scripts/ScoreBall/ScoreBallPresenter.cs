@@ -6,19 +6,8 @@ namespace GameCore
     {
         public int CurrentCountDownValue => model.CurrentCountDownValue;
 
-        private readonly IEventRegister eventRegister;
-        private readonly IEventInvoker eventInvoker;
-        private readonly IGameSetting gameSetting;
-
-        private ScoreBall model;
+        private IScoreBall model;
         private IScoreBallView view;
-
-        public ScoreBallPresenter(IEventRegister eventRegister, IEventInvoker eventInvoker, IGameSetting gameSetting)
-        {
-            this.eventRegister = eventRegister;
-            this.gameSetting = gameSetting;
-            this.eventInvoker = eventInvoker;
-        }
 
         public void UpdateCountDownNumber(int value)
         {
@@ -46,10 +35,6 @@ namespace GameCore
         public void BindView(IScoreBallView view)
         {
             this.view = view;
-
-            view.Init();
-            model = new ScoreBall(this, eventRegister, eventInvoker);
-            model.Init(gameSetting.ScoreBallStartCountDownValue);
         }
 
         public void StartDrag()
@@ -65,6 +50,11 @@ namespace GameCore
         public void TriggerCatch()
         {
             model.SuccessSettle();
+        }
+
+        public void BindModel(IScoreBall model)
+        {
+            this.model = model;
         }
 
         public void DragOver()

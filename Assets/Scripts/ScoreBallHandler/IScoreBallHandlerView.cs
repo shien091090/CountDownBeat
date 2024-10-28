@@ -4,6 +4,6 @@ namespace GameCore
 {
     public interface IScoreBallHandlerView : IArchitectureView
     {
-        void Spawn(IScoreBallPresenter scoreBallPresenter);
+        IScoreBallView Spawn();
     }
 }

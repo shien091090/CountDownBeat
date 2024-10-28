@@ -2,11 +2,12 @@ using SNShien.Common.ProcessTools;
 
 namespace GameCore
 {
-    public class ScoreBall
+    public class ScoreBall : IScoreBall
     {
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
-        private readonly IScoreBallPresenter presenter;
+        
+        private IScoreBallPresenter presenter;
 
         public int StartCountDownValue { get; private set; }
         public int CurrentCountDownValue { get; private set; }
@@ -14,9 +15,8 @@ namespace GameCore
 
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IScoreBallPresenter presenter, IEventRegister eventRegister, IEventInvoker eventInvoker)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
         {
-            this.presenter = presenter;
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
         }
@@ -51,6 +51,12 @@ namespace GameCore
                 return;
 
             UpdateCurrentCountDownValue(StartCountDownValue);
+        }
+
+        public void BindPresenter(IScoreBallPresenter presenter)
+        {
+            this.presenter = presenter;
+            presenter.BindModel(this);
         }
 
         private void CheckDamageAndHide()

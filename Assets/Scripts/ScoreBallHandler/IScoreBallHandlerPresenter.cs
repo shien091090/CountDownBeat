@@ -2,7 +2,7 @@ namespace GameCore
 {
     public interface IScoreBallHandlerPresenter
     {
-        void Spawn(IScoreBallPresenter scoreBallPresenter);
+        IScoreBallView Spawn();
         void BindView(IScoreBallHandlerView view);
         void BindModel(IScoreBallHandler model);
         void OpenView();

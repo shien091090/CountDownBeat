@@ -10,5 +10,6 @@ namespace GameCore
         void StartDrag();
         void DoubleClick();
         void TriggerCatch();
+        void BindModel(IScoreBall model);
     }
 }

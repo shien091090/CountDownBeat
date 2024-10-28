@@ -10,9 +10,9 @@ namespace GameCore
         private IScoreBallHandler model;
         private IScoreBallHandlerView view;
 
-        public void Spawn(IScoreBallPresenter scoreBallPresenter)
+        public IScoreBallView Spawn()
         {
-            view.Spawn(scoreBallPresenter);
+            return view.Spawn();
         }
 
         public void BindView(IScoreBallHandlerView view)

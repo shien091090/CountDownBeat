@@ -52,7 +52,18 @@ namespace GameCore
 
         private void SpawnScoreBall()
         {
-            presenter.Spawn(new ScoreBallPresenter(eventRegister, eventInvoker, gameSetting));
+            IScoreBallView scoreBallView = presenter.Spawn();
+            scoreBallView.Init();
+
+            if (scoreBallView.CheckCreatePresenter(out IScoreBallPresenter scoreBallPresenter))
+            {
+                ScoreBall scoreBallModel = new ScoreBall(eventRegister, eventInvoker);
+                scoreBallModel.BindPresenter(scoreBallPresenter);
+                scoreBallModel.Init();
+            }
+            else
+            {
+            }
 
             OnSpawnScoreBall?.Invoke();
         }
