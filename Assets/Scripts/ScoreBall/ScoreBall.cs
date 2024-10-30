@@ -4,13 +4,13 @@ namespace GameCore
 {
     public class ScoreBall : IScoreBall
     {
+        public int CurrentCountDownValue { get; private set; }
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
-        
+
         private IScoreBallPresenter presenter;
 
         public int StartCountDownValue { get; private set; }
-        public int CurrentCountDownValue { get; private set; }
         public ScoreBallState CurrentState { get; private set; }
 
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
@@ -19,18 +19,6 @@ namespace GameCore
         {
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
-        }
-
-        public void Init(int startCountDownValue)
-        {
-            if (startCountDownValue <= 0)
-                return;
-
-            StartCountDownValue = startCountDownValue;
-            UpdateCurrentCountDownValue(StartCountDownValue);
-            UpdateCurrentState(ScoreBallState.InCountDown);
-
-            RegisterEvent();
         }
 
         public void SetFreezeState(bool isFreeze)
@@ -53,10 +41,28 @@ namespace GameCore
             UpdateCurrentCountDownValue(StartCountDownValue);
         }
 
+        public void Init(int startCountDownValue)
+        {
+            if (startCountDownValue <= 0)
+                return;
+
+            StartCountDownValue = startCountDownValue;
+            UpdateCurrentCountDownValue(StartCountDownValue);
+            UpdateCurrentState(ScoreBallState.InCountDown);
+
+            RegisterEvent();
+        }
+
         public void BindPresenter(IScoreBallPresenter presenter)
         {
             this.presenter = presenter;
             presenter.BindModel(this);
+        }
+
+        public void Reactivate()
+        {
+            UpdateCurrentCountDownValue(StartCountDownValue);
+            UpdateCurrentState(ScoreBallState.InCountDown);
         }
 
         private void CheckDamageAndHide()

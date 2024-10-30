@@ -50,6 +50,11 @@ namespace GameCore
             presenter.TriggerCatch();
         }
 
+        public void BindPresenter(IScoreBallPresenter presenter)
+        {
+            this.presenter = presenter;
+        }
+
         public void Init()
         {
             operableUI = gameObject.GetComponent<OperableUI>();
@@ -61,21 +66,6 @@ namespace GameCore
         private void Update()
         {
             operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
-        }
-
-        public bool CheckCreatePresenter(out IScoreBallPresenter scoreBallPresenter)
-        {
-            if (presenter != null)
-            {
-                scoreBallPresenter = presenter;
-                return true;
-            }
-            else
-            {
-                scoreBallPresenter = new ScoreBallPresenter();
-                scoreBallPresenter.BindView(this);
-                return false;
-            }
         }
 
         private void Awake()

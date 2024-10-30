@@ -7,8 +7,8 @@ namespace GameCore
         void SetCountDownNumberText(string text);
         void SetInCountDownColor();
         void SetFreezeColor();
-        bool CheckCreatePresenter(out IScoreBallPresenter scoreBallPresenter);
         void Close();
         void TriggerCatch();
+        void BindPresenter(IScoreBallPresenter presenter);
     }
 }

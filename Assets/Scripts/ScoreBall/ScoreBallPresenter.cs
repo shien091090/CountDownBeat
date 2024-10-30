@@ -1,5 +1,3 @@
-using SNShien.Common.ProcessTools;
-
 namespace GameCore
 {
     public class ScoreBallPresenter : IScoreBallPresenter
@@ -35,6 +33,7 @@ namespace GameCore
         public void BindView(IScoreBallView view)
         {
             this.view = view;
+            view.BindPresenter(this);
         }
 
         public void StartDrag()
