@@ -11,13 +11,17 @@ namespace GameCore.UnitTests
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
         private Action<BeatEvent> beatEventCallback;
+        private IScoreBallPresenter presenter;
 
         [SetUp]
         public void Setup()
         {
             InitEventHandlerMock();
-
+            
             scoreBall = new ScoreBall(eventRegister, eventInvoker);
+            
+            presenter = Substitute.For<IScoreBallPresenter>();
+            scoreBall.BindPresenter(presenter);
         }
 
         [Test]
@@ -194,7 +198,7 @@ namespace GameCore.UnitTests
 
         private void ShouldPresenterUpdateState(int expectedCallTimes, ScoreBallState expectedNewState)
         {
-            // presenter.Received(expectedCallTimes).UpdateState(expectedNewState);
+            presenter.Received(expectedCallTimes).UpdateState(expectedNewState);
         }
 
         private void ShouldSendDamageEvent(int expectedCallTimes = 1)
