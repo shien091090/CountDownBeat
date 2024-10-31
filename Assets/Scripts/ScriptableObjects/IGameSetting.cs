@@ -9,5 +9,6 @@ namespace GameCore
         int SpawnCatchNetFreq { get; }
         int CatchNetLimit { get; }
         Vector2Int CatchNetNumberRange { get; }
+        float HpMax { get; }
     }
 }

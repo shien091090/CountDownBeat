@@ -10,11 +10,13 @@ namespace GameCore
         [SerializeField] private int spawnCatchNetFreq;
         [SerializeField] private int catchNetLimit;
         [SerializeField] private Vector2Int catchNetNumberRange;
+        [SerializeField] private float hpMax;
 
         public int ScoreBallStartCountDownValue => scoreBallStartCountDownValue;
         public int SuccessSettleScore => successSettleScore;
         public int SpawnCatchNetFreq => spawnCatchNetFreq;
         public int CatchNetLimit => catchNetLimit;
         public Vector2Int CatchNetNumberRange => catchNetNumberRange;
+        public float HpMax => hpMax;
     }
 }
