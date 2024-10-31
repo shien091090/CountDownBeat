@@ -12,9 +12,9 @@ namespace GameCore
         [SerializeField] private int bpm;
         [SerializeField] private int countDownBeatFreq;
         [SerializeField] private string audioKey;
-        [SerializeField] private List<int> spawnBeatIndexList;
         [SerializeField] private float hpDecreasePerBeat;
         [SerializeField] private float hpIncreasePerCatch;
+        [SerializeField] private List<int> spawnBeatIndexList;
 
         public string StageTitle => stageTitle;
         public EventReference FmodEventReference => fmodEventReference;

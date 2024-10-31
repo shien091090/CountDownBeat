@@ -33,4 +33,6 @@ MonoBehaviour:
     bpm: 120
     countDownBeatFreq: 2
     audioKey: bgm1
+    hpDecreasePerBeat: 0.5
+    hpIncreasePerCatch: 5
     spawnBeatIndexList: 020000000300000008000000090000000a0000000d0000000e0000000f00000010000000190000001a0000001b0000001c0000001d000000

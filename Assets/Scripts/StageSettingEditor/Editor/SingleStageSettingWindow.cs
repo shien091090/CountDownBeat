@@ -15,7 +15,7 @@ namespace GameCore
 
         [VerticalGroup("Split/Left")] [ShowInInspector] [ReadOnly] private StageSettingScriptableObject stageSetting;
 
-        [BoxGroup("Split/Left/自動聯動設定")] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")]
+        [BoxGroup("Split/Left/自動聯動設定", CenterLabel = true)] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")]
         public string timeLength;
 
         [BoxGroup("Split/Left/自動聯動設定")] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] [GUIColor("#6FF06D")]
@@ -35,6 +35,12 @@ namespace GameCore
 
         [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [MinValue(1)] [OnValueChanged("OnSetCountDownBeatFreq")]
         public int countDownBeatFreq;
+
+        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [OnValueChanged("OnSetHpDecreasePerBeat")]
+        public float hpDecreasePerBeat;
+
+        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [OnValueChanged("OnSetHpIncreasePerCatch")]
+        public float hpIncreasePerCatch;
 
         [HorizontalGroup("Split", Width = 140)]
         [VerticalGroup("Split/Right")]
@@ -170,6 +176,18 @@ namespace GameCore
         private void OnSetCountDownBeatFreq()
         {
             settingContent.SetCountDownBeatFreq(countDownBeatFreq);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetHpDecreasePerBeat()
+        {
+            settingContent.SetHpDecreasePerBeat(hpDecreasePerBeat);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetHpIncreasePerCatch()
+        {
+            settingContent.SetHpIncreasePerCatch(hpIncreasePerCatch);
             EditorUtility.SetDirty(stageSetting);
         }
 
