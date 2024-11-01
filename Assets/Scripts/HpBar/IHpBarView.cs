@@ -3,5 +3,7 @@
 namespace GameCore
 {
     public interface IHpBarView : IArchitectureView
-    {}
+    {
+        void RefreshHpSliderValue(float value);
+    }
 }

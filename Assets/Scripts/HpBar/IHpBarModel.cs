@@ -4,5 +4,6 @@ namespace GameCore
 {
     public interface IHpBarModel : IArchitectureModel
     {
+        float MaxHp { get; }
     }
 }

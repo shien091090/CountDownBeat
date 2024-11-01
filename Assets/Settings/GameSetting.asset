@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: GameSetting
   m_EditorClassIdentifier: 
   scoreBallStartCountDownValue: 20
-  scoreBallSpawnTimeThreshold: 2
   successSettleScore: 1
   spawnCatchNetFreq: 3
   catchNetLimit: 5
   catchNetNumberRange: {x: 5, y: 17}
+  hpMax: 100

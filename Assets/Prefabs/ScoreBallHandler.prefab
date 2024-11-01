@@ -219,6 +219,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isShowEditorDrawer: 1
-  rectMin: {x: 142.9797, y: 118.78815}
-  rectMax: {x: 1754.6732, y: 935.82587}
+  rectMin: {x: 142.9797, y: 80.23743}
+  rectMax: {x: 1754.6732, y: 862.5793}
   rectColor: {r: 0, g: 1, b: 0, a: 1}

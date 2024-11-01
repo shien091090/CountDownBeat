@@ -35,3 +35,5 @@ MonoBehaviour:
     orderNum: 4
   - modelName: ScoreBoardModel
     orderNum: 5
+  - modelName: HpBarModel
+    orderNum: 6
