@@ -20,12 +20,15 @@ namespace GameCore
             Container.Bind<ICatchNetHandlerPresenter>().To<CatchNetHandlerPresenter>().AsSingle();
             Container.Bind<IScoreBoardPresenter>().To<ScoreBoardPresenter>().AsSingle();
             Container.Bind<IScoreBallHandlerPresenter>().To<ScoreBallHandlerPresenter>().AsSingle();
+            Container.Bind<IHpBarPresenter>().To<HpBarPresenter>().AsSingle();
 
             BindModelFromInstance<IViewManager, ViewManager>(viewManager);
             BindModel<IScoreBallHandler, ScoreBallHandler>();
             BindModel<IBeaterModel, BeaterModel>();
             BindModel<ICatchNetHandler, CatchNetHandler>();
             BindModel<IScoreBoardModel, ScoreBoardModel>();
+            BindModel<IHpBarModel, HpBarModel>();
         }
     }
+
 }

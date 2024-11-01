@@ -1,19 +1,39 @@
 using SNShien.Common.ProcessTools;
 using Zenject;
 
-namespace GameCore.UnitTests
+namespace GameCore
 {
-    public class HpBarModel
+    public class HpBarModel : IHpBarModel
     {
         [Inject] private IGameSetting gameSetting;
         [Inject] private IBeaterModel beaterModel;
         [Inject] private IEventRegister eventRegister;
         [Inject] private IEventInvoker eventInvoker;
+        [Inject] private IHpBarPresenter presenter;
 
         public float CurrentHp { get; private set; }
         public float MaxHp { get; private set; }
 
+        public void ExecuteModelInit()
+        {
+            Init();
+        }
+
         public void Init()
+        {
+            InitData();
+            InitPresenter();
+            RegisterEvent();
+        }
+
+        private void InitPresenter()
+        {
+            presenter.BindModel(this);
+            presenter.OpenView();
+            UpdateCurrentHp(CurrentHp);
+        }
+
+        private void InitData()
         {
             if (beaterModel.CurrentStageSettingContent == null)
                 throw new System.NullReferenceException();
@@ -23,8 +43,21 @@ namespace GameCore.UnitTests
 
             CurrentHp = gameSetting.HpMax;
             MaxHp = gameSetting.HpMax;
+        }
 
-            RegisterEvent();
+        private void UpdateCurrentHp(float increaseValue)
+        {
+            CurrentHp += increaseValue;
+
+            if (CurrentHp > MaxHp)
+                CurrentHp = MaxHp;
+            else if (CurrentHp <= 0)
+                CurrentHp = 0;
+
+            presenter.RefreshHp(CurrentHp);
+
+            if (CurrentHp == 0)
+                eventInvoker.SendEvent(new GameOverEvent());
         }
 
         private void RegisterEvent()
@@ -38,21 +71,12 @@ namespace GameCore.UnitTests
 
         private void OnGetScoreEvent(GetScoreEvent eventInfo)
         {
-            CurrentHp += beaterModel.CurrentStageSettingContent.HpIncreasePerCatch;
-
-            if (CurrentHp > MaxHp)
-                CurrentHp = MaxHp;
+            UpdateCurrentHp(beaterModel.CurrentStageSettingContent.HpIncreasePerCatch);
         }
 
         private void OnBeatEvent(BeatEvent eventInfo)
         {
-            CurrentHp -= beaterModel.CurrentStageSettingContent.HpDecreasePerBeat;
-
-            if (CurrentHp <= 0)
-            {
-                CurrentHp = 0;
-                eventInvoker.SendEvent(new GameOverEvent());
-            }
+            UpdateCurrentHp(-beaterModel.CurrentStageSettingContent.HpDecreasePerBeat);
         }
     }
 }

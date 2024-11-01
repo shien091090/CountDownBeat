@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
@@ -13,6 +14,7 @@ namespace GameCore.UnitTests
         private IGameSetting gameSetting;
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
+        private IHpBarPresenter presenter;
 
         private Action<BeatEvent> beatEventCallback;
         private Action<GetScoreEvent> getScoreEventCallback;
@@ -33,6 +35,9 @@ namespace GameCore.UnitTests
 
             gameSetting = Substitute.For<IGameSetting>();
             Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
+
+            presenter = Substitute.For<IHpBarPresenter>();
+            Container.Bind<IHpBarPresenter>().FromInstance(presenter).AsSingle();
 
             Container.Bind<HpBarModel>().AsSingle();
             hpBarModel = Container.Resolve<HpBarModel>();
@@ -136,6 +141,24 @@ namespace GameCore.UnitTests
             CurrentHpShouldBe(100);
         }
 
+        [Test]
+        //每次更新血量時, 會通知presenter刷新血量顯示
+        public void call_presenter_to_refresh_hp_when_hp_changed()
+        {
+            GivenHpMax(100);
+            GivenHpDecreasePerBeatSetting(5);
+            GivenHpIncreasePerCatchSetting(3);
+
+            hpBarModel.Init();
+            ShouldCallPresenterRefreshHp(1, 100);
+
+            CallBeatEventCallback();
+            ShouldCallPresenterRefreshHp(2, 95);
+            
+            CallGetScoreEventCallback();
+            ShouldCallPresenterRefreshHp(3, 98);
+        }
+
         private void InitEventRegisterMock()
         {
             beatEventCallback = null;
@@ -191,6 +214,18 @@ namespace GameCore.UnitTests
         private void CallBeatEventCallback()
         {
             beatEventCallback.Invoke(new BeatEvent(false));
+        }
+
+        private void ShouldCallPresenterRefreshHp(int expectedCallTimes, float expectedHp)
+        {
+            presenter.Received(expectedCallTimes).RefreshHp(Arg.Any<float>());
+
+            float hpArg = (float)presenter
+                .ReceivedCalls()
+                .Last(x => x.GetMethodInfo().Name == "RefreshHp")
+                .GetArguments()[0];
+
+            Assert.AreEqual(expectedHp, hpArg);
         }
 
         private void ShouldSendGameOverEvent(int expectedSendTimes)
