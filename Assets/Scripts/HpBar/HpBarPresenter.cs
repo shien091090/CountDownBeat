@@ -5,7 +5,7 @@ namespace GameCore
 {
     public class HpBarPresenter : IHpBarPresenter
     {
-        // [Inject] private ViewManager viewManager;
+        [Inject] private IViewManager viewManager;
 
         private IHpBarModel model;
         private IHpBarView view;
@@ -28,7 +28,7 @@ namespace GameCore
 
         public void OpenView()
         {
-            // viewManager.OpenView<HpBarView>(this);
+            viewManager.OpenView<HpBarView>(this);
         }
 
         public void BindView(IHpBarView view)

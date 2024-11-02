@@ -5,11 +5,11 @@ namespace GameCore
 {
     public class HpBarModel : IHpBarModel
     {
-        [Inject] private IHpBarPresenter presenter;
         [Inject] private IGameSetting gameSetting;
         [Inject] private IBeaterModel beaterModel;
         [Inject] private IEventRegister eventRegister;
         [Inject] private IEventInvoker eventInvoker;
+        [Inject] private IHpBarPresenter presenter;
 
         public float CurrentHp { get; private set; }
         public float MaxHp { get; private set; }
@@ -30,7 +30,7 @@ namespace GameCore
         {
             presenter.BindModel(this);
             presenter.OpenView();
-            // UpdateCurrentHp(CurrentHp);
+            UpdateCurrentHp(CurrentHp);
         }
 
         private void InitData()
