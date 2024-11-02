@@ -226,4 +226,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff2bd24e53e14b399235996af7432fad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  beatHintStaySeconds: 0.25
   go_beatHint: {fileID: 6740624038515874206}

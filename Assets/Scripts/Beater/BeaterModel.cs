@@ -55,6 +55,7 @@ namespace GameCore
             }
 
             eventInvoker.SendEvent(new BeatEvent(isCountDownBeat));
+            presenter.PlayBeatAnimation();
         }
     }
 }

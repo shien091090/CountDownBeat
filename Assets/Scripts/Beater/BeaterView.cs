@@ -6,6 +6,7 @@ namespace GameCore
 {
     public class BeaterView : MonoBehaviour, IBeaterView
     {
+        [SerializeField] private float beatHintStaySeconds;
         [SerializeField] private GameObject go_beatHint;
 
         private IBeaterPresenter beaterPresenter;
@@ -38,7 +39,7 @@ namespace GameCore
         {
             SetBeatHintActive(true);
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(beatHintStaySeconds);
 
             SetBeatHintActive(false);
         }
