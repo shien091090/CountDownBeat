@@ -8,6 +8,7 @@ namespace GameCore
 
         public void ExecuteModelInit()
         {
+            presenter.BindModel(this);
             presenter.OpenView();
         }
     }
