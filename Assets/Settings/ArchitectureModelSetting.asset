@@ -24,16 +24,18 @@ MonoBehaviour:
   preLoadAssemblyNames:
   - SNShien
   - GameCore
-  modelDefineList:
-  - modelName: ViewManager
-    orderNum: 1
-  - modelName: BeaterModel
-    orderNum: 2
-  - modelName: ScoreBallHandler
-    orderNum: 3
-  - modelName: CatchNetHandler
-    orderNum: 4
-  - modelName: ScoreBoardModel
-    orderNum: 5
-  - modelName: HpBarModel
-    orderNum: 6
+  sceneModelSettingList:
+  - sceneName: GameScene
+    modelDefineList:
+    - modelName: ViewManager
+      orderNum: 1
+    - modelName: BeaterModel
+      orderNum: 2
+    - modelName: ScoreBoardModel
+      orderNum: 3
+    - modelName: ScoreBallHandler
+      orderNum: 4
+    - modelName: CatchNetHandler
+      orderNum: 5
+    - modelName: HpBarModel
+      orderNum: 6
