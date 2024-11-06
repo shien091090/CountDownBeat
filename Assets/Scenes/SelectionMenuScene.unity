@@ -379,7 +379,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _parentNewObjectsUnderSceneContext: 0
-  _contractNames: []
+  _contractNames:
+  - SelectionMenuScene
   _parentContractNames:
   - InitScene
 --- !u!4 &1947127766

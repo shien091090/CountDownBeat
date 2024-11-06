@@ -8,7 +8,6 @@ namespace GameCore
         {
             Container.Bind<ISelectionMenuHandlerPresenter>().To<SelectionMenuHandlerPresenter>().AsSingle();
 
-            BindModel<IAppProcessor, AppProcessor>();
             BindModel<ISelectionMenuHandler, SelectionMenuHandler>();
         }
     }

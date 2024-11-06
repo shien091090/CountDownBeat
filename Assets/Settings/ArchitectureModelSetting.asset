@@ -39,7 +39,5 @@ MonoBehaviour:
       orderNum: 5
   - sceneName: SelectionMenuScene
     modelDefineList:
-    - modelName: AppProcessor
-      orderNum: 1
     - modelName: SelectionMenuHandler
-      orderNum: 2
+      orderNum: 1

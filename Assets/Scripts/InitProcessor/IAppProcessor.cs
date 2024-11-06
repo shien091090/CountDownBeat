@@ -1,8 +1,6 @@
-﻿using SNShien.Common.ProcessTools;
-
-namespace GameCore
+﻿namespace GameCore
 {
-    public interface IAppProcessor : IArchitectureModel
+    public interface IAppProcessor
     {
         StageSettingContent CurrentStageSettingContent { get; }
         void SetEnterStageAudioKey(string audioKey);

@@ -20,6 +20,7 @@ namespace GameCore
             Container.Bind(typeof(IEventInvoker), typeof(IEventRegister)).To<ArchitectureEventHandler>().AsSingle();
             Container.Bind<ISceneProcessManager>().FromInstance(sceneProcessManager).AsSingle();
             Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
+            Container.Bind<IAppProcessor>().To<AppProcessor>().AsSingle();
         }
     }
 }
