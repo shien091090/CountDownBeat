@@ -4,7 +4,7 @@ using Zenject;
 
 namespace GameCore
 {
-    public class InitProcessorModel : IInitProcessorModel
+    public class AppProcessor : IAppProcessor
     {
         private const string DEBUGGER_KEY = "InitProcessorModel";
 
@@ -12,6 +12,7 @@ namespace GameCore
 
         private readonly Debugger debugger = new Debugger(DEBUGGER_KEY);
         private bool isInit;
+        private string enterStageAudioKey;
 
         public void ExecuteModelInit()
         {
@@ -24,6 +25,11 @@ namespace GameCore
             audioManager.InitCollectionFromProject();
 
             isInit = true;
+        }
+
+        public void SetEnterStageAudioKey(string audioKey)
+        {
+            enterStageAudioKey = audioKey;
         }
     }
 }

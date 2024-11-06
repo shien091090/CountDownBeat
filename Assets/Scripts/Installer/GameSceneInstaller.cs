@@ -7,17 +7,13 @@ namespace GameCore
 {
     public class GameSceneInstaller : SceneInitializeInstaller
     {
-        [SerializeField] private ViewManager viewManager;
-
         protected override void ExecuteInstaller()
         {
-            Container.Bind<IGameObjectSpawner>().To<GameObjectSpawner>().AsSingle();
             Container.Bind<ICatchNetHandlerPresenter>().To<CatchNetHandlerPresenter>().AsSingle();
             Container.Bind<IScoreBoardPresenter>().To<ScoreBoardPresenter>().AsSingle();
             Container.Bind<IScoreBallHandlerPresenter>().To<ScoreBallHandlerPresenter>().AsSingle();
             Container.Bind<IHpBarPresenter>().To<HpBarPresenter>().AsSingle();
 
-            BindModelFromInstance<IViewManager, ViewManager>(viewManager);
             BindModel<IScoreBallHandler, ScoreBallHandler>();
             BindModel<IBeaterModel, BeaterModel>();
             BindModel<ICatchNetHandler, CatchNetHandler>();

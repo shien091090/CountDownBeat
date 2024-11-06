@@ -4,5 +4,6 @@ namespace GameCore
 {
     public interface ISelectionMenuHandler : IArchitectureModel
     {
+        void EnterStage(int stageIndex);
     }
 }

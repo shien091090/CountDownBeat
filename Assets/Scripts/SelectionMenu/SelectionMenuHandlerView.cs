@@ -6,8 +6,6 @@ namespace GameCore
 {
     public class SelectionMenuHandlerView : MonoBehaviour, ISelectionMenuHandlerView
     {
-        [Inject] private IEventInvoker eventInvoker;
-
         private ISelectionMenuHandlerPresenter presenter;
 
         public void UpdateView()
@@ -28,7 +26,8 @@ namespace GameCore
 
         public void OnClickEnterStage1()
         {
-            eventInvoker.SendEvent(new SwitchSceneEvent(GameConst.SCENE_REPOSITION_ACTION_ENTER_GAME));
+            presenter.ClickEnterStage(0);
+            // eventInvoker.SendEvent(new SwitchSceneEvent(GameConst.SCENE_REPOSITION_ACTION_ENTER_GAME));
         }
     }
 }

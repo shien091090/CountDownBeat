@@ -27,15 +27,19 @@ MonoBehaviour:
   sceneModelSettingList:
   - sceneName: GameScene
     modelDefineList:
-    - modelName: ViewManager
-      orderNum: 1
     - modelName: BeaterModel
-      orderNum: 2
+      orderNum: 1
     - modelName: ScoreBoardModel
-      orderNum: 3
+      orderNum: 2
     - modelName: ScoreBallHandler
-      orderNum: 4
+      orderNum: 3
     - modelName: CatchNetHandler
-      orderNum: 5
+      orderNum: 4
     - modelName: HpBarModel
-      orderNum: 6
+      orderNum: 5
+  - sceneName: SelectionMenuScene
+    modelDefineList:
+    - modelName: AppProcessor
+      orderNum: 1
+    - modelName: SelectionMenuHandler
+      orderNum: 2

@@ -23,13 +23,13 @@ MonoBehaviour:
     SerializationNodes:
     - Name: sceneNameDefines
       Entry: 7
-      Data: 0|SNShien.Common.ProcessTools.SceneNameSetting[], Assembly-CSharp
+      Data: 0|SNShien.Common.ProcessTools.SceneNameSetting[], SNShien
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 3
     - Name: 
       Entry: 7
-      Data: 1|SNShien.Common.ProcessTools.SceneNameSetting, Assembly-CSharp
+      Data: 1|SNShien.Common.ProcessTools.SceneNameSetting, SNShien
     - Name: sceneName
       Entry: 1
       Data: InitScene
@@ -44,7 +44,22 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 7
-      Data: 2|SNShien.Common.ProcessTools.SceneNameSetting, Assembly-CSharp
+      Data: 2|SNShien.Common.ProcessTools.SceneNameSetting, SNShien
+    - Name: sceneName
+      Entry: 1
+      Data: SelectionMenuScene
+    - Name: sceneBundlePath
+      Entry: 6
+      Data: 
+    - Name: sceneResourceType
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|SNShien.Common.ProcessTools.SceneNameSetting, SNShien
     - Name: sceneName
       Entry: 1
       Data: GameScene
@@ -65,13 +80,28 @@ MonoBehaviour:
       Data: 
     - Name: sceneRepositionSettings
       Entry: 7
-      Data: 3|SNShien.Common.ProcessTools.SceneRepositionSetting[], Assembly-CSharp
+      Data: 4|SNShien.Common.ProcessTools.SceneRepositionSetting[], SNShien
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 3
     - Name: 
       Entry: 7
-      Data: 4|SNShien.Common.ProcessTools.SceneRepositionSetting, Assembly-CSharp
+      Data: 5|SNShien.Common.ProcessTools.SceneRepositionSetting, SNShien
+    - Name: repositionActionKey
+      Entry: 1
+      Data: EnterSelectionMenu
+    - Name: loadSceneName
+      Entry: 1
+      Data: SelectionMenuScene
+    - Name: unloadSceneName
+      Entry: 1
+      Data: '{Empty}'
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|SNShien.Common.ProcessTools.SceneRepositionSetting, SNShien
     - Name: repositionActionKey
       Entry: 1
       Data: EnterGame
@@ -80,7 +110,22 @@ MonoBehaviour:
       Data: GameScene
     - Name: unloadSceneName
       Entry: 1
-      Data: '{Empty}'
+      Data: SelectionMenuScene
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 7|SNShien.Common.ProcessTools.SceneRepositionSetting, SNShien
+    - Name: repositionActionKey
+      Entry: 1
+      Data: BackToSelectionMenu
+    - Name: loadSceneName
+      Entry: 1
+      Data: SelectionMenuScene
+    - Name: unloadSceneName
+      Entry: 1
+      Data: GameScene
     - Name: 
       Entry: 8
       Data: 

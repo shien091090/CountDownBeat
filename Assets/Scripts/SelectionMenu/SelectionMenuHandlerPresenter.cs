@@ -10,6 +10,11 @@ namespace GameCore
         private ISelectionMenuHandlerView view;
         private ISelectionMenuHandler model;
 
+        public void ClickEnterStage(int stageIndex)
+        {
+            model.EnterStage(stageIndex);
+        }
+
         public void OpenView()
         {
             viewManager.OpenView<SelectionMenuHandlerView>(this);
