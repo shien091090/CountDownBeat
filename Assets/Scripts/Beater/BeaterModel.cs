@@ -1,4 +1,3 @@
-using System;
 using FMOD.Studio;
 using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
@@ -12,18 +11,16 @@ namespace GameCore
         [Inject] private IViewManager viewManager;
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IAudioManager audioManager;
-        [Inject] private IStageSetting stageSetting;
+        [Inject] private IAppProcessor appProcessor;
 
         private BeaterPresenter presenter;
         private int beatCounter;
-
-        public StageSettingContent CurrentStageSettingContent { get; private set; }
 
         public void ExecuteModelInit()
         {
             InitView();
 
-            StartStage(GameConst.AUDIO_NAME_BGM_1);
+            StartStage(appProcessor.CurrentStageSettingContent);
         }
 
         private void InitView()
@@ -32,12 +29,10 @@ namespace GameCore
             viewManager.OpenView<BeaterView>(presenter);
         }
 
-        private void StartStage(string audioKey)
+        private void StartStage(StageSettingContent stageSetting)
         {
-            CurrentStageSettingContent = stageSetting.GetStageSettingContent(audioKey) ?? throw new NullReferenceException();
-
             audioManager
-                .PlayWithCallback(audioKey)
+                .PlayWithCallback(stageSetting.AudioKey)
                 .Register(EVENT_CALLBACK_TYPE.TIMELINE_BEAT, OnBeat);
 
             beatCounter = 0;
@@ -46,9 +41,9 @@ namespace GameCore
         private void OnBeat()
         {
             beatCounter++;
-            
+
             bool isCountDownBeat = false;
-            if (beatCounter >= CurrentStageSettingContent.CountDownBeatFreq)
+            if (beatCounter >= appProcessor.CurrentStageSettingContent.CountDownBeatFreq)
             {
                 isCountDownBeat = true;
                 beatCounter = 0;

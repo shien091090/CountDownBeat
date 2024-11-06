@@ -10,7 +10,7 @@ namespace GameCore.UnitTests
     public class HpBarModelTest : ZenjectUnitTestFixture
     {
         private HpBarModel hpBarModel;
-        private IBeaterModel beaterModel;
+        private IAppProcessor appProcessor;
         private IGameSetting gameSetting;
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
@@ -24,8 +24,8 @@ namespace GameCore.UnitTests
         {
             base.Setup();
 
-            InitBeaterModelMock();
-            Container.Bind<IBeaterModel>().FromInstance(beaterModel).AsSingle();
+            InitAppProcessorMock();
+            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
 
             InitEventRegisterMock();
             Container.Bind<IEventRegister>().FromInstance(eventRegister).AsSingle();
@@ -154,7 +154,7 @@ namespace GameCore.UnitTests
 
             CallBeatEventCallback();
             ShouldCallPresenterRefreshHp(2, 95);
-            
+
             CallGetScoreEventCallback();
             ShouldCallPresenterRefreshHp(3, 98);
         }
@@ -179,26 +179,26 @@ namespace GameCore.UnitTests
             });
         }
 
-        private void InitBeaterModelMock()
+        private void InitAppProcessorMock()
         {
-            beaterModel = Substitute.For<IBeaterModel>();
+            appProcessor = Substitute.For<IAppProcessor>();
 
-            beaterModel.CurrentStageSettingContent.Returns(new StageSettingContent());
+            appProcessor.CurrentStageSettingContent.Returns(new StageSettingContent());
         }
 
         private void GivenHpIncreasePerCatchSetting(float hpIncreasePerCatch)
         {
-            beaterModel.CurrentStageSettingContent.SetHpIncreasePerCatch(hpIncreasePerCatch);
+            appProcessor.CurrentStageSettingContent.SetHpIncreasePerCatch(hpIncreasePerCatch);
         }
 
         private void GivenHpDecreasePerBeatSetting(float hpDecreasePerBeat)
         {
-            beaterModel.CurrentStageSettingContent.SetHpDecreasePerBeat(hpDecreasePerBeat);
+            appProcessor.CurrentStageSettingContent.SetHpDecreasePerBeat(hpDecreasePerBeat);
         }
 
         private void GivenCurrentStageSettingContentNull()
         {
-            beaterModel.CurrentStageSettingContent.Returns((StageSettingContent)null);
+            appProcessor.CurrentStageSettingContent.Returns((StageSettingContent)null);
         }
 
         private void GivenHpMax(float hpMax)

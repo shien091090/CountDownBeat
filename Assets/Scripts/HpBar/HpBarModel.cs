@@ -6,13 +6,13 @@ namespace GameCore
     public class HpBarModel : IHpBarModel
     {
         [Inject] private IGameSetting gameSetting;
-        [Inject] private IBeaterModel beaterModel;
+        [Inject] private IAppProcessor appProcessor;
         [Inject] private IEventRegister eventRegister;
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IHpBarPresenter presenter;
+        public float MaxHp { get; private set; }
 
         public float CurrentHp { get; private set; }
-        public float MaxHp { get; private set; }
 
         public void ExecuteModelInit()
         {
@@ -35,7 +35,7 @@ namespace GameCore
 
         private void InitData()
         {
-            if (beaterModel.CurrentStageSettingContent == null)
+            if (appProcessor.CurrentStageSettingContent == null)
                 throw new System.NullReferenceException();
 
             if (gameSetting.HpMax == 0)
@@ -71,12 +71,12 @@ namespace GameCore
 
         private void OnGetScoreEvent(GetScoreEvent eventInfo)
         {
-            UpdateCurrentHp(beaterModel.CurrentStageSettingContent.HpIncreasePerCatch);
+            UpdateCurrentHp(appProcessor.CurrentStageSettingContent.HpIncreasePerCatch);
         }
 
         private void OnBeatEvent(BeatEvent eventInfo)
         {
-            UpdateCurrentHp(-beaterModel.CurrentStageSettingContent.HpDecreasePerBeat);
+            UpdateCurrentHp(-appProcessor.CurrentStageSettingContent.HpDecreasePerBeat);
         }
     }
 }

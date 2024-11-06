@@ -19,28 +19,20 @@ namespace GameCore.UnitTests
         {
             base.Setup();
 
-            InitStageSettingMock();
-            Container.Bind<IStageSetting>().FromInstance(stageSetting).AsSingle();
-
             InitViewManagerMock();
-            Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
-
             InitEventInvokerMock();
-            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
-
             InitAudioManagerMock();
-            Container.Bind<IAudioManager>().FromInstance(audioManager).AsSingle();
+            InitAppProcessorMock();
 
             Container.Bind<BeaterModel>().AsSingle();
             beaterModel = Container.Resolve<BeaterModel>();
         }
 
-
-        private void InitStageSettingMock()
+        private void InitAppProcessorMock()
         {
-            stageSetting = Substitute.For<IStageSetting>();
+            appProcessor = Substitute.For<IAppProcessor>();
 
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, 120, 1, new List<int> { 3, 5, 7 });
+            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
         }
 
         private void InitAudioManagerMock()
@@ -49,6 +41,8 @@ namespace GameCore.UnitTests
             callbackSetting = new FmodAudioCallbackSetting();
 
             audioManager.PlayWithCallback(Arg.Any<string>()).Returns(callbackSetting);
+
+            Container.Bind<IAudioManager>().FromInstance(audioManager).AsSingle();
         }
 
         private BeaterModel beaterModel;
@@ -56,7 +50,7 @@ namespace GameCore.UnitTests
         private IEventInvoker eventInvoker;
         private IAudioManager audioManager;
         private FmodAudioCallbackSetting callbackSetting;
-        private IStageSetting stageSetting;
+        private IAppProcessor appProcessor;
 
         [Test]
         //初始化時, 撥放當前關卡音樂
@@ -98,21 +92,10 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //初始化時會取得關卡設定
-        public void get_stage_setting_when_init()
-        {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, 120, 1, new List<int> { 3, 5, 7 });
-
-            beaterModel.ExecuteModelInit();
-
-            StageSettingContentShouldBe(GameConst.AUDIO_NAME_BGM_1, 120, new List<int> { 3, 5, 7 });
-        }
-
-        [Test]
         //初始化若取不到關卡設定, 會報錯
         public void throw_error_when_cannot_get_stage_setting()
         {
-            GivenStageSettingContentIsNull(GameConst.AUDIO_NAME_BGM_1);
+            GivenStageSettingContentIsNull();
 
             Assert.Throws<NullReferenceException>(() => beaterModel.ExecuteModelInit());
         }
@@ -124,23 +107,9 @@ namespace GameCore.UnitTests
             Assert.AreEqual(expectedIsCountDownBeat, beatEvent.isCountDownBeat);
         }
 
-        private void StageSettingContentShouldBe(string expectedAudioKey, int expectedBpm, List<int> expectedSpawnBeatIndexList)
+        private void GivenStageSettingContentIsNull()
         {
-            StageSettingContent stageSettingContent = beaterModel.CurrentStageSettingContent;
-            Assert.AreEqual(expectedAudioKey, stageSettingContent.AudioKey);
-            Assert.AreEqual(expectedBpm, stageSettingContent.Bpm);
-
-            List<int> spawnBeatIndexList = stageSettingContent.SpawnBeatIndexList;
-            Assert.AreEqual(expectedSpawnBeatIndexList.Count, spawnBeatIndexList.Count);
-            for (int i = 0; i < expectedSpawnBeatIndexList.Count; i++)
-            {
-                Assert.AreEqual(expectedSpawnBeatIndexList[i], spawnBeatIndexList[i]);
-            }
-        }
-
-        private void GivenStageSettingContentIsNull(string audioKey)
-        {
-            stageSetting.GetStageSettingContent(audioKey).Returns((StageSettingContent)null);
+            appProcessor.CurrentStageSettingContent.Returns((StageSettingContent)null);
         }
 
         private void GivenStageSettingContent(string audioKey, int bpm = 1, int countDownBeatFreq = 1, List<int> spawnBeatIndexList = null)
@@ -151,7 +120,7 @@ namespace GameCore.UnitTests
             stageSettingContent.SetSpawnBeatIndexList(spawnBeatIndexList);
             stageSettingContent.SetCountDownBeatFreq(countDownBeatFreq);
 
-            stageSetting.GetStageSettingContent(audioKey).Returns(stageSettingContent);
+            appProcessor.CurrentStageSettingContent.Returns(stageSettingContent);
         }
 
         private void ShouldSendBeatEvent(int expectedCallTimes)
@@ -172,6 +141,8 @@ namespace GameCore.UnitTests
         private void InitEventInvokerMock()
         {
             eventInvoker = Substitute.For<IEventInvoker>();
+
+            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
         }
 
         private void InitViewManagerMock()
@@ -185,6 +156,8 @@ namespace GameCore.UnitTests
                 BeaterPresenter beaterPresenter = (BeaterPresenter)args[0];
                 beaterPresenter.BindView(view);
             });
+
+            Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
         }
     }
 }

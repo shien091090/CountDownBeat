@@ -12,7 +12,7 @@ namespace GameCore
         [Inject] private IEventRegister eventRegister;
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IGameSetting gameSetting;
-        [Inject] private IBeaterModel beaterModel;
+        [Inject] private IAppProcessor appProcessor;
 
         private List<int> tempSpawnBeatIndexList;
         private List<ScoreBall> inFieldScoreBallList;
@@ -47,7 +47,7 @@ namespace GameCore
             inFieldScoreBallList = new List<ScoreBall>();
 
             tempSpawnBeatIndexList = new List<int>();
-            tempSpawnBeatIndexList.AddRange(beaterModel.CurrentStageSettingContent.SpawnBeatIndexList);
+            tempSpawnBeatIndexList.AddRange(appProcessor.CurrentStageSettingContent.SpawnBeatIndexList);
         }
 
         private bool TryGetHiddenScoreBall(out ScoreBall hiddenScoreBall)

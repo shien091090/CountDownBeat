@@ -1,4 +1,5 @@
-﻿using SNShien.Common.AudioTools;
+﻿using System;
+using SNShien.Common.AudioTools;
 using SNShien.Common.TesterTools;
 using Zenject;
 
@@ -9,6 +10,9 @@ namespace GameCore
         private const string DEBUGGER_KEY = "InitProcessorModel";
 
         [Inject] private IAudioManager audioManager;
+        [Inject] private IStageSetting stageSetting;
+
+        public StageSettingContent CurrentStageSettingContent { get; private set; }
 
         private readonly Debugger debugger = new Debugger(DEBUGGER_KEY);
         private bool isInit;
@@ -30,6 +34,7 @@ namespace GameCore
         public void SetEnterStageAudioKey(string audioKey)
         {
             enterStageAudioKey = audioKey;
+            CurrentStageSettingContent = stageSetting.GetStageSettingContent(audioKey) ?? throw new NullReferenceException();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace GameCore.UnitTests
     {
         private ScoreBallHandler scoreBallHandler;
         private IScoreBallHandlerPresenter scoreBallHandlerPresenter;
-        private IBeaterModel beaterModel;
+        private IAppProcessor appProcessor;
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
         private IGameSetting gameSetting;
@@ -42,8 +42,8 @@ namespace GameCore.UnitTests
             viewManager = Substitute.For<IViewManager>();
             Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
 
-            beaterModel = Substitute.For<IBeaterModel>();
-            Container.Bind<IBeaterModel>().FromInstance(beaterModel).AsSingle();
+            appProcessor = Substitute.For<IAppProcessor>();
+            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
 
             Container.Bind<ScoreBallHandler>().AsSingle();
             scoreBallHandler = Container.Resolve<ScoreBallHandler>();
@@ -161,7 +161,7 @@ namespace GameCore.UnitTests
             StageSettingContent settingContent = new StageSettingContent();
             settingContent.SetSpawnBeatIndexList(spawnBeatIndexList);
 
-            beaterModel.CurrentStageSettingContent.Returns(settingContent);
+            appProcessor.CurrentStageSettingContent.Returns(settingContent);
         }
 
         private void CallBeatEventCallback()
