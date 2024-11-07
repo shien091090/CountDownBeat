@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -23,6 +22,12 @@ namespace GameCore
 
         public void ReOpenView(params object[] parameters)
         {
+        }
+
+        public void CloseView()
+        {
+            StopAllCoroutines();
+            beaterPresenter.UnbindView();
         }
 
         public void PlayBeatAnimation()

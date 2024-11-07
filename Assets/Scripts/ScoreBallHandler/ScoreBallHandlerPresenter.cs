@@ -12,7 +12,7 @@ namespace GameCore
 
         public IScoreBallView Spawn()
         {
-            return view.Spawn();
+            return view?.Spawn();
         }
 
         public void BindView(IScoreBallHandlerView view)
@@ -28,6 +28,11 @@ namespace GameCore
         public void OpenView()
         {
             viewManager.OpenView<ScoreBallHandlerView>(this);
+        }
+
+        public void UnbindView()
+        {
+            view = null;
         }
     }
 }

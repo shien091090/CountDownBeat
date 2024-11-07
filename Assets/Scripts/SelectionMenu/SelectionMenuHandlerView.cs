@@ -1,6 +1,4 @@
-using SNShien.Common.ProcessTools;
 using UnityEngine;
-using Zenject;
 
 namespace GameCore
 {
@@ -22,6 +20,11 @@ namespace GameCore
         public void ReOpenView(params object[] parameters)
         {
             throw new System.NotImplementedException();
+        }
+
+        public void CloseView()
+        {
+            presenter.UnbindView();
         }
 
         public void OnClickEnterStage1()

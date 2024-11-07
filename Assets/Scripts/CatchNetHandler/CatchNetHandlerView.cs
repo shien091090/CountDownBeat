@@ -29,6 +29,11 @@ namespace GameCore
         {
         }
 
+        public void CloseView()
+        {
+            presenter.UnbindView();
+        }
+
         public void Spawn(ICatchNetPresenter catchNetPresenter, int spawnPosIndex)
         {
             Vector3 position = RandomSpawnPositionList[spawnPosIndex];

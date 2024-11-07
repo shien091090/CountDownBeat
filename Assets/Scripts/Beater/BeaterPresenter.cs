@@ -21,9 +21,14 @@ namespace GameCore
             view.SetBeatHintActive(false);
         }
 
+        public void UnbindView()
+        {
+            view = null;
+        }
+
         public void PlayBeatAnimation()
         {
-            view.PlayBeatAnimation();
+            view?.PlayBeatAnimation();
         }
     }
 }

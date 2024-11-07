@@ -41,7 +41,7 @@ namespace GameCore
 
             int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
             int spawnPosIndex = enableSpawnIndexList[indexListIndex];
-            view.Spawn(catchNetPresenter, spawnPosIndex);
+            view?.Spawn(catchNetPresenter, spawnPosIndex);
             catchNetPresenter.SetSpawnPosIndex(spawnPosIndex);
 
             SetPosState(spawnPosIndex, true);
@@ -67,6 +67,12 @@ namespace GameCore
         {
             SetPosState(spawnIndex, false);
             UpdateCurrentCatchNetCount();
+        }
+
+        public void UnbindView()
+        {
+            view = null;
+            CurrentCatchNetCount = 0;
         }
 
         private void InitPosStateDict()

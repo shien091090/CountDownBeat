@@ -9,5 +9,6 @@ namespace GameCore
         void BindView(ICatchNetHandlerView view);
         void OpenView();
         void FreeUpPosAndRefreshCurrentCount(int spawnIndex);
+        void UnbindView();
     }
 }

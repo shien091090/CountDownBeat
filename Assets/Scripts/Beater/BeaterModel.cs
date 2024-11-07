@@ -2,6 +2,7 @@ using FMOD.Studio;
 using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
+using SNShien.Common.TesterTools;
 using Zenject;
 
 namespace GameCore
@@ -40,6 +41,9 @@ namespace GameCore
 
         private void OnBeat()
         {
+            Debugger debugger = new Debugger("BeaterModel");
+            debugger.ShowLog("OnBeat");
+            
             beatCounter++;
 
             bool isCountDownBeat = false;

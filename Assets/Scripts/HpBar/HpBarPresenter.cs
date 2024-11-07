@@ -13,11 +13,11 @@ namespace GameCore
         public void RefreshHp(float currentHp)
         {
             if (model.MaxHp == 0)
-                view.RefreshHpSliderValue(0);
+                view?.RefreshHpSliderValue(0);
             else
             {
                 float hpSliderValue = currentHp / model.MaxHp;
-                view.RefreshHpSliderValue(hpSliderValue);
+                view?.RefreshHpSliderValue(hpSliderValue);
             }
         }
 
@@ -34,6 +34,11 @@ namespace GameCore
         public void BindView(IHpBarView view)
         {
             this.view = view;
+        }
+
+        public void UnbindView()
+        {
+            view = null;
         }
     }
 }

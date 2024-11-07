@@ -70,6 +70,7 @@ namespace GameCore
         private void OnGameOver(GameOverEvent eventInfo)
         {
             debugger.ShowLog("OnGameOver");
+            audioManager.Stop();
             eventInvoker.SendEvent(new SwitchSceneEvent(GameConst.SCENE_REPOSITION_ACTION_BACK_TO_SELECTION_MENU));
         }
 

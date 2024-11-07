@@ -25,6 +25,11 @@ namespace GameCore
         {
         }
 
+        public void CloseView()
+        {
+            presenter.UnbindView();
+        }
+
         public IScoreBallView Spawn()
         {
             IScoreBallView scoreBallView = objectPoolManager.SpawnGameObject<ScoreBallView>(GameConst.PREFAB_NAME_SCORE_BALL, randomPositionInRect.GetRandomPosition());

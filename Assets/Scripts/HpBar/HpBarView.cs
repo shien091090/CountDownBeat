@@ -23,6 +23,11 @@ namespace GameCore
         {
         }
 
+        public void CloseView()
+        {
+            presenter.UnbindView();
+        }
+
         public void RefreshHpSliderValue(float value)
         {
             sld_hpBar.value = value;

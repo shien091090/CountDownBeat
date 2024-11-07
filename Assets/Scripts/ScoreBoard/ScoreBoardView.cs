@@ -6,7 +6,7 @@ namespace GameCore
     public class ScoreBoardView : MonoBehaviour, IScoreBoardView
     {
         [SerializeField] private TextMeshProUGUI tmp_currentScore;
-        
+
         private IScoreBoardPresenter presenter;
 
         public void UpdateView()
@@ -21,6 +21,11 @@ namespace GameCore
 
         public void ReOpenView(params object[] parameters)
         {
+        }
+
+        public void CloseView()
+        {
+            presenter.UnbindView();
         }
 
         public void SetCurrentScoreText(string scoreText)

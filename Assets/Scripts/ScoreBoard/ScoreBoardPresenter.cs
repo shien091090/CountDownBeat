@@ -12,7 +12,7 @@ namespace GameCore
 
         public void RefreshScoreDisplay(long currentScore)
         {
-            view.SetCurrentScoreText(currentScore.ToString("N0"));
+            view?.SetCurrentScoreText(currentScore.ToString("N0"));
         }
 
         public void BindModel(IScoreBoardModel model)
@@ -28,6 +28,11 @@ namespace GameCore
         public void OpenView()
         {
             viewManager.OpenView<ScoreBoardView>(this);
+        }
+
+        public void UnbindView()
+        {
+            view = null;
         }
     }
 }

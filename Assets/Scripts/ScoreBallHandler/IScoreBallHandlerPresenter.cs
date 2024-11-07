@@ -6,5 +6,6 @@ namespace GameCore
         void BindView(IScoreBallHandlerView view);
         void BindModel(IScoreBallHandler model);
         void OpenView();
+        void UnbindView();
     }
 }

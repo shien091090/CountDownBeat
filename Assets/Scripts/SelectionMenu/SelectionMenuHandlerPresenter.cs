@@ -29,5 +29,10 @@ namespace GameCore
         {
             this.model = model;
         }
+
+        public void UnbindView()
+        {
+            view = null;
+        }
     }
 }
