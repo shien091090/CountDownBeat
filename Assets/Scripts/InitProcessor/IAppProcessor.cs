@@ -4,5 +4,6 @@
     {
         StageSettingContent CurrentStageSettingContent { get; }
         void SetEnterStageAudioKey(string audioKey);
+        void CheckInit();
     }
 }
