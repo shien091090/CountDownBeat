@@ -26,8 +26,7 @@ namespace GameCore
                     break;
             }
 
-            appProcessor.SetEnterStageAudioKey(audioKey);
-            eventInvoker.SendEvent(new SwitchSceneEvent(GameConst.SCENE_REPOSITION_ACTION_ENTER_GAME));
+            appProcessor.ExecuteEnterStage(audioKey);
         }
     }
 }

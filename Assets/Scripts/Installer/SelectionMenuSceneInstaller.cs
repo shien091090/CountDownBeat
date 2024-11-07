@@ -16,15 +16,10 @@ namespace GameCore
             BindModel<ISelectionMenuHandler, SelectionMenuHandler>();
         }
 
-        private void CheckInit()
-        {
-            appProcessor.CheckInit();
-        }
-
         private void RegisterEvent()
         {
-            OnPreStartInitModel -= CheckInit;
-            OnPreStartInitModel += CheckInit;
+            OnPreStartInitModel -= appProcessor.EnterSelectionMenu;
+            OnPreStartInitModel += appProcessor.EnterSelectionMenu;
         }
     }
 }
