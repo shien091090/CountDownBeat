@@ -4,6 +4,7 @@ namespace GameCore
     {
         public const string DEBUGGER_KEY_SCORE_BALL_VIEW = "ScoreBallView";
         public const string DEBUGGER_KEY_BEATER_PRESENTER = "BeaterPresenter";
+        public const string DEBUGGER_KEY_HP_BAR_MODEL = "HpBarModel";
 
         public const string PREFAB_NAME_SCORE_BALL = "ScoreBall";
         public const string PREFAB_NAME_CATCH_NET = "CatchNet";

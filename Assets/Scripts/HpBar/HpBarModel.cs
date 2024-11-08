@@ -1,4 +1,5 @@
 using SNShien.Common.ProcessTools;
+using SNShien.Common.TesterTools;
 using Zenject;
 
 namespace GameCore
@@ -10,7 +11,10 @@ namespace GameCore
         [Inject] private IEventRegister eventRegister;
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IHpBarPresenter presenter;
+
         public float MaxHp { get; private set; }
+
+        private readonly Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_HP_BAR_MODEL);
 
         public float CurrentHp { get; private set; }
 
@@ -53,6 +57,8 @@ namespace GameCore
                 CurrentHp = MaxHp;
             else if (CurrentHp <= 0)
                 CurrentHp = 0;
+            
+            debugger.ShowLog($"hashCode: {this.GetHashCode()}, CurrentHp: {CurrentHp}, increaseValue: {increaseValue}");
 
             presenter.RefreshHp(CurrentHp);
 
