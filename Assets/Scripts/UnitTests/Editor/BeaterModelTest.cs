@@ -23,9 +23,17 @@ namespace GameCore.UnitTests
             InitEventInvokerMock();
             InitAudioManagerMock();
             InitAppProcessorMock();
+            InitBeaterPresenterMock();
 
             Container.Bind<BeaterModel>().AsSingle();
             beaterModel = Container.Resolve<BeaterModel>();
+        }
+
+        private void InitBeaterPresenterMock()
+        {
+            beaterPresenter = Substitute.For<IBeaterPresenter>();
+
+            Container.Bind<IBeaterPresenter>().FromInstance(beaterPresenter).AsSingle();
         }
 
         private void InitAppProcessorMock()
@@ -51,6 +59,7 @@ namespace GameCore.UnitTests
         private IAudioManager audioManager;
         private FmodAudioCallbackSetting callbackSetting;
         private IAppProcessor appProcessor;
+        private IBeaterPresenter beaterPresenter;
 
         [Test]
         //初始化時, 撥放當前關卡音樂

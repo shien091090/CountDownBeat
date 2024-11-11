@@ -10,6 +10,7 @@ namespace GameCore
             Container.Bind<IScoreBoardPresenter>().To<ScoreBoardPresenter>().AsSingle();
             Container.Bind<IScoreBallHandlerPresenter>().To<ScoreBallHandlerPresenter>().AsSingle();
             Container.Bind<IHpBarPresenter>().To<HpBarPresenter>().AsSingle();
+            Container.Bind<IBeaterPresenter>().To<BeaterPresenter>().AsSingle();
 
             BindModel<IScoreBallHandler, ScoreBallHandler>();
             BindModel<IBeaterModel, BeaterModel>();

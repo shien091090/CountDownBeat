@@ -1,19 +1,17 @@
+using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.TesterTools;
+using Zenject;
 
 namespace GameCore
 {
     public class BeaterPresenter : IBeaterPresenter
     {
-        private readonly IBeaterModel model;
-        private readonly Debugger debugger;
+        [Inject] private IViewManager viewManager;
+
+        private IBeaterModel model;
+        private readonly Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_BEATER_PRESENTER);
 
         private IBeaterView view;
-
-        public BeaterPresenter(IBeaterModel model)
-        {
-            debugger = new Debugger(GameConst.DEBUGGER_KEY_BEATER_PRESENTER);
-            this.model = model;
-        }
 
         public void BindView(IBeaterView view)
         {
@@ -26,9 +24,24 @@ namespace GameCore
             view = null;
         }
 
+        public void BindModel(IBeaterModel model)
+        {
+            this.model = model;
+        }
+
+        public void OpenView()
+        {
+            viewManager.OpenView<BeaterView>(this);
+        }
+
         public void PlayBeatAnimation()
         {
             view?.PlayBeatAnimation();
+        }
+
+        public void UnbindModel()
+        {
+            model = null;
         }
     }
 }

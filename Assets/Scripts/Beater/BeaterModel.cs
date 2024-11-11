@@ -2,7 +2,6 @@ using FMOD.Studio;
 using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
-using SNShien.Common.TesterTools;
 using Zenject;
 
 namespace GameCore
@@ -13,25 +12,26 @@ namespace GameCore
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IAudioManager audioManager;
         [Inject] private IAppProcessor appProcessor;
-
-        private BeaterPresenter presenter;
+        [Inject] private IBeaterPresenter presenter;
+        
         private int beatCounter;
 
         public void ExecuteModelInit()
         {
-            InitView();
+            InitPresenter();
 
             StartStage(appProcessor.CurrentStageSettingContent);
         }
 
         public void Release()
         {
+            presenter.UnbindModel();
         }
 
-        private void InitView()
+        private void InitPresenter()
         {
-            presenter = new BeaterPresenter(this);
-            viewManager.OpenView<BeaterView>(presenter);
+            presenter.BindModel(this);
+            presenter.OpenView();
         }
 
         private void StartStage(StageSettingContent stageSetting)
