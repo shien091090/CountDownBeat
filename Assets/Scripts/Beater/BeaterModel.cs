@@ -24,6 +24,10 @@ namespace GameCore
             StartStage(appProcessor.CurrentStageSettingContent);
         }
 
+        public void Release()
+        {
+        }
+
         private void InitView()
         {
             presenter = new BeaterPresenter(this);
@@ -41,9 +45,6 @@ namespace GameCore
 
         private void OnBeat()
         {
-            Debugger debugger = new Debugger("BeaterModel");
-            debugger.ShowLog("OnBeat");
-            
             beatCounter++;
 
             bool isCountDownBeat = false;

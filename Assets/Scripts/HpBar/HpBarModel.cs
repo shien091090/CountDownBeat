@@ -23,11 +23,17 @@ namespace GameCore
             Init();
         }
 
+        public void Release()
+        {
+            SetEventRegister(false);
+            presenter.UnbindModel();
+        }
+
         public void Init()
         {
             InitData();
             InitPresenter();
-            RegisterEvent();
+            SetEventRegister(true);
         }
 
         private void InitPresenter()
@@ -57,8 +63,6 @@ namespace GameCore
                 CurrentHp = MaxHp;
             else if (CurrentHp <= 0)
                 CurrentHp = 0;
-            
-            debugger.ShowLog($"hashCode: {this.GetHashCode()}, CurrentHp: {CurrentHp}, increaseValue: {increaseValue}");
 
             presenter.RefreshHp(CurrentHp);
 
@@ -66,13 +70,16 @@ namespace GameCore
                 eventInvoker.SendEvent(new GameOverEvent());
         }
 
-        private void RegisterEvent()
+        private void SetEventRegister(bool isListen)
         {
             eventRegister.Unregister<BeatEvent>(OnBeatEvent);
-            eventRegister.Register<BeatEvent>(OnBeatEvent);
-
             eventRegister.Unregister<GetScoreEvent>(OnGetScoreEvent);
-            eventRegister.Register<GetScoreEvent>(OnGetScoreEvent);
+            
+            if (isListen)
+            {
+                eventRegister.Register<BeatEvent>(OnBeatEvent);
+                eventRegister.Register<GetScoreEvent>(OnGetScoreEvent);
+            }
         }
 
         private void OnGetScoreEvent(GetScoreEvent eventInfo)

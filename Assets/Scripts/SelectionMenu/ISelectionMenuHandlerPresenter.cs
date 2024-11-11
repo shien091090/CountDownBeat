@@ -7,5 +7,6 @@
         void BindView(ISelectionMenuHandlerView view);
         void BindModel(ISelectionMenuHandler model);
         void UnbindView();
+        void UnbindModel();
     }
 }

@@ -21,20 +21,31 @@ namespace GameCore
             Init();
         }
 
+        public void Release()
+        {
+            OnSpawnCatchNet = null;
+            SetEventRegister(false);
+            presenter.UnbindModel();
+        }
+
         private void Init()
         {
             beatCounter = 0;
-            RegisterEvent();
+            SetEventRegister(true);
 
             presenter.BindModel(this);
             presenter.OpenView();
             presenter.Init();
         }
 
-        private void RegisterEvent()
+        private void SetEventRegister(bool isListen)
         {
             eventRegister.Unregister<BeatEvent>(OnBeatEvent);
-            eventRegister.Register<BeatEvent>(OnBeatEvent);
+
+            if (isListen)
+            {
+                eventRegister.Register<BeatEvent>(OnBeatEvent);
+            }
         }
 
         private void SpawnCatchNet()

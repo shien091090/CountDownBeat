@@ -10,5 +10,6 @@ namespace GameCore
         void OpenView();
         void FreeUpPosAndRefreshCurrentCount(int spawnIndex);
         void UnbindView();
+        void UnbindModel();
     }
 }

@@ -15,9 +15,15 @@ namespace GameCore
             Init();
         }
 
+        public void Release()
+        {
+            SetEventRegister(false);
+            presenter.UnbindModel();
+        }
+
         private void Init()
         {
-            RegisterEvent();
+            SetEventRegister(true);
             presenter.BindModel(this);
             OpenView();
             UpdateCurrentScore(0);
@@ -29,10 +35,14 @@ namespace GameCore
             presenter.RefreshScoreDisplay(currentScore);
         }
 
-        private void RegisterEvent()
+        private void SetEventRegister(bool isListen)
         {
             eventRegister.Unregister<GetScoreEvent>(OnGetScoreEvent);
-            eventRegister.Register<GetScoreEvent>(OnGetScoreEvent);
+
+            if (isListen)
+            {
+                eventRegister.Register<GetScoreEvent>(OnGetScoreEvent);
+            }
         }
 
         private void OpenView()

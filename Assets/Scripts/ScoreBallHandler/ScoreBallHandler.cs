@@ -27,11 +27,18 @@ namespace GameCore
             Init();
         }
 
+        public void Release()
+        {
+            SetEventRegister(false);
+            presenter.UnbindModel();
+            OnSpawnScoreBall = null;
+        }
+
         private void Init()
         {
             InitData();
             InitPresenter();
-            RegisterEvent();
+            SetEventRegister(true);
         }
 
         private void InitPresenter()
@@ -65,10 +72,14 @@ namespace GameCore
             }
         }
 
-        private void RegisterEvent()
+        private void SetEventRegister(bool isListen)
         {
             eventRegister.Unregister<BeatEvent>(OnBeatEvent);
-            eventRegister.Register<BeatEvent>(OnBeatEvent);
+
+            if (isListen)
+            {
+                eventRegister.Register<BeatEvent>(OnBeatEvent);
+            }
         }
 
         private void SpawnScoreBall()

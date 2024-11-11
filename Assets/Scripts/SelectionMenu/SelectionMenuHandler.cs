@@ -7,12 +7,16 @@ namespace GameCore
     {
         [Inject] private ISelectionMenuHandlerPresenter presenter;
         [Inject] private IAppProcessor appProcessor;
-        [Inject] private IEventInvoker eventInvoker;
 
         public void ExecuteModelInit()
         {
             presenter.BindModel(this);
             presenter.OpenView();
+        }
+
+        public void Release()
+        {
+            presenter.UnbindModel();
         }
 
         public void EnterStage(int stageIndex)

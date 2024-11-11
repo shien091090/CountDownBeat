@@ -75,6 +75,11 @@ namespace GameCore
             CurrentCatchNetCount = 0;
         }
 
+        public void UnbindModel()
+        {
+            model = null;
+        }
+
         private void InitPosStateDict()
         {
             posStateDict = new Dictionary<int, bool>();

@@ -7,5 +7,6 @@
         void OpenView();
         void BindView(IHpBarView view);
         void UnbindView();
+        void UnbindModel();
     }
 }

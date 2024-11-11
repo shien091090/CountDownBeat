@@ -7,5 +7,6 @@ namespace GameCore
         void BindView(ScoreBoardView view);
         void OpenView();
         void UnbindView();
+        void UnbindModel();
     }
 }
