@@ -84,6 +84,8 @@ namespace GameCore
             audioKey = settingContent.AudioKey;
             bpm = settingContent.Bpm;
             countDownBeatFreq = settingContent.CountDownBeatFreq;
+            hpDecreasePerBeat = settingContent.HpDecreasePerBeat;
+            hpIncreasePerCatch = settingContent.HpIncreasePerCatch;
 
             CheckRefreshBySetEventReference();
             AutoCreateSpawnBeatSetting();
