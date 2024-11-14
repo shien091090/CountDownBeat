@@ -24,20 +24,18 @@ MonoBehaviour:
   preLoadAssemblyNames:
   - SNShien
   - GameCore
+  sceneProcessSetting: {fileID: 11400000, guid: 84f1520f0d1694448b446b1e3d157a31, type: 2}
   sceneModelSettingList:
   - sceneName: GameScene
     modelDefineList:
+    - modelName: ViewManager
     - modelName: BeaterModel
-      orderNum: 1
     - modelName: ScoreBoardModel
-      orderNum: 2
     - modelName: ScoreBallHandler
-      orderNum: 3
     - modelName: CatchNetHandler
-      orderNum: 4
     - modelName: HpBarModel
-      orderNum: 5
   - sceneName: SelectionMenuScene
     modelDefineList:
     - modelName: SelectionMenuHandler
-      orderNum: 1
+  - sceneName: InitScene
+    modelDefineList: []
