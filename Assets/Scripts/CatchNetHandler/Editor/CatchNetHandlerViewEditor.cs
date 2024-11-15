@@ -43,7 +43,7 @@ namespace GameCore
             foreach (Vector3 pos in component.RandomSpawnPositionList)
             {
                 // Handles.DrawSolidDisc(pos, Vector3.forward, 50f);
-                Handles.DrawWireDisc(pos, Vector3.forward, 25f, 3);
+                Handles.DrawWireDisc(pos, Vector3.forward, 0.3f, 1.5f);
             }
         }
     }
