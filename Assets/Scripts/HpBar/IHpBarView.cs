@@ -1,8 +1,6 @@
-﻿using SNShien.Common.MonoBehaviorTools;
-
-namespace GameCore
+﻿namespace GameCore
 {
-    public interface IHpBarView : IArchitectureView
+    public interface IHpBarView
     {
         void RefreshHpSliderValue(float value);
     }

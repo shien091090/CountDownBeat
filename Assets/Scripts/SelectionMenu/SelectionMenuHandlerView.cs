@@ -1,28 +1,28 @@
-using UnityEngine;
+using SNShien.Common.MonoBehaviorTools;
 
 namespace GameCore
 {
-    public class SelectionMenuHandlerView : MonoBehaviour, ISelectionMenuHandlerView
+    public class SelectionMenuHandlerView : ArchitectureView, ISelectionMenuHandlerView
     {
         private ISelectionMenuHandlerPresenter presenter;
 
-        public void UpdateView()
+        public override void UpdateView()
         {
             throw new System.NotImplementedException();
         }
 
-        public void OpenView(params object[] parameters)
+        public override void OpenView(params object[] parameters)
         {
             presenter = (ISelectionMenuHandlerPresenter)parameters[0];
             presenter.BindView(this);
         }
 
-        public void ReOpenView(params object[] parameters)
+        public override void ReOpenView(params object[] parameters)
         {
             throw new System.NotImplementedException();
         }
 
-        public void CloseView()
+        public override void CloseView()
         {
             presenter.UnbindView();
         }

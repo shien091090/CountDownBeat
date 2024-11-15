@@ -1,8 +1,6 @@
-using SNShien.Common.MonoBehaviorTools;
-
 namespace GameCore
 {
-    public interface IBeaterView : IArchitectureView
+    public interface IBeaterView
     {
         void SetBeatHintActive(bool isActive);
         void PlayBeatAnimation();

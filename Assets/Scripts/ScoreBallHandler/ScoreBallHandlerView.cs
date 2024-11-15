@@ -1,31 +1,30 @@
-using System;
 using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
 namespace GameCore
 {
-    public class ScoreBallHandlerView : MonoBehaviour, IScoreBallHandlerView
+    public class ScoreBallHandlerView : ArchitectureView, IScoreBallHandlerView
     {
         [SerializeField] private ObjectPoolManager objectPoolManager;
 
         private IScoreBallHandlerPresenter presenter;
         private RandomPositionInRect randomPositionInRect;
 
-        public void UpdateView()
+        public override void UpdateView()
         {
         }
 
-        public void OpenView(params object[] parameters)
+        public override void OpenView(params object[] parameters)
         {
             presenter = parameters[0] as IScoreBallHandlerPresenter;
             presenter.BindView(this);
         }
 
-        public void ReOpenView(params object[] parameters)
+        public override void ReOpenView(params object[] parameters)
         {
         }
 
-        public void CloseView()
+        public override void CloseView()
         {
             presenter.UnbindView();
         }

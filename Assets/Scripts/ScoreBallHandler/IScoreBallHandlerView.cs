@@ -1,8 +1,6 @@
-using SNShien.Common.MonoBehaviorTools;
-
 namespace GameCore
 {
-    public interface IScoreBallHandlerView : IArchitectureView
+    public interface IScoreBallHandlerView
     {
         IScoreBallView Spawn();
     }

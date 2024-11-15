@@ -1,29 +1,30 @@
-﻿using UnityEngine;
+﻿using SNShien.Common.MonoBehaviorTools;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace GameCore
 {
-    public class HpBarView : MonoBehaviour, IHpBarView
+    public class HpBarView : ArchitectureView, IHpBarView
     {
         [SerializeField] private Slider sld_hpBar;
 
         private IHpBarPresenter presenter;
 
-        public void UpdateView()
+        public override void UpdateView()
         {
         }
 
-        public void OpenView(params object[] parameters)
+        public override void OpenView(params object[] parameters)
         {
             presenter = parameters[0] as IHpBarPresenter;
             presenter.BindView(this);
         }
 
-        public void ReOpenView(params object[] parameters)
+        public override void ReOpenView(params object[] parameters)
         {
         }
 
-        public void CloseView()
+        public override void CloseView()
         {
             presenter.UnbindView();
         }

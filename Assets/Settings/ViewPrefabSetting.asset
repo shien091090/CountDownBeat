@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ViewPrefabSetting
   m_EditorClassIdentifier: 
   prefabList:
-  - {fileID: 7850605610804480675, guid: 6060c33d1e3eb7b4c922ac3a49708b90, type: 3}
-  - {fileID: 7850605610804480675, guid: 3db70435fcbfcfa4e9d3d5a864729dcb, type: 3}
-  - {fileID: 7850605610804480675, guid: 33213b6f51e15c14d91e170a160c8e17, type: 3}
-  - {fileID: 7850605610804480675, guid: cc7a67ade8ff1054bbb81f10e943870c, type: 3}
-  - {fileID: 7850605610804480675, guid: b93071ecd5c5ecb4e8ca4c54fdc4b8a7, type: 3}
-  - {fileID: 7850605610804480675, guid: d0101de495e37914180727c534fffa75, type: 3}
+  - {fileID: 860346605405103284, guid: 3db70435fcbfcfa4e9d3d5a864729dcb, type: 3}
+  - {fileID: 2182175012893566684, guid: 33213b6f51e15c14d91e170a160c8e17, type: 3}
+  - {fileID: 2026725884939137802, guid: b93071ecd5c5ecb4e8ca4c54fdc4b8a7, type: 3}
+  - {fileID: 4071649801798243691, guid: 6060c33d1e3eb7b4c922ac3a49708b90, type: 3}
+  - {fileID: 4753782308447333400, guid: cc7a67ade8ff1054bbb81f10e943870c, type: 3}
+  - {fileID: 4442210411367898997, guid: d0101de495e37914180727c534fffa75, type: 3}

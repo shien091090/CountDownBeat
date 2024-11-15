@@ -1,29 +1,30 @@
+using SNShien.Common.MonoBehaviorTools;
 using TMPro;
 using UnityEngine;
 
 namespace GameCore
 {
-    public class ScoreBoardView : MonoBehaviour, IScoreBoardView
+    public class ScoreBoardView : ArchitectureView, IScoreBoardView
     {
         [SerializeField] private TextMeshProUGUI tmp_currentScore;
 
         private IScoreBoardPresenter presenter;
 
-        public void UpdateView()
+        public override void UpdateView()
         {
         }
 
-        public void OpenView(params object[] parameters)
+        public override void OpenView(params object[] parameters)
         {
             presenter = (IScoreBoardPresenter)parameters[0];
             presenter.BindView(this);
         }
 
-        public void ReOpenView(params object[] parameters)
+        public override void ReOpenView(params object[] parameters)
         {
         }
 
-        public void CloseView()
+        public override void CloseView()
         {
             presenter.UnbindView();
         }

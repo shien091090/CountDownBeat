@@ -1,30 +1,31 @@
 using System.Collections;
+using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
 namespace GameCore
 {
-    public class BeaterView : MonoBehaviour, IBeaterView
+    public class BeaterView : ArchitectureView, IBeaterView
     {
         [SerializeField] private float beatHintStaySeconds;
         [SerializeField] private GameObject go_beatHint;
 
         private IBeaterPresenter beaterPresenter;
 
-        public void UpdateView()
+        public override void UpdateView()
         {
         }
 
-        public void OpenView(params object[] parameters)
+        public override void OpenView(params object[] parameters)
         {
             beaterPresenter = parameters[0] as IBeaterPresenter;
             beaterPresenter.BindView(this);
         }
 
-        public void ReOpenView(params object[] parameters)
+        public override void ReOpenView(params object[] parameters)
         {
         }
 
-        public void CloseView()
+        public override void CloseView()
         {
             StopAllCoroutines();
             beaterPresenter.UnbindView();
