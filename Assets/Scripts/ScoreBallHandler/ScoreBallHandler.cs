@@ -49,7 +49,7 @@ namespace GameCore
 
         private void InitData()
         {
-            currentBeatIndex = 0;
+            currentBeatIndex = -1;
 
             inFieldScoreBallList = new List<ScoreBall>();
 

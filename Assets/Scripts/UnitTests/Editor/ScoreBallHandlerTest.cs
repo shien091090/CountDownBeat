@@ -56,35 +56,41 @@ namespace GameCore.UnitTests
         //Beat時, 若進行到需要生成分數球的節拍, 則生成一次分數球
         public void spawn_score_ball_when_beat_and_reach_freq()
         {
-            GivenSpawnScoreBallBeatSetting(new List<int> { 3, 7 });
+            GivenSpawnScoreBallBeatSetting(new List<int> { 0, 3, 7 });
 
             scoreBallHandler.ExecuteModelInit();
+            
+            ShouldSpawnScoreBall(0);
 
+            CallBeatEventCallback(); //0*
+            
+            ShouldSpawnScoreBall(1);
+            
             CallBeatEventCallback(); //1
             CallBeatEventCallback(); //2
 
-            ShouldSpawnScoreBall(0);
+            ShouldSpawnScoreBall(1);
 
             CallBeatEventCallback(); //3*
 
-            ShouldSpawnScoreBall(1);
+            ShouldSpawnScoreBall(2);
 
             CallBeatEventCallback(); //4
             CallBeatEventCallback(); //5
             CallBeatEventCallback(); //6
 
-            ShouldSpawnScoreBall(1);
+            ShouldSpawnScoreBall(2);
 
             CallBeatEventCallback(); //7*
 
-            ShouldSpawnScoreBall(2);
+            ShouldSpawnScoreBall(3);
         }
 
         [Test]
         //生成分數球時, 若有隱藏的分數球, 則重新顯示該分數球
         public void reactivate_hidden_score_ball_when_spawn_score_ball()
         {
-            GivenSpawnScoreBallBeatSetting(new List<int> { 1, 2 });
+            GivenSpawnScoreBallBeatSetting(new List<int> { 0, 1 });
 
             scoreBallHandler.ExecuteModelInit();
 
@@ -105,7 +111,7 @@ namespace GameCore.UnitTests
         //生成分數球時, 若沒有隱藏的分數球, 則生成新的分數球
         public void spawn_new_score_ball_when_no_hidden_score_ball()
         {
-            GivenSpawnScoreBallBeatSetting(new List<int> { 1, 2 });
+            GivenSpawnScoreBallBeatSetting(new List<int> { 0, 1 });
 
             scoreBallHandler.ExecuteModelInit();
 
