@@ -96,13 +96,13 @@ namespace GameCore.UnitTests
         public void play_beat_effect_when_receive_beat_event()
         {
             scoreBall.Init(20);
-            
+
             CallBeatEventCallback();
 
             ShouldPresenterPlayBeatEffect(1);
-            
+
             CallBeatEventCallback();
-            
+
             ShouldPresenterPlayBeatEffect(2);
         }
 
@@ -114,7 +114,7 @@ namespace GameCore.UnitTests
             scoreBall.SuccessSettle();
 
             CurrentStateShouldBe(ScoreBallState.Hide);
-            
+
             CallBeatEventCallback();
 
             ShouldPresenterPlayBeatEffect(0);
@@ -206,6 +206,57 @@ namespace GameCore.UnitTests
             CurrentStateShouldBe(ScoreBallState.Hide);
         }
 
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        //結算或倒數完畢後再度激活, 倒數數字恢復到起始值, 狀態切換為"InCountDown"
+        public void reactivate_and_reset_count_down_value_and_update_state_to_in_count_down(bool isSuccessSettle)
+        {
+            scoreBall.Init(10);
+
+            if (isSuccessSettle)
+                scoreBall.SuccessSettle();
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    CallBeatEventCallback();
+                }
+            }
+
+            CurrentStateShouldBe(ScoreBallState.Hide);
+
+            scoreBall.Reactivate();
+
+            CurrentCountDownValueShouldBe(10);
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        //結算或倒數完畢後再度激活, 收到Beat事件倒數數字減一
+        public void reactivate_and_count_down(bool isSuccessSettle)
+        {
+            scoreBall.Init(10);
+            
+            if (isSuccessSettle)
+                scoreBall.SuccessSettle();
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    CallBeatEventCallback();
+                }
+            }
+            
+            scoreBall.Reactivate();
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(9);
+        }
+        
         private void InitEventHandlerMock()
         {
             beatEventCallback = null;
@@ -218,7 +269,7 @@ namespace GameCore.UnitTests
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
                 beatEventCallback += callback;
             });
-            
+
             eventRegister.When(x => x.Unregister(Arg.Any<Action<BeatEvent>>())).Do(x =>
             {
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
