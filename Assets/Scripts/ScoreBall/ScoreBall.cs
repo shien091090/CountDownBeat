@@ -50,7 +50,7 @@ namespace GameCore
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
 
-            RegisterEvent();
+            SetEventRegister(true);
         }
 
         public void BindPresenter(IScoreBallPresenter presenter)
@@ -65,6 +65,16 @@ namespace GameCore
             UpdateCurrentState(ScoreBallState.InCountDown);
         }
 
+        private void SetEventRegister(bool isListen)
+        {
+            eventRegister.Unregister<BeatEvent>(OnBeat);
+
+            if (isListen)
+            {
+                eventRegister.Register<BeatEvent>(OnBeat);
+            }
+        }
+
         private void CheckDamageAndHide()
         {
             if (CurrentCountDownValue > 0)
@@ -74,10 +84,23 @@ namespace GameCore
             eventInvoker.SendEvent(new DamageEvent());
         }
 
+        private void CheckChangeEventRegisterState(ScoreBallState beforeState, ScoreBallState afterState)
+        {
+            if ((beforeState == ScoreBallState.None || beforeState == ScoreBallState.Hide) &&
+                afterState == ScoreBallState.InCountDown)
+                SetEventRegister(true);
+
+            if ((beforeState == ScoreBallState.InCountDown || beforeState == ScoreBallState.Freeze) &&
+                afterState == ScoreBallState.Hide)
+                SetEventRegister(false);
+        }
+
         private void UpdateCurrentState(ScoreBallState newState)
         {
             if (CurrentState == newState)
                 return;
+
+            CheckChangeEventRegisterState(CurrentState, newState);
 
             CurrentState = newState;
             presenter.UpdateState(newState);
@@ -95,14 +118,10 @@ namespace GameCore
             UpdateCurrentState(ScoreBallState.Hide);
         }
 
-        private void RegisterEvent()
-        {
-            eventRegister.Unregister<BeatEvent>(OnBeat);
-            eventRegister.Register<BeatEvent>(OnBeat);
-        }
-
         private void OnBeat(BeatEvent eventInfo)
         {
+            presenter.PlayBeatEffect();
+
             if (IsCountDownInProcess == false ||
                 eventInfo.isCountDownBeat == false)
                 return;

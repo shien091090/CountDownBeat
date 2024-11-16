@@ -17,9 +17,9 @@ namespace GameCore.UnitTests
         public void Setup()
         {
             InitEventHandlerMock();
-            
+
             scoreBall = new ScoreBall(eventRegister, eventInvoker);
-            
+
             presenter = Substitute.For<IScoreBallPresenter>();
             scoreBall.BindPresenter(presenter);
         }
@@ -89,6 +89,35 @@ namespace GameCore.UnitTests
             ShouldSendDamageEvent();
             CurrentCountDownValueShouldBe(0);
             CurrentStateShouldBe(ScoreBallState.Hide);
+        }
+
+        [Test]
+        //收到Beat事件時, 通知Presenter撥放特效
+        public void play_beat_effect_when_receive_beat_event()
+        {
+            scoreBall.Init(20);
+            
+            CallBeatEventCallback();
+
+            ShouldPresenterPlayBeatEffect(1);
+            
+            CallBeatEventCallback();
+            
+            ShouldPresenterPlayBeatEffect(2);
+        }
+
+        [Test]
+        //收到Beat事件時, 若狀態為"Hide"則不會通知Presenter撥放特效
+        public void do_not_play_beat_effect_when_hide()
+        {
+            scoreBall.Init(20);
+            scoreBall.SuccessSettle();
+
+            CurrentStateShouldBe(ScoreBallState.Hide);
+            
+            CallBeatEventCallback();
+
+            ShouldPresenterPlayBeatEffect(0);
         }
 
         [Test]
@@ -187,13 +216,27 @@ namespace GameCore.UnitTests
             eventRegister.When(x => x.Register(Arg.Any<Action<BeatEvent>>())).Do(x =>
             {
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
-                beatEventCallback = callback;
+                beatEventCallback += callback;
+            });
+            
+            eventRegister.When(x => x.Unregister(Arg.Any<Action<BeatEvent>>())).Do(x =>
+            {
+                Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
+                beatEventCallback -= callback;
             });
         }
 
         private void CallBeatEventCallback(bool isCountDownBeat = true)
         {
-            beatEventCallback.Invoke(new BeatEvent(isCountDownBeat));
+            beatEventCallback?.Invoke(new BeatEvent(isCountDownBeat));
+        }
+
+        private void ShouldPresenterPlayBeatEffect(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                presenter.DidNotReceive().PlayBeatEffect();
+            else
+                presenter.Received(expectedCallTimes).PlayBeatEffect();
         }
 
         private void ShouldPresenterUpdateState(int expectedCallTimes, ScoreBallState expectedNewState)
