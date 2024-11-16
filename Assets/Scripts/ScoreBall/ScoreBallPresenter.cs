@@ -56,6 +56,11 @@ namespace GameCore
             this.model = model;
         }
 
+        public void PlayBeatEffect()
+        {
+            view.CreateBeatEffectPrefab();
+        }
+
         public void DragOver()
         {
             model.SetFreezeState(false);

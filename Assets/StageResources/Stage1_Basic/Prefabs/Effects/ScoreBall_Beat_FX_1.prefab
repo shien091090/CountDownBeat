@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3181940518660849625}
   - component: {fileID: 3181940518660849627}
   - component: {fileID: 3181940518660849626}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cirlce1_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,7 +116,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.46
+      scalar: 0.4
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -4855,7 +4855,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4899,7 +4899,7 @@ GameObject:
   - component: {fileID: 3181940519562425272}
   - component: {fileID: 3181940519562425274}
   - component: {fileID: 3181940519562425273}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cirlce_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5004,7 +5004,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.68
+      scalar: 0.4
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -9752,7 +9752,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 1
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -9796,7 +9796,7 @@ GameObject:
   - component: {fileID: 3181940519800376851}
   - component: {fileID: 3181940519800376853}
   - component: {fileID: 3181940519800376852}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Cirlce1_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9901,7 +9901,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.46
+      scalar: 0.4
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -14640,7 +14640,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -14682,9 +14682,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3181940520059380542}
+  - component: {fileID: 8602108678460890228}
   - component: {fileID: 3181940520059380528}
   - component: {fileID: 3181940520059380543}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ScoreBall_Beat_FX_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14699,9 +14700,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3181940520059380541}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 35, y: 35, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3181940519562425272}
@@ -14710,6 +14711,18 @@ Transform:
   - {fileID: 3181940520401988514}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8602108678460890228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3181940520059380541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 116241a90e66438e9cc89f7aedae5391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &3181940520059380528
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -19474,7 +19487,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -19518,7 +19531,7 @@ GameObject:
   - component: {fileID: 3181940520401988514}
   - component: {fileID: 3181940520401988516}
   - component: {fileID: 3181940520401988515}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Flare_Circle_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19623,7 +19636,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.3
+      scalar: 0.18
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -19794,7 +19807,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 12
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -24362,7 +24375,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0

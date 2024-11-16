@@ -11,5 +11,6 @@ namespace GameCore
         void DoubleClick();
         void TriggerCatch();
         void BindModel(IScoreBall model);
+        void PlayBeatEffect();
     }
 }

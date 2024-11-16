@@ -134,6 +134,37 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &4401232740797467963
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7552507909739916287}
+  m_Layer: 0
+  m_Name: BeatEffectHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7552507909739916287
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4401232740797467963}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3134385222217197060}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5671283499733113348
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,6 +201,7 @@ RectTransform:
   m_Children:
   - {fileID: 2457336141303047592}
   - {fileID: 391586973051644779}
+  - {fileID: 3134385222217197060}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -197,6 +229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45a373f80fcc214c892b64bbe176d8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectPool: {fileID: 2212391126154491868}
   inCountDownColor: {r: 1, g: 1, b: 1, a: 1}
   freezeColor: {r: 0.320719, g: 0.46092632, b: 0.87169814, a: 1}
   tmp_countDownNum: {fileID: 520220510072512755}
@@ -280,6 +313,56 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 41.8
+--- !u!1 &6696764729376130860
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3134385222217197060}
+  - component: {fileID: 2212391126154491868}
+  m_Layer: 0
+  m_Name: ObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3134385222217197060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696764729376130860}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7552507909739916287}
+  m_Father: {fileID: 8648412707860751730}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2212391126154491868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6696764729376130860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7762f6fd26b898e4fbc87becd08e5ece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectPoolSetting:
+  - gameObjectName: BeatEffect
+    prefabReference: {fileID: 3181940520059380541, guid: e4edfaf6e3d8cf149b56639d9de1d47d, type: 3}
+    parentHolder: {fileID: 7552507909739916287}
+    ObjectPoolList: []
 --- !u!1 &8437814669849899003
 GameObject:
   m_ObjectHideFlags: 0

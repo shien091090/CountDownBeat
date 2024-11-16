@@ -12,7 +12,11 @@ namespace GameCore
     [RequireComponent(typeof(Collider2DAdapterComponent))]
     public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
+        private const string PREFAB_NAME_BEAT_EFFECT = "BeatEffect";
+
         [Inject] private IDeltaTimeGetter deltaTimeGetter;
+
+        [SerializeField] private ObjectPoolManager objectPool;
         [SerializeField] private Color inCountDownColor;
         [SerializeField] private Color freezeColor;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
@@ -53,6 +57,11 @@ namespace GameCore
         public void BindPresenter(IScoreBallPresenter presenter)
         {
             this.presenter = presenter;
+        }
+
+        public void CreateBeatEffectPrefab()
+        {
+            objectPool.SpawnGameObject<AutoParticleEffectObject>(PREFAB_NAME_BEAT_EFFECT);
         }
 
         public void Init()

@@ -10,5 +10,6 @@ namespace GameCore
         void Close();
         void TriggerCatch();
         void BindPresenter(IScoreBallPresenter presenter);
+        void CreateBeatEffectPrefab();
     }
 }
