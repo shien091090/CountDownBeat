@@ -49,8 +49,7 @@ namespace GameCore
             StartCountDownValue = startCountDownValue;
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
-
-            SetEventRegister(true);
+            presenter.PlayBeatEffect();
         }
 
         public void BindPresenter(IScoreBallPresenter presenter)
@@ -63,6 +62,7 @@ namespace GameCore
         {
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
+            presenter.PlayBeatEffect();
         }
 
         private void SetEventRegister(bool isListen)

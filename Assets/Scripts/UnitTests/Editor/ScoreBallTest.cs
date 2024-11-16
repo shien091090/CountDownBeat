@@ -90,20 +90,45 @@ namespace GameCore.UnitTests
             CurrentCountDownValueShouldBe(0);
             CurrentStateShouldBe(ScoreBallState.Hide);
         }
+        
+        [Test]
+        //分數球生成時, 通知Presenter撥放特效
+        public void play_beat_effect_when_spawn()
+        {
+            scoreBall.Init(20);
+
+            ShouldPresenterPlayBeatEffect(1);
+        }
+        
+        [Test]
+        //分數球重新激活時, 通知Presenter撥放特效
+        public void play_beat_effect_when_reactivate()
+        {
+            scoreBall.Init(20);
+            scoreBall.SuccessSettle();
+            
+            ShouldPresenterPlayBeatEffect(1);
+
+            scoreBall.Reactivate();
+
+            ShouldPresenterPlayBeatEffect(2);
+        }
 
         [Test]
         //收到Beat事件時, 通知Presenter撥放特效
         public void play_beat_effect_when_receive_beat_event()
         {
             scoreBall.Init(20);
-
-            CallBeatEventCallback();
-
+            
             ShouldPresenterPlayBeatEffect(1);
 
             CallBeatEventCallback();
 
             ShouldPresenterPlayBeatEffect(2);
+
+            CallBeatEventCallback();
+
+            ShouldPresenterPlayBeatEffect(3);
         }
 
         [Test]
@@ -111,13 +136,16 @@ namespace GameCore.UnitTests
         public void do_not_play_beat_effect_when_hide()
         {
             scoreBall.Init(20);
+            
+            ShouldPresenterPlayBeatEffect(1);
+            
             scoreBall.SuccessSettle();
 
             CurrentStateShouldBe(ScoreBallState.Hide);
 
             CallBeatEventCallback();
 
-            ShouldPresenterPlayBeatEffect(0);
+            ShouldPresenterPlayBeatEffect(1);
         }
 
         [Test]
