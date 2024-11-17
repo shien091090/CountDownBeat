@@ -2,6 +2,9 @@ namespace GameCore
 {
     public class ScoreBallPresenter : IScoreBallPresenter
     {
+        private const string ANIM_KEY_BEAT = "score_ball_beat";
+        private const string ANIM_KEY_IDLE = "score_ball_idle";
+
         public int CurrentCountDownValue => model.CurrentCountDownValue;
 
         private IScoreBall model;
@@ -14,6 +17,9 @@ namespace GameCore
 
         public void UpdateState(ScoreBallState state)
         {
+            if (state != ScoreBallState.None)
+                view.PlayAnimation(ANIM_KEY_IDLE);
+
             switch (state)
             {
                 case ScoreBallState.InCountDown:
@@ -59,6 +65,7 @@ namespace GameCore
         public void PlayBeatEffect()
         {
             view.CreateBeatEffectPrefab();
+            view.PlayAnimation(ANIM_KEY_BEAT);
         }
 
         public void DragOver()

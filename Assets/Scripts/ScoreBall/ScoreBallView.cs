@@ -28,6 +28,7 @@ namespace GameCore
         private IScoreBallPresenter presenter;
         private OperableUI operableUI;
         private Collider2DAdapterComponent colliderComponent;
+        private Animator animator;
 
         public void SetCountDownNumberText(string text)
         {
@@ -64,6 +65,11 @@ namespace GameCore
             objectPool.SpawnGameObject<AutoParticleEffectObject>(PREFAB_NAME_BEAT_EFFECT);
         }
 
+        public void PlayAnimation(string animKey)
+        {
+            animator.Play(animKey, 0, 0);
+        }
+
         public void Init()
         {
             operableUI = gameObject.GetComponent<OperableUI>();
@@ -80,6 +86,8 @@ namespace GameCore
         private void Awake()
         {
             colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            animator = GetComponent<Animator>();
+
             colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
 

@@ -11,5 +11,6 @@ namespace GameCore
         void TriggerCatch();
         void BindPresenter(IScoreBallPresenter presenter);
         void CreateBeatEffectPrefab();
+        void PlayAnimation(string animKey);
     }
 }
