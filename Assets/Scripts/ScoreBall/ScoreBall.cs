@@ -7,6 +7,7 @@ namespace GameCore
         public int CurrentCountDownValue { get; private set; }
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
+        private readonly IScoreBallTextColorSetting scoreBallTextColorSetting;
 
         private IScoreBallPresenter presenter;
 
@@ -15,10 +16,11 @@ namespace GameCore
 
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker, IScoreBallTextColorSetting scoreBallTextColorSetting)
         {
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
+            this.scoreBallTextColorSetting = scoreBallTextColorSetting;
         }
 
         public void SetFreezeState(bool isFreeze)
@@ -56,6 +58,7 @@ namespace GameCore
         {
             this.presenter = presenter;
             presenter.BindModel(this);
+            presenter.Init(scoreBallTextColorSetting);
         }
 
         public void Reactivate()

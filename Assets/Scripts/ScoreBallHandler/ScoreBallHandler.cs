@@ -95,7 +95,7 @@ namespace GameCore
                 scoreBallView.Init();
 
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
-                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker);
+                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting.ScoreBallTextColorSetting);
                 scoreBall.BindPresenter(scoreBallPresenter);
                 scoreBallPresenter.BindView(scoreBallView);
 

@@ -5,6 +5,7 @@ namespace GameCore
     [CreateAssetMenu]
     public class GameSettingScriptableObject : ScriptableObject, IGameSetting
     {
+        [SerializeField] private ScoreBallTextColorSettingScriptableObject scoreBallTextColorSetting;
         [SerializeField] private int scoreBallStartCountDownValue;
         [SerializeField] private int successSettleScore;
         [SerializeField] private int spawnCatchNetFreq;
@@ -18,5 +19,7 @@ namespace GameCore
         public int CatchNetLimit => catchNetLimit;
         public Vector2Int CatchNetNumberRange => catchNetNumberRange;
         public float HpMax => hpMax;
+        public IScoreBallTextColorSetting ScoreBallTextColorSetting => scoreBallTextColorSetting;
     }
+
 }

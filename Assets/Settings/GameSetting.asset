@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e4a3b0c01824a7e9c4eb3234bec0a9a, type: 3}
   m_Name: GameSetting
   m_EditorClassIdentifier: 
+  scoreBallTextColorSetting: {fileID: 11400000, guid: 0decf6a6ce549da46941d13ac8fda78b, type: 2}
   scoreBallStartCountDownValue: 20
   successSettleScore: 1
   spawnCatchNetFreq: 3

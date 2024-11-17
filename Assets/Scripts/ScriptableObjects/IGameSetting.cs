@@ -10,5 +10,6 @@ namespace GameCore
         int CatchNetLimit { get; }
         Vector2Int CatchNetNumberRange { get; }
         float HpMax { get; }
+        IScoreBallTextColorSetting ScoreBallTextColorSetting { get; }
     }
 }

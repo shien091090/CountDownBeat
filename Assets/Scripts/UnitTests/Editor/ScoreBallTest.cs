@@ -10,15 +10,18 @@ namespace GameCore.UnitTests
         private ScoreBall scoreBall;
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
-        private Action<BeatEvent> beatEventCallback;
         private IScoreBallPresenter presenter;
+        private IScoreBallTextColorSetting scoreBallTextColorSetting;
+
+        private Action<BeatEvent> beatEventCallback;
 
         [SetUp]
         public void Setup()
         {
+            scoreBallTextColorSetting = Substitute.For<IScoreBallTextColorSetting>();
             InitEventHandlerMock();
 
-            scoreBall = new ScoreBall(eventRegister, eventInvoker);
+            scoreBall = new ScoreBall(eventRegister, eventInvoker, scoreBallTextColorSetting);
 
             presenter = Substitute.For<IScoreBallPresenter>();
             scoreBall.BindPresenter(presenter);
@@ -90,7 +93,7 @@ namespace GameCore.UnitTests
             CurrentCountDownValueShouldBe(0);
             CurrentStateShouldBe(ScoreBallState.Hide);
         }
-        
+
         [Test]
         //分數球生成時, 通知Presenter撥放特效
         public void play_beat_effect_when_spawn()
@@ -99,14 +102,14 @@ namespace GameCore.UnitTests
 
             ShouldPresenterPlayBeatEffect(1);
         }
-        
+
         [Test]
         //分數球重新激活時, 通知Presenter撥放特效
         public void play_beat_effect_when_reactivate()
         {
             scoreBall.Init(20);
             scoreBall.SuccessSettle();
-            
+
             ShouldPresenterPlayBeatEffect(1);
 
             scoreBall.Reactivate();
@@ -119,7 +122,7 @@ namespace GameCore.UnitTests
         public void play_beat_effect_when_receive_beat_event()
         {
             scoreBall.Init(20);
-            
+
             ShouldPresenterPlayBeatEffect(1);
 
             CallBeatEventCallback();
@@ -136,9 +139,9 @@ namespace GameCore.UnitTests
         public void do_not_play_beat_effect_when_hide()
         {
             scoreBall.Init(20);
-            
+
             ShouldPresenterPlayBeatEffect(1);
-            
+
             scoreBall.SuccessSettle();
 
             CurrentStateShouldBe(ScoreBallState.Hide);
@@ -267,7 +270,7 @@ namespace GameCore.UnitTests
         public void reactivate_and_count_down(bool isSuccessSettle)
         {
             scoreBall.Init(10);
-            
+
             if (isSuccessSettle)
                 scoreBall.SuccessSettle();
             else
@@ -277,14 +280,14 @@ namespace GameCore.UnitTests
                     CallBeatEventCallback();
                 }
             }
-            
+
             scoreBall.Reactivate();
 
             CallBeatEventCallback();
 
             CurrentCountDownValueShouldBe(9);
         }
-        
+
         private void InitEventHandlerMock()
         {
             beatEventCallback = null;

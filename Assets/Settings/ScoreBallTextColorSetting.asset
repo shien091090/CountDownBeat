@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a3f0490f60648f4d871999b4d500784, type: 3}
-  m_Name: StageSetting
+  m_Script: {fileID: 11500000, guid: 723911ba84c5433ea30fae03bb33feac, type: 3}
+  m_Name: ScoreBallTextColorSetting
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,18 +21,13 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  stageContentList:
-  - stageTitle: bgm1
-    fmodEventReference:
-      Guid:
-        Data1: -231751487
-        Data2: 1109064515
-        Data3: -1062888286
-        Data4: 1731725017
-      Path: event:/CoundDownBeat/BGM_1
-    bpm: 120
-    countDownBeatFreq: 2
-    audioKey: bgm1
-    hpDecreasePerBeat: 0.5
-    hpIncreasePerCatch: 5
-    spawnBeatIndexList: 0000000001000000
+  maxValue: 20
+  textColorDefines:
+  - valueRange: {x: 16, y: 20}
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+  - valueRange: {x: 11, y: 15}
+    textColor: {r: 1, g: 0.96195525, b: 0.3075471, a: 1}
+  - valueRange: {x: 6, y: 10}
+    textColor: {r: 1, g: 0.6330348, b: 0.13396227, a: 1}
+  - valueRange: {x: 0, y: 5}
+    textColor: {r: 1, g: 0.3529412, b: 0.29411766, a: 1}

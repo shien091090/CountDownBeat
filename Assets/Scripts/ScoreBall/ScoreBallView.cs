@@ -45,6 +45,11 @@ namespace GameCore
             img_back.color = freezeColor;
         }
 
+        public void SetTextColor(Color color)
+        {
+            tmp_countDownNum.color = color;
+        }
+
         public void Close()
         {
             gameObject.SetActive(false);

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace GameCore
 {
     public class ScoreBallPresenter : IScoreBallPresenter
@@ -9,10 +11,12 @@ namespace GameCore
 
         private IScoreBall model;
         private IScoreBallView view;
+        private IScoreBallTextColorSetting scoreBallTextColorSetting;
 
         public void UpdateCountDownNumber(int value)
         {
             view.SetCountDownNumberText(value.ToString());
+            view.SetTextColor(GetScoreBallTextColor(value));
         }
 
         public void UpdateState(ScoreBallState state)
@@ -71,6 +75,16 @@ namespace GameCore
         public void DragOver()
         {
             model.SetFreezeState(false);
+        }
+
+        public void Init(IScoreBallTextColorSetting scoreBallTextColorSetting)
+        {
+            this.scoreBallTextColorSetting = scoreBallTextColorSetting;
+        }
+
+        private Color GetScoreBallTextColor(int countDownValue)
+        {
+            return scoreBallTextColorSetting.ConvertToColor(countDownValue);
         }
     }
 }
