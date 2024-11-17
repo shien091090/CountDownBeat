@@ -14723,6 +14723,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 116241a90e66438e9cc89f7aedae5391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoSortingOrderMode: 2
+  canvasSourceView: {fileID: 4071649801798243691, guid: 6060c33d1e3eb7b4c922ac3a49708b90, type: 3}
 --- !u!198 &3181940520059380528
 ParticleSystem:
   m_ObjectHideFlags: 0
