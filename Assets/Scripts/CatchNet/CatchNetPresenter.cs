@@ -18,6 +18,11 @@ namespace GameCore
             this.SpawnPosIndex = spawnPosIndex;
         }
 
+        public void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
+        {
+            view.SetCatchNumberPosType(fadeInMode);
+        }
+
         public void UpdateState(CatchNetState currentState)
         {
             if (currentState == CatchNetState.SuccessSettle)
@@ -41,6 +46,7 @@ namespace GameCore
 
         public void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode)
         {
+            view.PlaySpawnAnimation(fadeInMode);
         }
 
         public void ColliderTriggerEnter2D(ICollider2DAdapter col)

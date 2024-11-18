@@ -30,15 +30,18 @@ namespace GameCore
 
         public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
         {
-            CatchNetSpawnPos spawnPosInfo = GetRandomSpawnPosIndex();
-            if (spawnPosInfo == null)
+            int spawnPosIndex = GetRandomSpawnPosIndex();
+            if (spawnPosIndex < 0)
                 return;
 
-            view?.Spawn(catchNetPresenter, spawnPosInfo.Index);
-            catchNetPresenter.SetSpawnPosIndex(spawnPosInfo.Index);
-            catchNetPresenter.PlaySpawnAnimation(spawnPosInfo.FadeInMode);
+            view?.Spawn(catchNetPresenter, spawnPosIndex);
+            catchNetPresenter.SetSpawnPosIndex(spawnPosIndex);
+            
+            CatchNetSpawnFadeInMode fadeInMode = posFadeInModeDict[spawnPosIndex];
+            catchNetPresenter.PlaySpawnAnimation(fadeInMode);
+            catchNetPresenter.SetCatchNumberPosType(fadeInMode);
 
-            SetPosState(spawnPosInfo.Index, true);
+            SetPosState(spawnPosIndex, true);
             UpdateCurrentCatchNetCount();
         }
 
@@ -79,7 +82,7 @@ namespace GameCore
             posStateDict = new Dictionary<int, bool>();
             posFadeInModeDict = new Dictionary<int, CatchNetSpawnFadeInMode>();
 
-            List<CatchNetSpawnPos> randomSpawnPosInfoList = view.GetRandomSpawnPosInfoList();
+            List<CatchNetSpawnPos> randomSpawnPosInfoList = view.RandomSpawnPosInfoList;
             for (int i = 0; i < randomSpawnPosInfoList.Count; i++)
             {
                 CatchNetSpawnPos posInfo = randomSpawnPosInfoList[i];
@@ -88,7 +91,7 @@ namespace GameCore
             }
         }
 
-        private CatchNetSpawnPos GetRandomSpawnPosIndex()
+        private int GetRandomSpawnPosIndex()
         {
             List<int> enableSpawnIndexList = new List<int>();
             foreach ((int index, bool isSpawned) in posStateDict)
@@ -98,12 +101,11 @@ namespace GameCore
             }
 
             if (enableSpawnIndexList.Count == 0)
-                return null;
+                return -1;
 
             int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
             int spawnPosIndex = enableSpawnIndexList[indexListIndex];
-            CatchNetSpawnPos posInfo = new CatchNetSpawnPos(spawnPosIndex, posFadeInModeDict[spawnPosIndex]);
-            return posInfo;
+            return spawnPosIndex;
         }
 
         private void SetPosState(int index, bool isSpawned)

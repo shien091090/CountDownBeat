@@ -15,7 +15,7 @@ namespace GameCore
             
             component.CheckCreateRandomSpawnPositionList();
 
-            List<CatchNetSpawnPos> randomSpawnPosInfoList = component.GetRandomSpawnPosInfoList();
+            List<CatchNetSpawnPos> randomSpawnPosInfoList = component.RandomSpawnPosInfoList;
             if (randomSpawnPosInfoList == null ||
                 randomSpawnPosInfoList.Count == 0)
                 return;

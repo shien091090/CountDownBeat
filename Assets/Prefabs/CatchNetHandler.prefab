@@ -207,16 +207,16 @@ MonoBehaviour:
   gameSetting: {fileID: 11400000, guid: d67eecfaac058d2458fe50770241c11b, type: 2}
   objectPoolManager: {fileID: 2067908497014706549}
   isShowEditorDrawer: 1
-  randomSpawnPositionList:
-  - {x: -7.027006, y: -0.19620335, z: 0}
-  - {x: -7.030635, y: 2.1255412, z: 0}
-  - {x: -4.0221763, y: -3.858674, z: 0}
-  - {x: 3.9894762, y: 2.387146, z: 0}
-  - {x: 7.096039, y: 1.7985339, z: 0}
-  - {x: 7.0633364, y: -0.22890389, z: 0}
-  - {x: 7.096036, y: -2.1582417, z: 0}
-  - {x: 3.9894772, y: -3.924077, z: 0}
-  - {x: -0.065401316, y: -3.858675, z: 0}
-  - {x: -0.032699466, y: 2.616051, z: 0}
-  - {x: -3.8913736, y: 2.485247, z: 0}
-  - {x: -7.030635, y: -2.4198463, z: 0}
+  randomSpawnPosInfoList:
+  - fadeInMode: 3
+    position: {x: -8.86, y: 2.59, z: 0}
+  - fadeInMode: 3
+    position: {x: -8.86, y: 0, z: 0}
+  - fadeInMode: 3
+    position: {x: -8.86, y: -2.59, z: 0}
+  - fadeInMode: 4
+    position: {x: 8.86, y: 2.59, z: 0}
+  - fadeInMode: 4
+    position: {x: 8.86, y: 0, z: 0}
+  - fadeInMode: 4
+    position: {x: 8.86, y: -2.59, z: 0}

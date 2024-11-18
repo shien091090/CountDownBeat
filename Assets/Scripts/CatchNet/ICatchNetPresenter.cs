@@ -6,6 +6,7 @@ namespace GameCore
     {
         int SpawnPosIndex { get; }
         void SetSpawnPosIndex(int spawnPosIndex);
+        void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode);
         void UpdateState(CatchNetState currentState);
         void RefreshCatchNumber();
         void BindView(ICatchNetView view);

@@ -5,31 +5,26 @@ namespace GameCore
     [System.Serializable]
     public class CatchNetSpawnPos
     {
-        public int Index { get; }
-        public CatchNetSpawnFadeInMode FadeInMode { get; }
-        public Vector3 Position { get; set; }
+        [SerializeField] private CatchNetSpawnFadeInMode fadeInMode;
+        [SerializeField] private Vector3 position;
+
+        public CatchNetSpawnFadeInMode FadeInMode => fadeInMode;
+        public Vector3 Position => position;
 
         public static CatchNetSpawnPos CreateEmptyInstance()
         {
             return new CatchNetSpawnPos(-1, Vector3.zero, CatchNetSpawnFadeInMode.None);
         }
 
-        public CatchNetSpawnPos(int index, CatchNetSpawnFadeInMode fadeInMode)
-        {
-            Index = index;
-            FadeInMode = fadeInMode;
-        }
-
         private CatchNetSpawnPos(int index, Vector3 pos, CatchNetSpawnFadeInMode fadeInMode)
         {
-            Index = index;
-            Position = pos;
-            FadeInMode = fadeInMode;
+            this.position = pos;
+            this.fadeInMode = fadeInMode;
         }
 
         public void SetPosition(Vector2 newPos)
         {
-            Position = newPos;
+            this.position = newPos;
         }
     }
 }

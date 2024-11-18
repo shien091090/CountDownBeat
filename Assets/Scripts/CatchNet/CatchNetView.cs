@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using SNShien.Common.AdapterTools;
 using TMPro;
 using UnityEngine;
@@ -9,15 +10,31 @@ namespace GameCore
     public class CatchNetView : MonoBehaviour, ICatchNetView
     {
         [SerializeField] private TextMeshProUGUI tmp_catchNumber;
-        
+        [SerializeField] private CatchNetNumberPosSetting[] catchNumberPosSettings;
+
         private Collider2DAdapterComponent colliderComponent;
 
         private ICatchNetPresenter presenter;
 
-        private void Awake()
+        public void SetCatchNumber(string catchNumberText)
         {
-            colliderComponent = GetComponent<Collider2DAdapterComponent>();
-            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
+            tmp_catchNumber.text = catchNumberText;
+        }
+
+        public void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
+        {
+            CatchNetNumberPosSetting setting = catchNumberPosSettings.FirstOrDefault(x => x.FadeInMode == fadeInMode);
+            if (setting != null)
+                tmp_catchNumber.transform.localPosition = setting.LocalPosition;
+        }
+
+        public void Close()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode)
+        {
         }
 
         public void BindPresenter(ICatchNetPresenter presenter)
@@ -28,14 +45,10 @@ namespace GameCore
             colliderComponent.InitHandler(presenter);
         }
 
-        public void SetCatchNumber(string catchNumberText)
+        private void Awake()
         {
-            tmp_catchNumber.text = catchNumberText;
-        }
-
-        public void Close()
-        {
-            gameObject.SetActive(false);
+            colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
     }
 }

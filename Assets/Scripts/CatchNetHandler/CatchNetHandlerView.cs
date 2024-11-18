@@ -12,6 +12,7 @@ namespace GameCore
         [SerializeField] private bool isShowEditorDrawer;
         [SerializeField] private List<CatchNetSpawnPos> randomSpawnPosInfoList;
 
+        public List<CatchNetSpawnPos> RandomSpawnPosInfoList => randomSpawnPosInfoList;
         private ICatchNetHandlerPresenter presenter;
         public bool IsShowEditorDrawer => isShowEditorDrawer;
 
@@ -26,14 +27,9 @@ namespace GameCore
             }
         }
 
-        public List<CatchNetSpawnPos> GetRandomSpawnPosInfoList()
-        {
-            return randomSpawnPosInfoList;
-        }
-
         public void Spawn(ICatchNetPresenter catchNetPresenter, int spawnPosIndex)
         {
-            CatchNetSpawnPos posInfo = GetRandomSpawnPosInfoList()[spawnPosIndex];
+            CatchNetSpawnPos posInfo = RandomSpawnPosInfoList[spawnPosIndex];
 
             CatchNetView catchNet = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position);
             catchNet.BindPresenter(catchNetPresenter);
@@ -60,7 +56,7 @@ namespace GameCore
 
         public void SetPos(int index, Vector2 newPos)
         {
-            List<CatchNetSpawnPos> catchNetSpawnPosList = GetRandomSpawnPosInfoList();
+            List<CatchNetSpawnPos> catchNetSpawnPosList = RandomSpawnPosInfoList;
             if (catchNetSpawnPosList == null)
                 return;
 
