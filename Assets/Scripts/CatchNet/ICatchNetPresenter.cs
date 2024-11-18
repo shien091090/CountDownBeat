@@ -10,5 +10,6 @@ namespace GameCore
         void RefreshCatchNumber();
         void BindView(ICatchNetView view);
         void BindModel(ICatchNet model);
+        void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode);
     }
 }

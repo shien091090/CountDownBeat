@@ -15,16 +15,17 @@ namespace GameCore
             
             component.CheckCreateRandomSpawnPositionList();
 
-            if (component.RandomSpawnPositionList == null ||
-                component.RandomSpawnPositionList.Count == 0)
+            List<CatchNetSpawnPos> randomSpawnPosInfoList = component.GetRandomSpawnPosInfoList();
+            if (randomSpawnPosInfoList == null ||
+                randomSpawnPosInfoList.Count == 0)
                 return;
 
             EditorGUI.BeginChangeCheck();
 
             Dictionary<int, Vector2> newPosDict = new Dictionary<int, Vector2>();
-            for (int i = 0; i < component.RandomSpawnPositionList.Count; i++)
+            for (int i = 0; i < randomSpawnPosInfoList.Count; i++)
             {
-                Vector2 newPos = Handles.PositionHandle(component.RandomSpawnPositionList[i], Quaternion.identity);
+                Vector2 newPos = Handles.PositionHandle(randomSpawnPosInfoList[i].Position, Quaternion.identity);
                 newPosDict[i] = newPos;
             }
 

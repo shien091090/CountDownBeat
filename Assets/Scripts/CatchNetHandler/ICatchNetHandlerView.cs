@@ -6,6 +6,6 @@ namespace GameCore
     public interface ICatchNetHandlerView
     {
         void Spawn(ICatchNetPresenter catchNetPresenter, int spawnPosIndex);
-        List<Vector3> RandomSpawnPositionList { get; }
+        List<CatchNetSpawnPos> GetRandomSpawnPosInfoList();
     }
 }

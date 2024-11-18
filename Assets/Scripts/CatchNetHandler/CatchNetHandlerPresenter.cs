@@ -17,34 +17,28 @@ namespace GameCore
 
         private ICatchNetHandler model;
         private ICatchNetHandlerView view;
-        private Dictionary<int, bool> posStateDict;
+        private Dictionary<int, bool> posStateDict = new Dictionary<int, bool>();
+        private Dictionary<int, CatchNetSpawnFadeInMode> posFadeInModeDict = new Dictionary<int, CatchNetSpawnFadeInMode>();
 
         private readonly Debugger debugger = new Debugger(DEBUGGER_KEY);
 
         public void Init()
         {
-            InitPosStateDict();
+            InitData();
             UpdateCurrentCatchNetCount();
         }
 
         public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
         {
-            List<int> enableSpawnIndexList = new List<int>();
-            foreach ((int index, bool isSpawned) in posStateDict)
-            {
-                if (isSpawned == false)
-                    enableSpawnIndexList.Add(index);
-            }
-
-            if (enableSpawnIndexList.Count == 0)
+            CatchNetSpawnPos spawnPosInfo = GetRandomSpawnPosIndex();
+            if (spawnPosInfo == null)
                 return;
 
-            int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
-            int spawnPosIndex = enableSpawnIndexList[indexListIndex];
-            view?.Spawn(catchNetPresenter, spawnPosIndex);
-            catchNetPresenter.SetSpawnPosIndex(spawnPosIndex);
+            view?.Spawn(catchNetPresenter, spawnPosInfo.Index);
+            catchNetPresenter.SetSpawnPosIndex(spawnPosInfo.Index);
+            catchNetPresenter.PlaySpawnAnimation(spawnPosInfo.FadeInMode);
 
-            SetPosState(spawnPosIndex, true);
+            SetPosState(spawnPosInfo.Index, true);
             UpdateCurrentCatchNetCount();
         }
 
@@ -80,13 +74,36 @@ namespace GameCore
             model = null;
         }
 
-        private void InitPosStateDict()
+        private void InitData()
         {
             posStateDict = new Dictionary<int, bool>();
-            for (int i = 0; i < view.RandomSpawnPositionList.Count; i++)
+            posFadeInModeDict = new Dictionary<int, CatchNetSpawnFadeInMode>();
+
+            List<CatchNetSpawnPos> randomSpawnPosInfoList = view.GetRandomSpawnPosInfoList();
+            for (int i = 0; i < randomSpawnPosInfoList.Count; i++)
             {
-                posStateDict.Add(i, false);
+                CatchNetSpawnPos posInfo = randomSpawnPosInfoList[i];
+                posStateDict[i] = false;
+                posFadeInModeDict[i] = posInfo.FadeInMode;
             }
+        }
+
+        private CatchNetSpawnPos GetRandomSpawnPosIndex()
+        {
+            List<int> enableSpawnIndexList = new List<int>();
+            foreach ((int index, bool isSpawned) in posStateDict)
+            {
+                if (isSpawned == false)
+                    enableSpawnIndexList.Add(index);
+            }
+
+            if (enableSpawnIndexList.Count == 0)
+                return null;
+
+            int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
+            int spawnPosIndex = enableSpawnIndexList[indexListIndex];
+            CatchNetSpawnPos posInfo = new CatchNetSpawnPos(spawnPosIndex, posFadeInModeDict[spawnPosIndex]);
+            return posInfo;
         }
 
         private void SetPosState(int index, bool isSpawned)

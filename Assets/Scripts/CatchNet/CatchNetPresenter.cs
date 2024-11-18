@@ -39,6 +39,10 @@ namespace GameCore
             this.model = model;
         }
 
+        public void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode)
+        {
+        }
+
         public void ColliderTriggerEnter2D(ICollider2DAdapter col)
         {
             IScoreBallView scoreBall = col.GetComponent<IScoreBallView>();

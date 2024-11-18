@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
@@ -9,17 +10,32 @@ namespace GameCore
         [SerializeField] private GameSettingScriptableObject gameSetting;
         [SerializeField] private ObjectPoolManager objectPoolManager;
         [SerializeField] private bool isShowEditorDrawer;
-        [SerializeField] private List<Vector3> randomSpawnPositionList;
-        public List<Vector3> RandomSpawnPositionList => randomSpawnPositionList;
+        [SerializeField] private List<CatchNetSpawnPos> randomSpawnPosInfoList;
 
         private ICatchNetHandlerPresenter presenter;
         public bool IsShowEditorDrawer => isShowEditorDrawer;
 
+        public List<Vector3> RandomSpawnPositionList
+        {
+            get
+            {
+                if (randomSpawnPosInfoList == null || randomSpawnPosInfoList.Count == 0)
+                    return new List<Vector3>();
+                else
+                    return randomSpawnPosInfoList.Select(x => x.Position).ToList();
+            }
+        }
+
+        public List<CatchNetSpawnPos> GetRandomSpawnPosInfoList()
+        {
+            return randomSpawnPosInfoList;
+        }
+
         public void Spawn(ICatchNetPresenter catchNetPresenter, int spawnPosIndex)
         {
-            Vector3 position = RandomSpawnPositionList[spawnPosIndex];
+            CatchNetSpawnPos posInfo = GetRandomSpawnPosInfoList()[spawnPosIndex];
 
-            CatchNetView catchNet = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, position);
+            CatchNetView catchNet = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position);
             catchNet.BindPresenter(catchNetPresenter);
         }
 
@@ -44,11 +60,12 @@ namespace GameCore
 
         public void SetPos(int index, Vector2 newPos)
         {
-            if (RandomSpawnPositionList == null)
+            List<CatchNetSpawnPos> catchNetSpawnPosList = GetRandomSpawnPosInfoList();
+            if (catchNetSpawnPosList == null)
                 return;
 
-            if (RandomSpawnPositionList.Count > index)
-                RandomSpawnPositionList[index] = newPos;
+            if (catchNetSpawnPosList.Count > index)
+                catchNetSpawnPosList[index].SetPosition(newPos);
         }
 
         public void CheckCreateRandomSpawnPositionList()
@@ -56,12 +73,12 @@ namespace GameCore
             if (gameSetting == null)
                 return;
 
-            if (randomSpawnPositionList.Count > gameSetting.CatchNetLimit)
+            if (randomSpawnPosInfoList.Count > gameSetting.CatchNetLimit)
                 return;
 
-            for (int i = randomSpawnPositionList.Count; i <= gameSetting.CatchNetLimit; i++)
+            for (int i = randomSpawnPosInfoList.Count; i <= gameSetting.CatchNetLimit; i++)
             {
-                randomSpawnPositionList.Add(Vector3.zero);
+                randomSpawnPosInfoList.Add(CatchNetSpawnPos.CreateEmptyInstance());
             }
         }
     }
