@@ -1,3 +1,5 @@
+using System;
+
 namespace GameCore
 {
     public interface ICatchNetView
@@ -5,6 +7,7 @@ namespace GameCore
         void SetCatchNumber(string catchNumberText);
         void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode);
         void Close();
-        void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode);
+        void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode, Action callback);
+        void ResetPos();
     }
 }

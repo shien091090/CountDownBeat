@@ -35,11 +35,7 @@ namespace GameCore
                 return;
 
             view?.Spawn(catchNetPresenter, spawnPosIndex);
-            catchNetPresenter.SetSpawnPosIndex(spawnPosIndex);
-            
-            CatchNetSpawnFadeInMode fadeInMode = posFadeInModeDict[spawnPosIndex];
-            catchNetPresenter.PlaySpawnAnimation(fadeInMode);
-            catchNetPresenter.SetCatchNumberPosType(fadeInMode);
+            catchNetPresenter.Init(spawnPosIndex, posFadeInModeDict[spawnPosIndex]);
 
             SetPosState(spawnPosIndex, true);
             UpdateCurrentCatchNetCount();

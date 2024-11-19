@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.AdapterTools;
 
 namespace GameCore
@@ -7,26 +8,28 @@ namespace GameCore
         public int SpawnPosIndex { get; private set; }
         private ICatchNet model;
         private ICatchNetView view;
+        private bool catchEnable;
 
         public CatchNetPresenter()
         {
-            SpawnPosIndex = -1;
+            ClearData();
         }
 
-        public void SetSpawnPosIndex(int spawnPosIndex)
+        public void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)
         {
-            this.SpawnPosIndex = spawnPosIndex;
-        }
-
-        public void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
-        {
-            view.SetCatchNumberPosType(fadeInMode);
+            SpawnPosIndex = spawnPosIndex;
+            catchEnable = false;
+            SetCatchNumberPosType(fadeInMode);
+            PlaySpawnAnimation(fadeInMode, () =>
+            {
+                catchEnable = true;
+            });
         }
 
         public void UpdateState(CatchNetState currentState)
         {
             if (currentState == CatchNetState.SuccessSettle)
-                view.Close();
+                Hide();
         }
 
         public void RefreshCatchNumber()
@@ -44,13 +47,11 @@ namespace GameCore
             this.model = model;
         }
 
-        public void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode)
-        {
-            view.PlaySpawnAnimation(fadeInMode);
-        }
-
         public void ColliderTriggerEnter2D(ICollider2DAdapter col)
         {
+            if (catchEnable == false)
+                return;
+
             IScoreBallView scoreBall = col.GetComponent<IScoreBallView>();
             if (scoreBall == null)
                 return;
@@ -74,6 +75,32 @@ namespace GameCore
 
         public void CollisionExit2D(ICollision2DAdapter col)
         {
+        }
+
+        private void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
+        {
+            view.SetCatchNumberPosType(fadeInMode);
+        }
+
+        private void ClearData()
+        {
+            catchEnable = false;
+            SpawnPosIndex = -1;
+        }
+
+        private void Hide()
+        {
+            view.Close();
+            ClearData();
+        }
+
+        private void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode, Action callback)
+        {
+            view.ResetPos();
+            view.PlaySpawnAnimation(fadeInMode, () =>
+            {
+                callback?.Invoke();
+            });
         }
     }
 }

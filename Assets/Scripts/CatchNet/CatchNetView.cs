@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DG.Tweening;
 using SNShien.Common.AdapterTools;
 using TMPro;
 using UnityEngine;
@@ -9,12 +10,15 @@ namespace GameCore
     [RequireComponent(typeof(Collider2DAdapterComponent))]
     public class CatchNetView : MonoBehaviour, ICatchNetView
     {
+        [SerializeField] private float spawnAnimationDuration;
+        [SerializeField] private Ease spawnAnimationEaseType;
+        [SerializeField] private RectTransform go_root;
         [SerializeField] private TextMeshProUGUI tmp_catchNumber;
         [SerializeField] private CatchNetNumberPosSetting[] catchNumberPosSettings;
 
         private Collider2DAdapterComponent colliderComponent;
-
         private ICatchNetPresenter presenter;
+        private Tween spawnCatchNetTween;
 
         public void SetCatchNumber(string catchNumberText)
         {
@@ -33,8 +37,56 @@ namespace GameCore
             gameObject.SetActive(false);
         }
 
-        public void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode)
+        public void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode, Action callback)
         {
+            Vector3 startLocalPos = Vector3.zero;
+
+            switch (fadeInMode)
+            {
+                case CatchNetSpawnFadeInMode.FromTop:
+                    startLocalPos = new Vector3(go_root.rect.height, 0, 0);
+                    break;
+
+                case CatchNetSpawnFadeInMode.FromBottom:
+                    startLocalPos = new Vector3(-go_root.rect.height, 0, 0);
+                    break;
+
+                case CatchNetSpawnFadeInMode.FromLeft:
+                    startLocalPos = new Vector3(-go_root.rect.width, 0, 0);
+                    break;
+
+                case CatchNetSpawnFadeInMode.FromRight:
+                    startLocalPos = new Vector3(go_root.rect.width, 0, 0);
+                    break;
+            }
+
+            go_root.localPosition = startLocalPos;
+            spawnCatchNetTween = go_root
+                .DOLocalMove(Vector3.zero, spawnAnimationDuration)
+                .SetEase(spawnAnimationEaseType)
+                .OnComplete(() =>
+                {
+                    callback?.Invoke();
+                });
+        }
+
+        public void ResetPos()
+        {
+            go_root.localPosition = Vector3.zero;
+        }
+
+        private void Awake()
+        {
+            colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
+        }
+
+        [ContextMenu("Play Spawn Animation")]
+        public void EditorTest_PlaySpawnAnimation()
+        {
+            spawnCatchNetTween?.Kill();
+            ResetPos();
+            PlaySpawnAnimation(CatchNetSpawnFadeInMode.FromLeft, null);
         }
 
         public void BindPresenter(ICatchNetPresenter presenter)
@@ -43,12 +95,6 @@ namespace GameCore
             presenter.BindView(this);
 
             colliderComponent.InitHandler(presenter);
-        }
-
-        private void Awake()
-        {
-            colliderComponent = GetComponent<Collider2DAdapterComponent>();
-            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
     }
 }
