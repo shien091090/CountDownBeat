@@ -1,17 +1,22 @@
 using System;
 using SNShien.Common.AdapterTools;
+using SNShien.Common.ProcessTools;
 
 namespace GameCore
 {
     public class CatchNetPresenter : ICatchNetPresenter
     {
         public int SpawnPosIndex { get; private set; }
+
+        private readonly IEventRegister eventRegister;
+
         private ICatchNet model;
         private ICatchNetView view;
         private bool catchEnable;
 
-        public CatchNetPresenter()
+        public CatchNetPresenter(IEventRegister eventRegister)
         {
+            this.eventRegister = eventRegister;
             ClearData();
         }
 
@@ -19,7 +24,9 @@ namespace GameCore
         {
             SpawnPosIndex = spawnPosIndex;
             catchEnable = false;
+
             SetCatchNumberPosType(fadeInMode);
+            SetEventRegister(true);
             PlaySpawnAnimation(fadeInMode, () =>
             {
                 catchEnable = true;
@@ -77,6 +84,16 @@ namespace GameCore
         {
         }
 
+        private void SetEventRegister(bool isListen)
+        {
+            eventRegister.Unregister<BeatEvent>(OnBeat);
+
+            if (isListen)
+            {
+                eventRegister.Register<BeatEvent>(OnBeat);
+            }
+        }
+
         private void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
         {
             view.SetCatchNumberPosType(fadeInMode);
@@ -86,6 +103,7 @@ namespace GameCore
         {
             catchEnable = false;
             SpawnPosIndex = -1;
+            SetEventRegister(false);
         }
 
         private void Hide()
@@ -101,6 +119,11 @@ namespace GameCore
             {
                 callback?.Invoke();
             });
+        }
+
+        private void OnBeat(BeatEvent eventInfo)
+        {
+            view.PlayBeatAnimation();
         }
     }
 }

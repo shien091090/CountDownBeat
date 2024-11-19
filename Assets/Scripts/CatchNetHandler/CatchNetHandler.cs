@@ -50,7 +50,7 @@ namespace GameCore
 
         private void SpawnCatchNet()
         {
-            CatchNetPresenter catchNetPresenter = new CatchNetPresenter();
+            CatchNetPresenter catchNetPresenter = new CatchNetPresenter(eventRegister);
             CatchNet catchNet = new CatchNet(catchNetPresenter, presenter, eventInvoker, gameSetting);
 
             presenter.SpawnCatchNet(catchNetPresenter);

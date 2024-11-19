@@ -8,6 +8,7 @@ namespace GameCore
         void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode);
         void Close();
         void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode, Action callback);
+        void PlayBeatAnimation();
         void ResetPos();
     }
 }

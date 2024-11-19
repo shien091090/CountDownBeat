@@ -10,6 +10,8 @@ namespace GameCore
     [RequireComponent(typeof(Collider2DAdapterComponent))]
     public class CatchNetView : MonoBehaviour, ICatchNetView
     {
+        private const string ANIM_KEY_BEAT = "catch_net_beat";
+
         [SerializeField] private float spawnAnimationDuration;
         [SerializeField] private Ease spawnAnimationEaseType;
         [SerializeField] private RectTransform go_root;
@@ -19,6 +21,7 @@ namespace GameCore
         private Collider2DAdapterComponent colliderComponent;
         private ICatchNetPresenter presenter;
         private Tween spawnCatchNetTween;
+        private Animator animator;
 
         public void SetCatchNumber(string catchNumberText)
         {
@@ -70,15 +73,14 @@ namespace GameCore
                 });
         }
 
+        public void PlayBeatAnimation()
+        {
+            animator.Play(ANIM_KEY_BEAT, 0, 0);
+        }
+
         public void ResetPos()
         {
             go_root.localPosition = Vector3.zero;
-        }
-
-        private void Awake()
-        {
-            colliderComponent = GetComponent<Collider2DAdapterComponent>();
-            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
 
         [ContextMenu("Play Spawn Animation")]
@@ -95,6 +97,14 @@ namespace GameCore
             presenter.BindView(this);
 
             colliderComponent.InitHandler(presenter);
+        }
+
+        private void Awake()
+        {
+            animator = GetComponent<Animator>();
+
+            colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
     }
 }

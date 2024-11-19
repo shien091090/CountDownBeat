@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: score_ball_beat
+  m_Name: catch_net_beat
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -31,16 +31,16 @@ AnimationClip:
       - serializedVersion: 3
         time: 0.16666667
         value: {x: 1, y: 1, z: 1}
-        inSlope: {x: -3.981626, y: -4.098582, z: 0}
-        outSlope: {x: -3.981626, y: -4.098582, z: 0}
+        inSlope: {x: -2.646887, y: -2.646887, z: 0}
+        outSlope: {x: -2.646887, y: -2.646887, z: 0}
         tangentMode: 0
         weightedMode: 0
-        inWeight: {x: 0.10784975, y: 0.2521948, z: 0.33333334}
+        inWeight: {x: 0.13236228, y: 0.13236228, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: 
+    path: Root/TMP_TargetNum
   m_FloatCurves: []
   m_PPtrCurves: []
   m_SampleRate: 60
@@ -51,7 +51,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 0
+      path: 1201287164
       attribute: 3
       script: {fileID: 0}
       typeID: 4
@@ -97,17 +97,17 @@ AnimationClip:
       - serializedVersion: 3
         time: 0.16666667
         value: 1
-        inSlope: -3.981626
-        outSlope: -3.981626
+        inSlope: -2.646887
+        outSlope: -2.646887
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.10784975
+        inWeight: 0.13236228
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.x
-    path: 
+    path: Root/TMP_TargetNum
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -127,17 +127,17 @@ AnimationClip:
       - serializedVersion: 3
         time: 0.16666667
         value: 1
-        inSlope: -4.098582
-        outSlope: -4.098582
+        inSlope: -2.646887
+        outSlope: -2.646887
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.2521948
+        inWeight: 0.13236228
         outWeight: 0.33333334
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.y
-    path: 
+    path: Root/TMP_TargetNum
     classID: 224
     script: {fileID: 0}
     flags: 0
@@ -167,7 +167,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: 
+    path: Root/TMP_TargetNum
     classID: 224
     script: {fileID: 0}
     flags: 0
