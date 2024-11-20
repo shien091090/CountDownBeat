@@ -154,6 +154,10 @@ MonoBehaviour:
     prefabReference: {fileID: 5671283499733113348, guid: fffc063cd7b9d80409d24381d3db63e0, type: 3}
     parentHolder: {fileID: 4992194428887110653}
     ObjectPoolList: []
+  - gameObjectName: CatchSuccessEffect
+    prefabReference: {fileID: 1449242181322416601, guid: 052d5f6cf7d3ebc44bba49fbe653f9a8, type: 3}
+    parentHolder: {fileID: 4992194428887110653}
+    ObjectPoolList: []
 --- !u!1 &7850605610804480675
 GameObject:
   m_ObjectHideFlags: 0

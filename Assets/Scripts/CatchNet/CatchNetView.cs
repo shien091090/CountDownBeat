@@ -18,6 +18,8 @@ namespace GameCore
         [SerializeField] private TextMeshProUGUI tmp_catchNumber;
         [SerializeField] private CatchNetNumberPosSetting[] catchNumberPosSettings;
 
+        public Vector3 Position => gameObject.transform.position;
+
         private Collider2DAdapterComponent colliderComponent;
         private ICatchNetPresenter presenter;
         private Tween spawnCatchNetTween;
@@ -83,6 +85,14 @@ namespace GameCore
             go_root.localPosition = Vector3.zero;
         }
 
+        private void Awake()
+        {
+            animator = GetComponent<Animator>();
+
+            colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
+        }
+
         [ContextMenu("Play Spawn Animation")]
         public void EditorTest_PlaySpawnAnimation()
         {
@@ -97,14 +107,6 @@ namespace GameCore
             presenter.BindView(this);
 
             colliderComponent.InitHandler(presenter);
-        }
-
-        private void Awake()
-        {
-            animator = GetComponent<Animator>();
-
-            colliderComponent = GetComponent<Collider2DAdapterComponent>();
-            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
     }
 }

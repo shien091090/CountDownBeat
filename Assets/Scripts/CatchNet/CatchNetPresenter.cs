@@ -1,12 +1,14 @@
 using System;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.ProcessTools;
+using UnityEngine;
 
 namespace GameCore
 {
     public class CatchNetPresenter : ICatchNetPresenter
     {
         public int SpawnPosIndex { get; private set; }
+        public Vector3 Position => view?.Position ?? Vector3.zero;
 
         private readonly IEventRegister eventRegister;
 
@@ -19,6 +21,8 @@ namespace GameCore
             this.eventRegister = eventRegister;
             ClearData();
         }
+
+        public event Action<ICatchNetPresenter> OnSuccessCatch;
 
         public void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)
         {
@@ -36,7 +40,10 @@ namespace GameCore
         public void UpdateState(CatchNetState currentState)
         {
             if (currentState == CatchNetState.SuccessSettle)
+            {
+                OnSuccessCatch?.Invoke(this);
                 Hide();
+            }
         }
 
         public void RefreshCatchNumber()

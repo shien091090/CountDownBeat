@@ -36,9 +36,16 @@ namespace GameCore
 
             view?.Spawn(catchNetPresenter, spawnPosIndex);
             catchNetPresenter.Init(spawnPosIndex, posFadeInModeDict[spawnPosIndex]);
+            catchNetPresenter.OnSuccessCatch -= OnSuccessCatch;
+            catchNetPresenter.OnSuccessCatch += OnSuccessCatch;
 
             SetPosState(spawnPosIndex, true);
             UpdateCurrentCatchNetCount();
+        }
+
+        private void OnSuccessCatch(ICatchNetPresenter catchNetPresenter)
+        {
+            view.PlayCatchSuccessEffect(catchNetPresenter.Position);
         }
 
         public void BindModel(ICatchNetHandler model)

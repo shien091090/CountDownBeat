@@ -8,6 +8,7 @@ namespace GameCore
 
         public const string PREFAB_NAME_SCORE_BALL = "ScoreBall";
         public const string PREFAB_NAME_CATCH_NET = "CatchNet";
+        public const string PREFAB_NAME_CATCH_SUCCESS_EFFECT = "CatchSuccessEffect";
 
         public const string SCENE_REPOSITION_ACTION_ENTER_GAME = "EnterGame";
         public const string SCENE_REPOSITION_ACTION_ENTER_SELECTION_MENU = "EnterSelectionMenu";

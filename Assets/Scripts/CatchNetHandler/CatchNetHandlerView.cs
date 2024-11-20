@@ -35,6 +35,11 @@ namespace GameCore
             catchNet.BindPresenter(catchNetPresenter);
         }
 
+        public void PlayCatchSuccessEffect(Vector3 position)
+        {
+            objectPoolManager.SpawnGameObject(GameConst.PREFAB_NAME_CATCH_SUCCESS_EFFECT, position);
+        }
+
         public override void UpdateView()
         {
         }
