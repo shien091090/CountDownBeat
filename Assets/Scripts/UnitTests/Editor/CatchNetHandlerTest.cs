@@ -88,10 +88,12 @@ namespace GameCore.UnitTests
             CallBeatEventCallback();
 
             ShouldSpawnCatchNet(4);
+            CurrentInFieldCatchNetAmountShouldBe(4);
 
             CallBeatEventCallback();
 
             ShouldSpawnCatchNet(4);
+            CurrentInFieldCatchNetAmountShouldBe(4);
         }
 
         [Test]
@@ -109,12 +111,14 @@ namespace GameCore.UnitTests
             CallBeatEventCallback();
 
             ShouldSpawnCatchNet(4);
+            CurrentInFieldCatchNetAmountShouldBe(4);
 
-            GivenCurrentCatchNetCount(presenter.CurrentCatchNetCount - 1);
+            CallLastSpawnCatchNetSuccessSettle();
 
             CallBeatEventCallback();
 
             ShouldSpawnCatchNet(5);
+            CurrentInFieldCatchNetAmountShouldBe(4);
         }
 
         [Test]
@@ -143,6 +147,59 @@ namespace GameCore.UnitTests
             }
         }
 
+        [Test]
+        //生成捕獲網時若沒有隱藏中的捕獲網, 會產出新的捕獲網
+        public void spawn_new_catch_net_when_no_hidden_catch_net()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(10);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CurrentInFieldCatchNetAmountShouldBe(0);
+            ShouldSpawnCatchNet(0);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(1);
+            ShouldSpawnCatchNet(1);
+            LastSpawnCatchNetStateShouldBe(CatchNetState.Working);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(2);
+            ShouldSpawnCatchNet(2);
+        }
+
+        [Test]
+        //生成捕獲網時若有隱藏中的捕獲網, 會重新激活該捕獲網
+        public void reactivate_hidden_catch_net_when_spawn_catch_net()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(10);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CurrentInFieldCatchNetAmountShouldBe(0);
+            ShouldSpawnCatchNet(0);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(1);
+            ShouldSpawnCatchNet(1);
+
+            CallLastSpawnCatchNetSuccessSettle();
+
+            CatchNet catchNet = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
+            CatchNetStateShouldBe(catchNet, CatchNetState.SuccessSettle);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(1);
+            ShouldSpawnCatchNet(2);
+            CatchNetStateShouldBe(catchNet, CatchNetState.Working);
+        }
+
         private void InitGameSettingMock()
         {
             gameSetting = Substitute.For<IGameSetting>();
@@ -157,8 +214,6 @@ namespace GameCore.UnitTests
 
             presenter.When(x => x.SpawnCatchNet(Arg.Any<ICatchNetPresenter>())).Do(callInfo =>
             {
-                GivenCurrentCatchNetCount(presenter.CurrentCatchNetCount + 1);
-
                 ICatchNetPresenter catchNetPresenter = (ICatchNetPresenter)callInfo.Args()[0];
                 catchNetPresenter.BindView(catchNetView);
             });
@@ -182,11 +237,6 @@ namespace GameCore.UnitTests
             gameSetting.CatchNetNumberRange.Returns(new Vector2Int(min, max));
         }
 
-        private void GivenCurrentCatchNetCount(int count)
-        {
-            presenter.CurrentCatchNetCount.Returns(count);
-        }
-
         private void GivenCatchNetLimit(int catchNetLimit)
         {
             gameSetting.CatchNetLimit.Returns(catchNetLimit);
@@ -197,17 +247,39 @@ namespace GameCore.UnitTests
             gameSetting.SpawnCatchNetFreq.Returns(spawnCatchNetFreq);
         }
 
+        private void CallLastSpawnCatchNetSuccessSettle()
+        {
+            CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
+            arg.TryTriggerCatch(arg.TargetNumber);
+        }
+
         private void CallBeatEventCallback()
         {
             beatEventCallback.Invoke(new BeatEvent(false));
         }
 
+        private void CatchNetStateShouldBe(CatchNet catchNet, CatchNetState expectedState)
+        {
+            Assert.AreEqual(expectedState, catchNet.CurrentState);
+        }
+
+        private void LastSpawnCatchNetStateShouldBe(CatchNetState expectedState)
+        {
+            CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
+            Assert.AreEqual(expectedState, arg.CurrentState);
+        }
+
+        private void CurrentInFieldCatchNetAmountShouldBe(int expectedAmount)
+        {
+            Assert.AreEqual(expectedAmount, catchNetHandler.CurrentInFieldCatchNetAmount);
+        }
+
         private void ShouldSpawnCatchNet(int expectedCallTimes)
         {
             if (expectedCallTimes == 0)
-                presenter.DidNotReceive().SpawnCatchNet(Arg.Any<CatchNetPresenter>());
+                presenter.DidNotReceive().SpawnCatchNet(Arg.Any<ICatchNetPresenter>());
             else
-                presenter.Received(expectedCallTimes).SpawnCatchNet(Arg.Any<CatchNetPresenter>());
+                presenter.Received(expectedCallTimes).SpawnCatchNet(Arg.Any<ICatchNetPresenter>());
         }
     }
 }

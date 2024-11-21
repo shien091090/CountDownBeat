@@ -13,8 +13,6 @@ namespace GameCore
 
         [Inject] private IViewManager viewManager;
 
-        public int CurrentCatchNetCount { get; private set; }
-
         private ICatchNetHandler model;
         private ICatchNetHandlerView view;
         private Dictionary<int, bool> posStateDict = new Dictionary<int, bool>();
@@ -25,7 +23,6 @@ namespace GameCore
         public void Init()
         {
             InitData();
-            UpdateCurrentCatchNetCount();
         }
 
         public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
@@ -40,7 +37,6 @@ namespace GameCore
             catchNetPresenter.OnSuccessCatch += OnSuccessCatch;
 
             SetPosState(spawnPosIndex, true);
-            UpdateCurrentCatchNetCount();
         }
 
         private void OnSuccessCatch(ICatchNetPresenter catchNetPresenter)
@@ -66,13 +62,11 @@ namespace GameCore
         public void FreeUpPosAndRefreshCurrentCount(int spawnIndex)
         {
             SetPosState(spawnIndex, false);
-            UpdateCurrentCatchNetCount();
         }
 
         public void UnbindView()
         {
             view = null;
-            CurrentCatchNetCount = 0;
         }
 
         public void UnbindModel()
@@ -118,15 +112,6 @@ namespace GameCore
 
             if (posStateDict.ContainsKey(index))
                 posStateDict[index] = isSpawned;
-        }
-
-        private void UpdateCurrentCatchNetCount()
-        {
-            CurrentCatchNetCount = 0;
-            foreach (bool isSpawned in posStateDict.Values.Where(isSpawned => isSpawned))
-            {
-                CurrentCatchNetCount++;
-            }
         }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using SNShien.Common.ProcessTools;
 using Zenject;
 using Random = UnityEngine.Random;
@@ -13,8 +15,10 @@ namespace GameCore
         [Inject] private ICatchNetHandlerPresenter presenter;
 
         private int beatCounter;
+        private List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
 
         public event Action<CatchNet> OnSpawnCatchNet;
+        public int CurrentInFieldCatchNetAmount { get; }
 
         public void ExecuteModelInit()
         {
@@ -38,6 +42,12 @@ namespace GameCore
             presenter.Init();
         }
 
+        private CatchNet GetHiddenCatchNet()
+        {
+            CatchNet hiddenCatchNet = inFieldCatchNetList.FirstOrDefault(x => x.CurrentState == CatchNetState.None || x.CurrentState == CatchNetState.SuccessSettle);
+            return hiddenCatchNet;
+        }
+
         private void SetEventRegister(bool isListen)
         {
             eventRegister.Unregister<BeatEvent>(OnBeatEvent);
@@ -50,11 +60,15 @@ namespace GameCore
 
         private void SpawnCatchNet()
         {
-            CatchNetPresenter catchNetPresenter = new CatchNetPresenter(eventRegister);
-            CatchNet catchNet = new CatchNet(catchNetPresenter, presenter, eventInvoker, gameSetting);
+            CatchNet catchNet = GetHiddenCatchNet();
+            if (catchNet == null)
+            {
+                CatchNetPresenter catchNetPresenter = new CatchNetPresenter(eventRegister);
+                catchNet = new CatchNet(catchNetPresenter, presenter, eventInvoker, gameSetting);
 
-            presenter.SpawnCatchNet(catchNetPresenter);
-            catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
+                presenter.SpawnCatchNet(catchNetPresenter);
+                catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
+            }
 
             OnSpawnCatchNet?.Invoke(catchNet);
         }
@@ -64,7 +78,7 @@ namespace GameCore
             if (gameSetting.SpawnCatchNetFreq == 0)
                 return;
 
-            if (presenter.CurrentCatchNetCount >= gameSetting.CatchNetLimit)
+            if (CurrentInFieldCatchNetAmount >= gameSetting.CatchNetLimit)
             {
                 beatCounter = 0;
                 return;
