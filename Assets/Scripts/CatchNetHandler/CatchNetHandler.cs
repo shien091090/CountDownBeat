@@ -13,6 +13,7 @@ namespace GameCore
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IGameSetting gameSetting;
         [Inject] private ICatchNetHandlerPresenter presenter;
+        [Inject] private IMVPArchitectureHandler mvpArchitectureHandler;
 
         private int beatCounter;
         private List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
@@ -63,8 +64,13 @@ namespace GameCore
             CatchNet catchNet = GetHiddenCatchNet();
             if (catchNet == null)
             {
+                ICatchNetView catchNetView = presenter.Spawn();
                 CatchNetPresenter catchNetPresenter = new CatchNetPresenter(eventRegister);
-                catchNet = new CatchNet(catchNetPresenter, presenter, eventInvoker, gameSetting);
+                catchNet = new CatchNet(presenter, eventInvoker, gameSetting);
+
+                mvpArchitectureHandler.MultipleBind(catchNet, catchNetPresenter, catchNetView);
+
+                catchNet.BindPresenter(catchNetPresenter);
 
                 presenter.SpawnCatchNet(catchNetPresenter);
                 catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));

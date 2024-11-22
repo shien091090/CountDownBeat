@@ -25,6 +25,18 @@ namespace GameCore
             InitData();
         }
 
+        public ICatchNetView Spawn()
+        {
+            int spawnPosIndex = GetRandomSpawnPosIndex();
+            if (spawnPosIndex < 0)
+                return null;
+            else
+            {
+                SetPosState(spawnPosIndex, true);
+                return view.Spawn(spawnPosIndex);
+            }
+        }
+
         public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
         {
             int spawnPosIndex = GetRandomSpawnPosIndex();
@@ -37,11 +49,6 @@ namespace GameCore
             catchNetPresenter.OnSuccessCatch += OnSuccessCatch;
 
             SetPosState(spawnPosIndex, true);
-        }
-
-        private void OnSuccessCatch(ICatchNetPresenter catchNetPresenter)
-        {
-            view.PlayCatchSuccessEffect(catchNetPresenter.Position);
         }
 
         public void BindModel(ICatchNetHandler model)
@@ -112,6 +119,11 @@ namespace GameCore
 
             if (posStateDict.ContainsKey(index))
                 posStateDict[index] = isSpawned;
+        }
+
+        private void OnSuccessCatch(ICatchNetPresenter catchNetPresenter)
+        {
+            view.PlayCatchSuccessEffect(catchNetPresenter.Position);
         }
     }
 }

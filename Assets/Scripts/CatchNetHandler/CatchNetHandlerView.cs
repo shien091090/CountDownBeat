@@ -35,6 +35,13 @@ namespace GameCore
             catchNet.BindPresenter(catchNetPresenter);
         }
 
+        public ICatchNetView Spawn(int spawnPosIndex)
+        {
+            CatchNetSpawnPos posInfo = RandomSpawnPosInfoList[spawnPosIndex];
+            CatchNetView view = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position);
+            return view;
+        }
+
         public void PlayCatchSuccessEffect(Vector3 position)
         {
             objectPoolManager.SpawnGameObject(GameConst.PREFAB_NAME_CATCH_SUCCESS_EFFECT, position);

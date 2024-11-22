@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public interface ICatchNetView
+    public interface ICatchNetView : IMVPView
     {
         Vector3 Position { get; }
         void SetCatchNumber(string catchNumberText);

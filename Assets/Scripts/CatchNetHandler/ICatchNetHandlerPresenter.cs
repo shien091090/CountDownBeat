@@ -10,5 +10,6 @@ namespace GameCore
         void FreeUpPosAndRefreshCurrentCount(int spawnIndex);
         void UnbindView();
         void UnbindModel();
+        ICatchNetView Spawn();
     }
 }

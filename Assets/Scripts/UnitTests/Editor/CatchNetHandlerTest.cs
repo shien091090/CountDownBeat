@@ -113,7 +113,7 @@ namespace GameCore.UnitTests
             ShouldSpawnCatchNet(4);
             CurrentInFieldCatchNetAmountShouldBe(4);
 
-            CallLastSpawnCatchNetSuccessSettle();
+            CallLastSpawnCatchNetSuccessSettle(out _);
 
             CallBeatEventCallback();
 
@@ -188,16 +188,15 @@ namespace GameCore.UnitTests
             CurrentInFieldCatchNetAmountShouldBe(1);
             ShouldSpawnCatchNet(1);
 
-            CallLastSpawnCatchNetSuccessSettle();
+            CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet);
 
-            CatchNet catchNet = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-            CatchNetStateShouldBe(catchNet, CatchNetState.SuccessSettle);
+            CatchNetStateShouldBe(lastCatchNet, CatchNetState.SuccessSettle);
 
             CallBeatEventCallback();
 
             CurrentInFieldCatchNetAmountShouldBe(1);
             ShouldSpawnCatchNet(2);
-            CatchNetStateShouldBe(catchNet, CatchNetState.Working);
+            CatchNetStateShouldBe(lastCatchNet, CatchNetState.Working);
         }
 
         private void InitGameSettingMock()
@@ -247,10 +246,12 @@ namespace GameCore.UnitTests
             gameSetting.SpawnCatchNetFreq.Returns(spawnCatchNetFreq);
         }
 
-        private void CallLastSpawnCatchNetSuccessSettle()
+        private void CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet)
         {
             CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
             arg.TryTriggerCatch(arg.TargetNumber);
+
+            lastCatchNet = arg;
         }
 
         private void CallBeatEventCallback()

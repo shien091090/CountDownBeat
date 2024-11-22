@@ -5,31 +5,21 @@ namespace GameCore
     public class CatchNet : ICatchNet
     {
         public int TargetNumber { get; private set; }
-        
+
         private readonly IEventInvoker eventInvoker;
         private readonly IGameSetting gameSetting;
-        private readonly ICatchNetPresenter presenter;
         private readonly ICatchNetHandlerPresenter catchNetHandlerPresenter;
+        private ICatchNetPresenter presenter;
 
         public CatchNetState CurrentState { get; private set; }
 
-        public CatchNet(ICatchNetPresenter presenter, ICatchNetHandlerPresenter catchNetHandlerPresenter, IEventInvoker eventInvoker, IGameSetting gameSetting)
+        public CatchNet(ICatchNetHandlerPresenter catchNetHandlerPresenter, IEventInvoker eventInvoker, IGameSetting gameSetting)
         {
-            this.presenter = presenter;
             this.catchNetHandlerPresenter = catchNetHandlerPresenter;
             this.eventInvoker = eventInvoker;
             this.gameSetting = gameSetting;
 
             CurrentState = CatchNetState.None;
-            presenter.BindModel(this);
-        }
-
-        public void Init(int targetNumber)
-        {
-            TargetNumber = targetNumber;
-
-            UpdateState(CatchNetState.Working);
-            presenter.RefreshCatchNumber();
         }
 
         public bool TryTriggerCatch(int number)
@@ -44,6 +34,20 @@ namespace GameCore
             eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
             catchNetHandlerPresenter.FreeUpPosAndRefreshCurrentCount(presenter.SpawnPosIndex);
             return true;
+        }
+
+        public void Init(int targetNumber)
+        {
+            TargetNumber = targetNumber;
+
+            UpdateState(CatchNetState.Working);
+            presenter.RefreshCatchNumber();
+        }
+
+        public void BindPresenter(IMVPPresenter presenter)
+        {
+            this.presenter = (ICatchNetPresenter)presenter;
+            presenter.BindModel(this);
         }
 
         private void UpdateState(CatchNetState newState)

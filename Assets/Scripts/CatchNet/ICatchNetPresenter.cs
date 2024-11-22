@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public interface ICatchNetPresenter : ICollider2DHandler
+    public interface ICatchNetPresenter : ICollider2DHandler, IMVPPresenter
     {
         event Action<ICatchNetPresenter> OnSuccessCatch;
         int SpawnPosIndex { get; }
@@ -12,7 +12,5 @@ namespace GameCore
         void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode);
         void UpdateState(CatchNetState currentState);
         void RefreshCatchNumber();
-        void BindView(ICatchNetView view);
-        void BindModel(ICatchNet model);
     }
 }

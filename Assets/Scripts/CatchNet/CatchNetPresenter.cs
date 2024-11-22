@@ -51,14 +51,14 @@ namespace GameCore
             view.SetCatchNumber(model.TargetNumber.ToString("N0"));
         }
 
-        public void BindView(ICatchNetView view)
+        public void BindView(IMVPView mvpView)
         {
-            this.view = view;
+            view = (ICatchNetView)mvpView;
         }
 
-        public void BindModel(ICatchNet model)
+        public void BindModel(IMVPModel mvpModel)
         {
-            this.model = model;
+            model = (ICatchNet)mvpModel;
         }
 
         public void ColliderTriggerEnter2D(ICollider2DAdapter col)

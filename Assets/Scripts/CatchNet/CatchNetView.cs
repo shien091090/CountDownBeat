@@ -101,10 +101,10 @@ namespace GameCore
             PlaySpawnAnimation(CatchNetSpawnFadeInMode.FromLeft, null);
         }
 
-        public void BindPresenter(ICatchNetPresenter presenter)
+        public void BindPresenter(IMVPPresenter mvpPresenter)
         {
-            this.presenter = presenter;
-            presenter.BindView(this);
+            presenter = (ICatchNetPresenter)mvpPresenter;
+            mvpPresenter.BindView(this);
 
             colliderComponent.InitHandler(presenter);
         }
