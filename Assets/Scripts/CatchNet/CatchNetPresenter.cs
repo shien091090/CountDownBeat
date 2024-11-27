@@ -1,6 +1,5 @@
 using System;
 using SNShien.Common.AdapterTools;
-using SNShien.Common.ProcessTools;
 using UnityEngine;
 
 namespace GameCore
@@ -10,15 +9,12 @@ namespace GameCore
         public int SpawnPosIndex { get; private set; }
         public Vector3 Position => view?.Position ?? Vector3.zero;
 
-        private readonly IEventRegister eventRegister;
-
         private ICatchNet model;
         private ICatchNetView view;
         private bool catchEnable;
 
-        public CatchNetPresenter(IEventRegister eventRegister)
+        public CatchNetPresenter()
         {
-            this.eventRegister = eventRegister;
             ClearData();
         }
 
@@ -30,7 +26,6 @@ namespace GameCore
             catchEnable = false;
 
             SetCatchNumberPosType(fadeInMode);
-            SetEventRegister(true);
             PlaySpawnAnimation(fadeInMode, () =>
             {
                 catchEnable = true;
@@ -91,14 +86,9 @@ namespace GameCore
         {
         }
 
-        private void SetEventRegister(bool isListen)
+        public void PlayBeatEffect()
         {
-            eventRegister.Unregister<BeatEvent>(OnBeat);
-
-            if (isListen)
-            {
-                eventRegister.Register<BeatEvent>(OnBeat);
-            }
+            view.PlayBeatAnimation();
         }
 
         private void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
@@ -110,7 +100,6 @@ namespace GameCore
         {
             catchEnable = false;
             SpawnPosIndex = -1;
-            SetEventRegister(false);
         }
 
         private void Hide()
@@ -126,11 +115,6 @@ namespace GameCore
             {
                 callback?.Invoke();
             });
-        }
-
-        private void OnBeat(BeatEvent eventInfo)
-        {
-            view.PlayBeatAnimation();
         }
     }
 }

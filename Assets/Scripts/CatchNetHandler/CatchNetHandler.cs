@@ -61,19 +61,26 @@ namespace GameCore
 
         private void SpawnCatchNet()
         {
+            bool haveIdlePos = presenter.HaveIdlePos();
+            if (haveIdlePos == false)
+                return;
+
             CatchNet catchNet = GetHiddenCatchNet();
             if (catchNet == null)
             {
                 ICatchNetView catchNetView = presenter.Spawn();
-                CatchNetPresenter catchNetPresenter = new CatchNetPresenter(eventRegister);
+                CatchNetPresenter catchNetPresenter = new CatchNetPresenter();
                 catchNet = new CatchNet(presenter, eventInvoker, gameSetting);
 
+                if (presenter.TryOccupyPos(out int spawnIndex, out CatchNetSpawnFadeInMode fadeInMode) == false)
+                    return;
+                
                 mvpArchitectureHandler.MultipleBind(catchNet, catchNetPresenter, catchNetView);
-
-                catchNet.BindPresenter(catchNetPresenter);
-
-                presenter.SpawnCatchNet(catchNetPresenter);
+                catchNetPresenter.Init(spawnIndex, fadeInMode);
                 catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
+            }
+            else
+            {
             }
 
             OnSpawnCatchNet?.Invoke(catchNet);

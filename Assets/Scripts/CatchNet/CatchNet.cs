@@ -10,6 +10,7 @@ namespace GameCore
         private readonly IGameSetting gameSetting;
         private readonly ICatchNetHandlerPresenter catchNetHandlerPresenter;
         private ICatchNetPresenter presenter;
+        private IEventRegister eventRegister;
 
         public CatchNetState CurrentState { get; private set; }
 
@@ -36,6 +37,12 @@ namespace GameCore
             return true;
         }
 
+        public void BindPresenter(IMVPPresenter presenter)
+        {
+            this.presenter = (ICatchNetPresenter)presenter;
+            presenter.BindModel(this);
+        }
+
         public void Init(int targetNumber)
         {
             TargetNumber = targetNumber;
@@ -44,16 +51,37 @@ namespace GameCore
             presenter.RefreshCatchNumber();
         }
 
-        public void BindPresenter(IMVPPresenter presenter)
+        private void SetEventRegister(bool isListen)
         {
-            this.presenter = (ICatchNetPresenter)presenter;
-            presenter.BindModel(this);
+            eventRegister.Unregister<BeatEvent>(OnBeat);
+
+            if (isListen)
+            {
+                eventRegister.Register<BeatEvent>(OnBeat);
+            }
         }
 
         private void UpdateState(CatchNetState newState)
         {
             CurrentState = newState;
             presenter.UpdateState(CurrentState);
+
+            switch (newState)
+            {
+                case CatchNetState.SuccessSettle:
+                case CatchNetState.None:
+                    SetEventRegister(false);
+                    break;
+
+                case CatchNetState.Working:
+                    SetEventRegister(true);
+                    break;
+            }
+        }
+
+        private void OnBeat(BeatEvent eventInfo)
+        {
+            presenter.PlayBeatEffect();
         }
     }
 }

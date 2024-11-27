@@ -12,5 +12,6 @@ namespace GameCore
         void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode);
         void UpdateState(CatchNetState currentState);
         void RefreshCatchNumber();
+        void PlayBeatEffect();
     }
 }

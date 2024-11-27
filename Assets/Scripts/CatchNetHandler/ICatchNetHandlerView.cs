@@ -7,7 +7,7 @@ namespace GameCore
     {
         List<CatchNetSpawnPos> RandomSpawnPosInfoList { get; }
         void Spawn(ICatchNetPresenter catchNetPresenter, int spawnPosIndex);
-        ICatchNetView Spawn(int spawnPosIndex);
+        ICatchNetView Spawn();
         void PlayCatchSuccessEffect(Vector3 position);
     }
 }

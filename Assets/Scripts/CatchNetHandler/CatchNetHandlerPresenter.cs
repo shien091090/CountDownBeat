@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.TesterTools;
 using UnityEngine;
@@ -27,28 +26,12 @@ namespace GameCore
 
         public ICatchNetView Spawn()
         {
-            int spawnPosIndex = GetRandomSpawnPosIndex();
-            if (spawnPosIndex < 0)
-                return null;
-            else
-            {
-                SetPosState(spawnPosIndex, true);
-                return view.Spawn(spawnPosIndex);
-            }
+            return view.Spawn();
         }
 
-        public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
+        public bool HaveIdlePos()
         {
-            int spawnPosIndex = GetRandomSpawnPosIndex();
-            if (spawnPosIndex < 0)
-                return;
-
-            view?.Spawn(catchNetPresenter, spawnPosIndex);
-            catchNetPresenter.Init(spawnPosIndex, posFadeInModeDict[spawnPosIndex]);
-            catchNetPresenter.OnSuccessCatch -= OnSuccessCatch;
-            catchNetPresenter.OnSuccessCatch += OnSuccessCatch;
-
-            SetPosState(spawnPosIndex, true);
+            return GetEnableSpawnIndexList().Count > 0;
         }
 
         public void BindModel(ICatchNetHandler model)
@@ -95,7 +78,48 @@ namespace GameCore
             }
         }
 
+        // public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
+        // {
+        //     int spawnPosIndex = GetRandomSpawnPosIndex();
+        //     if (spawnPosIndex < 0)
+        //         return;
+        //
+        //     view?.Spawn(catchNetPresenter, spawnPosIndex);
+        //     catchNetPresenter.Init(spawnPosIndex, posFadeInModeDict[spawnPosIndex]);
+        //     catchNetPresenter.OnSuccessCatch -= OnSuccessCatch;
+        //     catchNetPresenter.OnSuccessCatch += OnSuccessCatch;
+        //
+        //     SetPosState(spawnPosIndex, true);
+        // }
+
+        public bool TryOccupyPos(out int posIndex, out CatchNetSpawnFadeInMode fadeInMode)
+        {
+            posIndex = GetRandomSpawnPosIndex();
+            if (posIndex >= 0)
+            {
+                fadeInMode = posFadeInModeDict[posIndex];
+                SetPosState(posIndex, true);
+                return true;
+            }
+            else
+            {
+                fadeInMode = CatchNetSpawnFadeInMode.None;
+                return false;
+            }
+        }
+
         private int GetRandomSpawnPosIndex()
+        {
+            List<int> enableSpawnIndexList = GetEnableSpawnIndexList();
+            if (enableSpawnIndexList.Count == 0)
+                return -1;
+
+            int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
+            int spawnPosIndex = enableSpawnIndexList[indexListIndex];
+            return spawnPosIndex;
+        }
+
+        private List<int> GetEnableSpawnIndexList()
         {
             List<int> enableSpawnIndexList = new List<int>();
             foreach ((int index, bool isSpawned) in posStateDict)
@@ -104,12 +128,7 @@ namespace GameCore
                     enableSpawnIndexList.Add(index);
             }
 
-            if (enableSpawnIndexList.Count == 0)
-                return -1;
-
-            int indexListIndex = Random.Range(0, enableSpawnIndexList.Count);
-            int spawnPosIndex = enableSpawnIndexList[indexListIndex];
-            return spawnPosIndex;
+            return enableSpawnIndexList;
         }
 
         private void SetPosState(int index, bool isSpawned)
