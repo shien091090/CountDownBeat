@@ -24,14 +24,9 @@ namespace GameCore
             InitData();
         }
 
-        public ICatchNetView Spawn()
+        public ICatchNetView Spawn(int spawnPosIndex)
         {
-            return view.Spawn();
-        }
-
-        public bool HaveIdlePos()
-        {
-            return GetEnableSpawnIndexList().Count > 0;
+            return view.Spawn(spawnPosIndex);
         }
 
         public void BindModel(ICatchNetHandler model)
@@ -64,20 +59,6 @@ namespace GameCore
             model = null;
         }
 
-        private void InitData()
-        {
-            posStateDict = new Dictionary<int, bool>();
-            posFadeInModeDict = new Dictionary<int, CatchNetSpawnFadeInMode>();
-
-            List<CatchNetSpawnPos> randomSpawnPosInfoList = view.RandomSpawnPosInfoList;
-            for (int i = 0; i < randomSpawnPosInfoList.Count; i++)
-            {
-                CatchNetSpawnPos posInfo = randomSpawnPosInfoList[i];
-                posStateDict[i] = false;
-                posFadeInModeDict[i] = posInfo.FadeInMode;
-            }
-        }
-
         // public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
         // {
         //     int spawnPosIndex = GetRandomSpawnPosIndex();
@@ -105,6 +86,20 @@ namespace GameCore
             {
                 fadeInMode = CatchNetSpawnFadeInMode.None;
                 return false;
+            }
+        }
+
+        private void InitData()
+        {
+            posStateDict = new Dictionary<int, bool>();
+            posFadeInModeDict = new Dictionary<int, CatchNetSpawnFadeInMode>();
+
+            List<CatchNetSpawnPos> randomSpawnPosInfoList = view.RandomSpawnPosInfoList;
+            for (int i = 0; i < randomSpawnPosInfoList.Count; i++)
+            {
+                CatchNetSpawnPos posInfo = randomSpawnPosInfoList[i];
+                posStateDict[i] = false;
+                posFadeInModeDict[i] = posInfo.FadeInMode;
             }
         }
 

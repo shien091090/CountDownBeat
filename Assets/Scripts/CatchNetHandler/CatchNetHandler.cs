@@ -13,10 +13,10 @@ namespace GameCore
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IGameSetting gameSetting;
         [Inject] private ICatchNetHandlerPresenter presenter;
-        [Inject] private IMVPArchitectureHandler mvpArchitectureHandler;
 
         private int beatCounter;
         private List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
+        private DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
 
         public event Action<CatchNet> OnSpawnCatchNet;
         public int CurrentInFieldCatchNetAmount { get; }
@@ -61,27 +61,27 @@ namespace GameCore
 
         private void SpawnCatchNet()
         {
-            bool haveIdlePos = presenter.HaveIdlePos();
-            if (haveIdlePos == false)
+            if (presenter.TryOccupyPos(out int spawnIndex, out CatchNetSpawnFadeInMode fadeInMode) == false)
                 return;
 
             CatchNet catchNet = GetHiddenCatchNet();
+            ICatchNetView catchNetView = presenter.Spawn(spawnIndex);
+            ICatchNetPresenter catchNetPresenter = null;
             if (catchNet == null)
             {
-                ICatchNetView catchNetView = presenter.Spawn();
-                CatchNetPresenter catchNetPresenter = new CatchNetPresenter();
-                catchNet = new CatchNet(presenter, eventInvoker, gameSetting);
+                catchNetPresenter = new CatchNetPresenter();
+                catchNet = new CatchNet(presenter, eventInvoker, eventRegister, gameSetting);
 
-                if (presenter.TryOccupyPos(out int spawnIndex, out CatchNetSpawnFadeInMode fadeInMode) == false)
-                    return;
-                
-                mvpArchitectureHandler.MultipleBind(catchNet, catchNetPresenter, catchNetView);
-                catchNetPresenter.Init(spawnIndex, fadeInMode);
-                catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
+                dynamicMVPBinder.MultipleBind(catchNet, catchNetPresenter, catchNetView);
             }
             else
             {
+                dynamicMVPBinder.RebindView(catchNet, catchNetView);
+                catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
             }
+
+            catchNetPresenter.Init(spawnIndex, fadeInMode);
+            catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
 
             OnSpawnCatchNet?.Invoke(catchNet);
         }

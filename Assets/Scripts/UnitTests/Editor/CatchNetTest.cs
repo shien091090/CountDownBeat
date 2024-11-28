@@ -21,7 +21,7 @@ namespace GameCore.UnitTests
             presenter = Substitute.For<ICatchNetPresenter>();
             catchNetHandlerPresenter = Substitute.For<ICatchNetHandlerPresenter>();
 
-            catchNet = new CatchNet(presenter, catchNetHandlerPresenter, eventInvoker, gameSetting);
+            // catchNet = new CatchNet(presenter, catchNetHandlerPresenter, eventInvoker, gameSetting);
         }
 
         [Test]

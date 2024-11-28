@@ -7,18 +7,19 @@ namespace GameCore
         public int TargetNumber { get; private set; }
 
         private readonly IEventInvoker eventInvoker;
+        private readonly IEventRegister eventRegister;
         private readonly IGameSetting gameSetting;
         private readonly ICatchNetHandlerPresenter catchNetHandlerPresenter;
         private ICatchNetPresenter presenter;
-        private IEventRegister eventRegister;
 
         public CatchNetState CurrentState { get; private set; }
 
-        public CatchNet(ICatchNetHandlerPresenter catchNetHandlerPresenter, IEventInvoker eventInvoker, IGameSetting gameSetting)
+        public CatchNet(ICatchNetHandlerPresenter catchNetHandlerPresenter, IEventInvoker eventInvoker, IEventRegister eventRegister, IGameSetting gameSetting)
         {
             this.catchNetHandlerPresenter = catchNetHandlerPresenter;
             this.eventInvoker = eventInvoker;
             this.gameSetting = gameSetting;
+            this.eventRegister = eventRegister;
 
             CurrentState = CatchNetState.None;
         }

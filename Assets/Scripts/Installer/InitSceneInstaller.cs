@@ -21,7 +21,6 @@ namespace GameCore
             Container.Bind<ISceneProcessManager>().FromInstance(sceneProcessManager).AsSingle();
             Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
             Container.Bind<IAppProcessor>().To<AppProcessor>().AsSingle();
-            Container.Bind<IMVPArchitectureHandler>().To<MVPArchitectureHandler>().AsSingle();
         }
     }
 }

@@ -51,6 +51,11 @@ namespace GameCore
             view = (ICatchNetView)mvpView;
         }
 
+        public void UnbindView()
+        {
+            view = null;
+        }
+
         public void BindModel(IMVPModel mvpModel)
         {
             model = (ICatchNet)mvpModel;

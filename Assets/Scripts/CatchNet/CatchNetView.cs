@@ -85,12 +85,17 @@ namespace GameCore
             go_root.localPosition = Vector3.zero;
         }
 
-        private void Awake()
+        public void BindPresenter(IMVPPresenter mvpPresenter)
         {
-            animator = GetComponent<Animator>();
+            presenter = (ICatchNetPresenter)mvpPresenter;
+            mvpPresenter.BindView(this);
 
-            colliderComponent = GetComponent<Collider2DAdapterComponent>();
-            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
+            colliderComponent.InitHandler(presenter);
+        }
+
+        public void UnbindPresenter()
+        {
+            presenter = null;
         }
 
         [ContextMenu("Play Spawn Animation")]
@@ -101,12 +106,12 @@ namespace GameCore
             PlaySpawnAnimation(CatchNetSpawnFadeInMode.FromLeft, null);
         }
 
-        public void BindPresenter(IMVPPresenter mvpPresenter)
+        private void Awake()
         {
-            presenter = (ICatchNetPresenter)mvpPresenter;
-            mvpPresenter.BindView(this);
+            animator = GetComponent<Animator>();
 
-            colliderComponent.InitHandler(presenter);
+            colliderComponent = GetComponent<Collider2DAdapterComponent>();
+            colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
     }
 }

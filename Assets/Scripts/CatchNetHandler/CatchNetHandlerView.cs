@@ -27,17 +27,10 @@ namespace GameCore
             }
         }
 
-        public void Spawn(ICatchNetPresenter catchNetPresenter, int spawnPosIndex)
+        public ICatchNetView Spawn(int spawnPosIndex)
         {
             CatchNetSpawnPos posInfo = RandomSpawnPosInfoList[spawnPosIndex];
-
-            CatchNetView catchNet = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position);
-            catchNet.BindPresenter(catchNetPresenter);
-        }
-
-        public ICatchNetView Spawn()
-        {
-            CatchNetView view = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET);
+            CatchNetView view = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position);
             return view;
         }
 
