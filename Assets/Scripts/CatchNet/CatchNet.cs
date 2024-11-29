@@ -6,19 +6,15 @@ namespace GameCore
     {
         public int TargetNumber { get; private set; }
 
-        private readonly IEventInvoker eventInvoker;
         private readonly IEventRegister eventRegister;
-        private readonly IGameSetting gameSetting;
-        private readonly ICatchNetHandlerPresenter catchNetHandlerPresenter;
+        private readonly ICatchNetHandler catchNetHandler;
         private ICatchNetPresenter presenter;
 
         public CatchNetState CurrentState { get; private set; }
 
-        public CatchNet(ICatchNetHandlerPresenter catchNetHandlerPresenter, IEventInvoker eventInvoker, IEventRegister eventRegister, IGameSetting gameSetting)
+        public CatchNet(ICatchNetHandler catchNetHandler, IEventRegister eventRegister)
         {
-            this.catchNetHandlerPresenter = catchNetHandlerPresenter;
-            this.eventInvoker = eventInvoker;
-            this.gameSetting = gameSetting;
+            this.catchNetHandler = catchNetHandler;
             this.eventRegister = eventRegister;
 
             CurrentState = CatchNetState.None;
@@ -32,9 +28,8 @@ namespace GameCore
             if (number != TargetNumber)
                 return false;
 
+            catchNetHandler.SettleCatchNet(this);
             UpdateState(CatchNetState.SuccessSettle);
-            eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
-            catchNetHandlerPresenter.FreeUpPosAndRefreshCurrentCount(presenter.SpawnPosIndex);
             return true;
         }
 

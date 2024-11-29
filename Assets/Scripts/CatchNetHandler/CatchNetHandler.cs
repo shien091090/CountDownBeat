@@ -33,6 +33,15 @@ namespace GameCore
             presenter.UnbindModel();
         }
 
+        public void SettleCatchNet(CatchNet catchNet)
+        {
+            ICatchNetPresenter catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
+            presenter.FreeUpPosAndRefreshCurrentCount(catchNetPresenter.SpawnPosIndex);
+            presenter.PlaySuccessCatchEffect(catchNetPresenter);
+
+            eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
+        }
+
         private void Init()
         {
             beatCounter = 0;
@@ -70,7 +79,7 @@ namespace GameCore
             if (catchNet == null)
             {
                 catchNetPresenter = new CatchNetPresenter();
-                catchNet = new CatchNet(presenter, eventInvoker, eventRegister, gameSetting);
+                catchNet = new CatchNet(this, eventRegister);
 
                 dynamicMVPBinder.MultipleBind(catchNet, catchNetPresenter, catchNetView);
             }

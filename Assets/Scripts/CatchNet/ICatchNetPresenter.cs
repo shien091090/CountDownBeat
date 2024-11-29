@@ -1,4 +1,3 @@
-using System;
 using SNShien.Common.AdapterTools;
 using UnityEngine;
 
@@ -6,7 +5,6 @@ namespace GameCore
 {
     public interface ICatchNetPresenter : ICollider2DHandler, IMVPPresenter
     {
-        event Action<ICatchNetPresenter> OnSuccessCatch;
         int SpawnPosIndex { get; }
         Vector3 Position { get; }
         void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode);

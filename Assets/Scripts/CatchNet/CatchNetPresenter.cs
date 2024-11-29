@@ -18,8 +18,6 @@ namespace GameCore
             ClearData();
         }
 
-        public event Action<ICatchNetPresenter> OnSuccessCatch;
-
         public void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)
         {
             SpawnPosIndex = spawnPosIndex;
@@ -35,10 +33,7 @@ namespace GameCore
         public void UpdateState(CatchNetState currentState)
         {
             if (currentState == CatchNetState.SuccessSettle)
-            {
-                OnSuccessCatch?.Invoke(this);
                 Hide();
-            }
         }
 
         public void RefreshCatchNumber()

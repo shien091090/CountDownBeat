@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SNShien.Common.DataTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.TesterTools;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace GameCore
         private Dictionary<int, CatchNetSpawnFadeInMode> posFadeInModeDict = new Dictionary<int, CatchNetSpawnFadeInMode>();
 
         private readonly Debugger debugger = new Debugger(DEBUGGER_KEY);
+        private JsonParser jsonParser = new JsonParser();
 
         public void Init()
         {
@@ -59,20 +61,6 @@ namespace GameCore
             model = null;
         }
 
-        // public void SpawnCatchNet(ICatchNetPresenter catchNetPresenter)
-        // {
-        //     int spawnPosIndex = GetRandomSpawnPosIndex();
-        //     if (spawnPosIndex < 0)
-        //         return;
-        //
-        //     view?.Spawn(catchNetPresenter, spawnPosIndex);
-        //     catchNetPresenter.Init(spawnPosIndex, posFadeInModeDict[spawnPosIndex]);
-        //     catchNetPresenter.OnSuccessCatch -= OnSuccessCatch;
-        //     catchNetPresenter.OnSuccessCatch += OnSuccessCatch;
-        //
-        //     SetPosState(spawnPosIndex, true);
-        // }
-
         public bool TryOccupyPos(out int posIndex, out CatchNetSpawnFadeInMode fadeInMode)
         {
             posIndex = GetRandomSpawnPosIndex();
@@ -87,6 +75,11 @@ namespace GameCore
                 fadeInMode = CatchNetSpawnFadeInMode.None;
                 return false;
             }
+        }
+
+        public void PlaySuccessCatchEffect(ICatchNetPresenter catchNetPresenter)
+        {
+            view.PlayCatchSuccessEffect(catchNetPresenter.Position);
         }
 
         private void InitData()
@@ -133,11 +126,6 @@ namespace GameCore
 
             if (posStateDict.ContainsKey(index))
                 posStateDict[index] = isSpawned;
-        }
-
-        private void OnSuccessCatch(ICatchNetPresenter catchNetPresenter)
-        {
-            view.PlayCatchSuccessEffect(catchNetPresenter.Position);
         }
     }
 }

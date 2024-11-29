@@ -11,5 +11,6 @@ namespace GameCore
         void UnbindView();
         void UnbindModel();
         ICatchNetView Spawn(int spawnPosIndex);
+        void PlaySuccessCatchEffect(ICatchNetPresenter catchNetPresenter);
     }
 }

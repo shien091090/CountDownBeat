@@ -4,5 +4,6 @@ namespace GameCore
 {
     public interface ICatchNetHandler : IArchitectureModel
     {
+        void SettleCatchNet(CatchNet catchNet);
     }
 }
