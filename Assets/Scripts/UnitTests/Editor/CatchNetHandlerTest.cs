@@ -13,12 +13,14 @@ namespace GameCore.UnitTests
     {
         private CatchNetHandler catchNetHandler;
         private IEventRegister eventRegister;
+        private IEventInvoker eventInvoker;
         private IGameSetting gameSetting;
         private ICatchNetHandlerPresenter presenter;
         private ICatchNetView catchNetView;
 
         private Action<BeatEvent> beatEventCallback;
         private Action<CatchNet> spawnCatchNetEventCallback;
+        private GetScoreEvent getScoreEvent;
 
         [SetUp]
         public override void Setup()
@@ -199,6 +201,21 @@ namespace GameCore.UnitTests
             CatchNetStateShouldBe(lastCatchNet, CatchNetState.Working);
         }
 
+        [Test]
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(10)]
+        //驗證成功捕獲時的獲得分數
+        public void verify_get_score_event_when_success_settle(int score)
+        {
+            GivenScoreWhenSuccessSettle(score);
+
+            ICatchNet catchNet = Substitute.For<ICatchNet>();
+            catchNetHandler.SettleCatchNet(catchNet);
+
+            LastGetScoreEventShouldBe(score);
+        }
+
         private void InitGameSettingMock()
         {
             gameSetting = Substitute.For<IGameSetting>();
@@ -221,6 +238,7 @@ namespace GameCore.UnitTests
         private void InitEventHandlerMock()
         {
             beatEventCallback = null;
+            getScoreEvent = null;
 
             eventRegister = Substitute.For<IEventRegister>();
 
@@ -229,6 +247,18 @@ namespace GameCore.UnitTests
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
                 beatEventCallback = callback;
             });
+
+            eventInvoker = Substitute.For<IEventInvoker>();
+
+            eventInvoker.When(x => x.SendEvent(Arg.Any<GetScoreEvent>())).Do(x =>
+            {
+                getScoreEvent = (GetScoreEvent)x.Args()[0];
+            });
+        }
+
+        private void GivenScoreWhenSuccessSettle(int score)
+        {
+            gameSetting.SuccessSettleScore.Returns(score);
         }
 
         private void GivenCatchNetNumberRange(int min, int max)
@@ -257,6 +287,11 @@ namespace GameCore.UnitTests
         private void CallBeatEventCallback()
         {
             beatEventCallback.Invoke(new BeatEvent(false));
+        }
+
+        private void LastGetScoreEventShouldBe(int expectedScore)
+        {
+            Assert.AreEqual(expectedScore, getScoreEvent.Score);
         }
 
         private void CatchNetStateShouldBe(CatchNet catchNet, CatchNetState expectedState)

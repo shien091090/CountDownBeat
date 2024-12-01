@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SNShien.Common.ProcessTools;
+using SNShien.Common.TesterTools;
 using Zenject;
 using Random = UnityEngine.Random;
 
@@ -17,6 +18,7 @@ namespace GameCore
         private int beatCounter;
         private List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
         private DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
+        private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_CATCH_NET_HANDLER);
 
         public event Action<CatchNet> OnSpawnCatchNet;
         public int CurrentInFieldCatchNetAmount { get; }
@@ -33,7 +35,7 @@ namespace GameCore
             presenter.UnbindModel();
         }
 
-        public void SettleCatchNet(CatchNet catchNet)
+        public void SettleCatchNet(ICatchNet catchNet)
         {
             ICatchNetPresenter catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
             presenter.FreeUpPosAndRefreshCurrentCount(catchNetPresenter.SpawnPosIndex);
@@ -82,6 +84,7 @@ namespace GameCore
                 catchNet = new CatchNet(this, eventRegister);
 
                 dynamicMVPBinder.MultipleBind(catchNet, catchNetPresenter, catchNetView);
+                inFieldCatchNetList.Add(catchNet);
             }
             else
             {

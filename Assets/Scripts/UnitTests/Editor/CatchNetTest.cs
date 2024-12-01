@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
@@ -8,20 +9,22 @@ namespace GameCore.UnitTests
     public class CatchNetTest
     {
         private CatchNet catchNet;
-        private IEventInvoker eventInvoker;
-        private IGameSetting gameSetting;
+        private ICatchNetHandler catchNetHandler;
+        private IEventRegister eventRegister;
         private ICatchNetPresenter presenter;
-        private ICatchNetHandlerPresenter catchNetHandlerPresenter;
+
+        private Action<BeatEvent> beatEventCallback;
 
         [SetUp]
         public void Setup()
         {
-            eventInvoker = Substitute.For<IEventInvoker>();
-            gameSetting = Substitute.For<IGameSetting>();
-            presenter = Substitute.For<ICatchNetPresenter>();
-            catchNetHandlerPresenter = Substitute.For<ICatchNetHandlerPresenter>();
+            InitEventRegisterMock();
+            catchNetHandler = Substitute.For<ICatchNetHandler>();
 
-            // catchNet = new CatchNet(presenter, catchNetHandlerPresenter, eventInvoker, gameSetting);
+            catchNet = new CatchNet(catchNetHandler, eventRegister);
+
+            presenter = Substitute.For<ICatchNetPresenter>();
+            catchNet.BindPresenter(presenter);
         }
 
         [Test]
@@ -39,21 +42,21 @@ namespace GameCore.UnitTests
         public void do_nothing_when_trigger_catch_and_number_not_match()
         {
             catchNet.Init(10);
-            bool tryTriggerCatch = catchNet.TryTriggerCatch(5);
 
-            ShouldSendGetScoreEvent(0);
-            Assert.IsFalse(tryTriggerCatch);
+            TryTriggerCatchAndShouldSuccess(5, false);
+
+            CurrentStateShouldBe(CatchNetState.Working);
+            ShouldSettleCatchNet(0);
         }
 
         [Test]
         //當狀態不為"Working"時觸發捕獲判斷, 不做事
         public void do_nothing_when_trigger_catch_and_not_working()
         {
-            bool tryTriggerCatch = catchNet.TryTriggerCatch(10);
+            TryTriggerCatchAndShouldSuccess(10, false);
 
             CurrentStateShouldBe(CatchNetState.None);
-            ShouldSendGetScoreEvent(0);
-            Assert.IsFalse(tryTriggerCatch);
+            ShouldSettleCatchNet(0);
         }
 
         [Test]
@@ -61,47 +64,98 @@ namespace GameCore.UnitTests
         public void trigger_catch_and_number_match()
         {
             catchNet.Init(10);
-            bool tryTriggerCatch = catchNet.TryTriggerCatch(10);
+            TryTriggerCatchAndShouldSuccess(10, true);
 
             CurrentStateShouldBe(CatchNetState.SuccessSettle);
-            ShouldSendGetScoreEvent(1);
-            Assert.IsTrue(tryTriggerCatch);
+            ShouldSettleCatchNet(1);
         }
 
         [Test]
-        [TestCase(1)]
-        [TestCase(5)]
-        [TestCase(10)]
-        //驗證成功捕獲時的獲得分數
-        public void verify_get_score_event_when_success_settle(int score)
+        //初始化後狀態在"Working", 每次Beat會撥放特效
+        public void play_beat_effect_when_working()
         {
-            GivenScoreWhenSuccessSettle(score);
-
             catchNet.Init(10);
-            catchNet.TryTriggerCatch(10);
 
-            ShouldSendGetScoreEvent(1);
-            LastGetScoreEventShouldBe(score);
+            ShouldPlayBeatEffect(0);
+
+            CallBeatEvent();
+
+            ShouldPlayBeatEffect(1);
+            CurrentStateShouldBe(CatchNetState.Working);
         }
 
-        private void GivenScoreWhenSuccessSettle(int score)
+        [Test]
+        //尚未初始化狀態在"None", 每次Beat不做事
+        public void on_beat_then_do_nothing_when_not_init()
         {
-            gameSetting.SuccessSettleScore.Returns(score);
+            CallBeatEvent();
+
+            ShouldPlayBeatEffect(0);
+            CurrentStateShouldBe(CatchNetState.None);
         }
 
-        private void LastGetScoreEventShouldBe(int expectedScore)
+        [Test]
+        //成功結算狀態轉為"SuccessSettle"後, 每次Beat不做事
+        public void on_beat_then_do_nothing_when_success_settle()
         {
-            IArchitectureEvent eventArg = (IArchitectureEvent)eventInvoker.ReceivedCalls().Last(x => x.GetMethodInfo().Name == "SendEvent").GetArguments()[0];
-            GetScoreEvent getScoreEvent = eventArg as GetScoreEvent;
-            Assert.AreEqual(expectedScore, getScoreEvent.Score);
+            catchNet.Init(10);
+
+            CallBeatEvent();
+
+            ShouldPlayBeatEffect(1);
+            CurrentStateShouldBe(CatchNetState.Working);
+
+            TryTriggerCatchAndShouldSuccess(10, true);
+
+            CallBeatEvent();
+
+            ShouldPlayBeatEffect(1);
+            CurrentStateShouldBe(CatchNetState.SuccessSettle);
         }
 
-        private void ShouldSendGetScoreEvent(int expectedCallTimes)
+        private void InitEventRegisterMock()
+        {
+            eventRegister = Substitute.For<IEventRegister>();
+
+            beatEventCallback = null;
+            eventRegister.When(x => x.Register(Arg.Any<Action<BeatEvent>>())).Do(x =>
+            {
+                Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
+                beatEventCallback = callback;
+            });
+            
+            eventRegister.When(x => x.Unregister(Arg.Any<Action<BeatEvent>>())).Do(x =>
+            {
+                beatEventCallback = null;
+            });
+        }
+
+        private void CallBeatEvent()
+        {
+            beatEventCallback?.Invoke(new BeatEvent(true));
+        }
+
+        private void ShouldPlayBeatEffect(int expectedCallTimes)
         {
             if (expectedCallTimes == 0)
-                eventInvoker.DidNotReceive().SendEvent(Arg.Any<GetScoreEvent>());
+                presenter.DidNotReceive().PlayBeatEffect();
             else
-                eventInvoker.Received(expectedCallTimes).SendEvent(Arg.Any<GetScoreEvent>());
+
+                presenter.Received(expectedCallTimes).PlayBeatEffect();
+        }
+
+        private void TryTriggerCatchAndShouldSuccess(int catchNumber, bool expectedIsSuccess)
+        {
+            bool tryTriggerCatch = catchNet.TryTriggerCatch(catchNumber);
+            Assert.AreEqual(expectedIsSuccess, tryTriggerCatch);
+        }
+
+        private void ShouldSettleCatchNet(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                catchNetHandler.DidNotReceive().SettleCatchNet(Arg.Any<ICatchNet>());
+            else
+                catchNetHandler.Received(expectedCallTimes).SettleCatchNet(Arg.Any<ICatchNet>());
         }
 
         private void CurrentStateShouldBe(CatchNetState expectedState)
