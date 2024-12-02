@@ -19,16 +19,13 @@ namespace GameCore.UnitTests
         private ICatchNetView catchNetView;
 
         private Action<BeatEvent> beatEventCallback;
-        private Action<CatchNet> spawnCatchNetEventCallback;
+        private Action<ICatchNet> spawnCatchNetEventCallback;
         private GetScoreEvent getScoreEvent;
 
         [SetUp]
         public override void Setup()
         {
             base.Setup();
-
-            IEventInvoker eventInvoker = Substitute.For<IEventInvoker>();
-            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
 
             InitGameSettingMock();
             Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
@@ -38,11 +35,12 @@ namespace GameCore.UnitTests
 
             InitEventHandlerMock();
             Container.Bind<IEventRegister>().FromInstance(eventRegister).AsSingle();
+            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
 
             Container.Bind<CatchNetHandler>().AsSingle();
             catchNetHandler = Container.Resolve<CatchNetHandler>();
 
-            spawnCatchNetEventCallback = Substitute.For<Action<CatchNet>>();
+            spawnCatchNetEventCallback = Substitute.For<Action<ICatchNet>>();
             catchNetHandler.OnSpawnCatchNet += spawnCatchNetEventCallback;
         }
 
@@ -208,10 +206,13 @@ namespace GameCore.UnitTests
         //驗證成功捕獲時的獲得分數
         public void verify_get_score_event_when_success_settle(int score)
         {
+            GivenSpawnCatchNetFreqSetting(1);
             GivenScoreWhenSuccessSettle(score);
-
-            ICatchNet catchNet = Substitute.For<ICatchNet>();
-            catchNetHandler.SettleCatchNet(catchNet);
+            
+            catchNetHandler.ExecuteModelInit();
+            
+            CallBeatEventCallback();
+            CallLastSpawnCatchNetSuccessSettle(out _);
 
             LastGetScoreEventShouldBe(score);
         }
@@ -226,13 +227,11 @@ namespace GameCore.UnitTests
         private void InitCatchNetPresenterMock()
         {
             presenter = Substitute.For<ICatchNetHandlerPresenter>();
+            
             catchNetView = Substitute.For<ICatchNetView>();
+            presenter.Spawn(Arg.Any<int>()).Returns(catchNetView);
 
-            // presenter.When(x => x.SpawnCatchNet(Arg.Any<ICatchNetPresenter>())).Do(callInfo =>
-            // {
-            //     ICatchNetPresenter catchNetPresenter = (ICatchNetPresenter)callInfo.Args()[0];
-            //     catchNetPresenter.BindView(catchNetView);
-            // });
+            GivenTryOccupyPosSuccess(0, CatchNetSpawnFadeInMode.FromBottom);
         }
 
         private void InitEventHandlerMock()
@@ -245,7 +244,13 @@ namespace GameCore.UnitTests
             eventRegister.When(x => x.Register(Arg.Any<Action<BeatEvent>>())).Do(x =>
             {
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
-                beatEventCallback = callback;
+                beatEventCallback += callback;
+            });
+            
+            eventRegister.When(x => x.Unregister(Arg.Any<Action<BeatEvent>>())).Do(x =>
+            {
+                Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
+                beatEventCallback -= callback;
             });
 
             eventInvoker = Substitute.For<IEventInvoker>();
@@ -253,6 +258,16 @@ namespace GameCore.UnitTests
             eventInvoker.When(x => x.SendEvent(Arg.Any<GetScoreEvent>())).Do(x =>
             {
                 getScoreEvent = (GetScoreEvent)x.Args()[0];
+            });
+        }
+
+        private void GivenTryOccupyPosSuccess(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)
+        {
+            presenter.TryOccupyPos(out int _, out CatchNetSpawnFadeInMode _).ReturnsForAnyArgs(x =>
+            {
+                x[0] = spawnPosIndex;
+                x[1] = fadeInMode;
+                return true;
             });
         }
 
