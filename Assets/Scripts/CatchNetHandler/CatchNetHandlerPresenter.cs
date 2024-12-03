@@ -21,11 +21,6 @@ namespace GameCore
         private readonly Debugger debugger = new Debugger(DEBUGGER_KEY);
         private JsonParser jsonParser = new JsonParser();
 
-        public void Init()
-        {
-            InitData();
-        }
-
         public ICatchNetView Spawn(int spawnPosIndex)
         {
             return view.Spawn(spawnPosIndex);
@@ -34,6 +29,8 @@ namespace GameCore
         public void BindModel(ICatchNetHandler model)
         {
             this.model = model;
+
+            SetEventRegister(true);
         }
 
         public void BindView(ICatchNetHandlerView view)
@@ -41,12 +38,7 @@ namespace GameCore
             this.view = view;
         }
 
-        public void OpenView()
-        {
-            viewManager.OpenView<CatchNetHandlerView>(this);
-        }
-
-        public void FreeUpPosAndRefreshCurrentCount(int spawnIndex)
+        private void FreeUpPosAndRefreshCurrentCount(int spawnIndex)
         {
             SetPosState(spawnIndex, false);
         }
@@ -77,9 +69,15 @@ namespace GameCore
             }
         }
 
-        public void PlaySuccessCatchEffect(ICatchNetPresenter catchNetPresenter)
+        private void PlaySuccessCatchEffect(ICatchNetPresenter catchNetPresenter)
         {
             view.PlayCatchSuccessEffect(catchNetPresenter.Position);
+        }
+
+        private void Init()
+        {
+            OpenView();
+            InitData();
         }
 
         private void InitData()
@@ -119,6 +117,26 @@ namespace GameCore
             return enableSpawnIndexList;
         }
 
+        private void SetEventRegister(bool isListen)
+        {
+            model.OnInit -= Init;
+            model.OnRelease -= Release;
+            model.OnSettleCatchNet -= SettleCatchNet;
+
+            if (isListen)
+            {
+                model.OnInit += Init;
+                model.OnRelease += Release;
+                model.OnSettleCatchNet += SettleCatchNet;
+            }
+        }
+
+        private void SettleCatchNet(ICatchNetPresenter catchNetPresenter)
+        {
+            FreeUpPosAndRefreshCurrentCount(catchNetPresenter.SpawnPosIndex);
+            PlaySuccessCatchEffect(catchNetPresenter);
+        }
+
         private void SetPosState(int index, bool isSpawned)
         {
             if (posStateDict == null)
@@ -126,6 +144,17 @@ namespace GameCore
 
             if (posStateDict.ContainsKey(index))
                 posStateDict[index] = isSpawned;
+        }
+
+        private void Release()
+        {
+            SetEventRegister(false);
+            UnbindModel();
+        }
+
+        private void OpenView()
+        {
+            viewManager.OpenView<CatchNetHandlerView>(this);
         }
     }
 }

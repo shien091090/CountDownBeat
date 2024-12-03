@@ -16,13 +16,16 @@ namespace GameCore
         [Inject] private ICatchNetHandlerPresenter presenter;
 
         private int beatCounter;
-        private List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
-        private DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
+        private readonly List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
+        private readonly DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
         private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_CATCH_NET_HANDLER);
-
         public event Action<ICatchNet> OnSpawnCatchNet;
 
         public int CurrentInFieldCatchNetAmount => inFieldCatchNetList.Count(x => x.CurrentState == CatchNetState.Working);
+
+        public event Action OnInit;
+        public event Action OnRelease;
+        public event Action<ICatchNetPresenter> OnSettleCatchNet;
 
         public void ExecuteModelInit()
         {
@@ -33,14 +36,14 @@ namespace GameCore
         {
             OnSpawnCatchNet = null;
             SetEventRegister(false);
-            presenter.UnbindModel();
+
+            OnRelease?.Invoke();
         }
 
         public void SettleCatchNet(ICatchNet catchNet)
         {
             ICatchNetPresenter catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
-            presenter.FreeUpPosAndRefreshCurrentCount(catchNetPresenter.SpawnPosIndex);
-            presenter.PlaySuccessCatchEffect(catchNetPresenter);
+            OnSettleCatchNet?.Invoke(catchNetPresenter);
 
             eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
         }
@@ -51,8 +54,8 @@ namespace GameCore
             SetEventRegister(true);
 
             presenter.BindModel(this);
-            presenter.OpenView();
-            presenter.Init();
+
+            OnInit?.Invoke();
         }
 
         private CatchNet GetHiddenCatchNet()

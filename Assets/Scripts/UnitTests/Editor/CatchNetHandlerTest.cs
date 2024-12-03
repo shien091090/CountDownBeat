@@ -20,6 +20,9 @@ namespace GameCore.UnitTests
 
         private Action<BeatEvent> beatEventCallback;
         private Action<ICatchNet> spawnCatchNetEventCallback;
+        private Action initEventCallback;
+        private Action releaseEventCallback;
+        private Action<ICatchNetPresenter> settleCatchNetEventCallback;
         private GetScoreEvent getScoreEvent;
 
         [SetUp]
@@ -42,6 +45,24 @@ namespace GameCore.UnitTests
 
             spawnCatchNetEventCallback = Substitute.For<Action<ICatchNet>>();
             catchNetHandler.OnSpawnCatchNet += spawnCatchNetEventCallback;
+
+            initEventCallback = Substitute.For<Action>();
+            catchNetHandler.OnInit += initEventCallback;
+
+            releaseEventCallback = Substitute.For<Action>();
+            catchNetHandler.OnRelease += releaseEventCallback;
+
+            settleCatchNetEventCallback = Substitute.For<Action<ICatchNetPresenter>>();
+            catchNetHandler.OnSettleCatchNet += settleCatchNetEventCallback;
+        }
+
+        [Test]
+        //初始化時, 發送初始化事件
+        public void send_init_event_when_init()
+        {
+            catchNetHandler.ExecuteModelInit();
+
+            ShouldSendInitEvent(1);
         }
 
         [Test]
@@ -58,6 +79,32 @@ namespace GameCore.UnitTests
 
             CallBeatEventCallback();
             ShouldSpawnCatchNet(1);
+        }
+        
+        [Test]
+        //釋放之後, 收到Beat事件, 無反應
+        public void do_nothing_when_beat_after_release()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            
+            catchNetHandler.ExecuteModelInit();
+            CallBeatEventCallback();
+            
+            ShouldSpawnCatchNet(1);
+            
+            catchNetHandler.Release();
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(1);
+        }
+
+        [Test]
+        //釋放時, 發送釋放事件
+        public void send_release_event_when_release()
+        {
+            catchNetHandler.Release();
+
+            ShouldSendReleaseEvent(1);
         }
 
         [Test]
@@ -208,15 +255,31 @@ namespace GameCore.UnitTests
         {
             GivenSpawnCatchNetFreqSetting(1);
             GivenScoreWhenSuccessSettle(score);
-            
+
             catchNetHandler.ExecuteModelInit();
-            
+
             CallBeatEventCallback();
             CallLastSpawnCatchNetSuccessSettle(out _);
 
             LastGetScoreEventShouldBe(score);
         }
+        
+        [Test]
+        //成功捕獲時, 發送成功結算事件
+        public void send_settle_catch_net_event_when_success_settle()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
 
+            catchNetHandler.ExecuteModelInit();
+
+            ShouldSendSettleCatchNetEvent(0);
+            
+            CallBeatEventCallback();
+            CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet);
+
+            ShouldSendSettleCatchNetEvent(1);
+        }
+        
         private void InitGameSettingMock()
         {
             gameSetting = Substitute.For<IGameSetting>();
@@ -227,7 +290,7 @@ namespace GameCore.UnitTests
         private void InitCatchNetPresenterMock()
         {
             presenter = Substitute.For<ICatchNetHandlerPresenter>();
-            
+
             catchNetView = Substitute.For<ICatchNetView>();
             presenter.Spawn(Arg.Any<int>()).Returns(catchNetView);
 
@@ -246,7 +309,7 @@ namespace GameCore.UnitTests
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
                 beatEventCallback += callback;
             });
-            
+
             eventRegister.When(x => x.Unregister(Arg.Any<Action<BeatEvent>>())).Do(x =>
             {
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
@@ -303,6 +366,30 @@ namespace GameCore.UnitTests
         {
             beatEventCallback.Invoke(new BeatEvent(false));
         }
+        
+        private void ShouldSendSettleCatchNetEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                settleCatchNetEventCallback.DidNotReceive().Invoke(Arg.Any<ICatchNetPresenter>());
+            else
+                settleCatchNetEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<ICatchNetPresenter>());
+        }
+
+        private void ShouldSendReleaseEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                releaseEventCallback.DidNotReceive().Invoke();
+            else
+                releaseEventCallback.Received(expectedCallTimes).Invoke();
+        }
+
+        private void ShouldSendInitEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                initEventCallback.DidNotReceive().Invoke();
+            else
+                initEventCallback.Received(expectedCallTimes).Invoke();
+        }
 
         private void LastGetScoreEventShouldBe(int expectedScore)
         {
@@ -327,10 +414,10 @@ namespace GameCore.UnitTests
 
         private void ShouldSpawnCatchNet(int expectedCallTimes)
         {
-            // if (expectedCallTimes == 0)
-            //     presenter.DidNotReceive().SpawnCatchNet(Arg.Any<ICatchNetPresenter>());
-            // else
-            //     presenter.Received(expectedCallTimes).SpawnCatchNet(Arg.Any<ICatchNetPresenter>());
+            if (expectedCallTimes == 0)
+                spawnCatchNetEventCallback.DidNotReceive().Invoke(Arg.Any<ICatchNet>());
+            else
+                spawnCatchNetEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<ICatchNet>());
         }
     }
 }
