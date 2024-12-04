@@ -91,18 +91,19 @@ namespace GameCore
             if (TryGetHiddenScoreBall(out ScoreBall hiddenScoreBall))
             {
                 dynamicMVPBinder.RebindView(hiddenScoreBall, scoreBallView);
-                
+
                 hiddenScoreBall.Reactivate();
                 OnSpawnScoreBall?.Invoke(hiddenScoreBall);
             }
             else
             {
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
-                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting.ScoreBallTextColorSetting);
+                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker);
 
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 
                 scoreBallView.Init();
+                scoreBallPresenter.Init(gameSetting.ScoreBallTextColorSetting);
                 scoreBall.Init(gameSetting.ScoreBallStartCountDownValue);
 
                 inFieldScoreBallList.Add(scoreBall);

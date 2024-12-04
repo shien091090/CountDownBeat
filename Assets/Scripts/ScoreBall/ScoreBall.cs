@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.ProcessTools;
 
 namespace GameCore
@@ -7,7 +8,6 @@ namespace GameCore
         public int CurrentCountDownValue { get; private set; }
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
-        private readonly IScoreBallTextColorSetting scoreBallTextColorSetting;
 
         private IScoreBallPresenter presenter;
 
@@ -16,12 +16,16 @@ namespace GameCore
 
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker, IScoreBallTextColorSetting scoreBallTextColorSetting)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
         {
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
-            this.scoreBallTextColorSetting = scoreBallTextColorSetting;
         }
+
+        public event Action OnInit;
+        public event Action<ScoreBallState> OnUpdateState;
+        public event Action<int> OnUpdateCountDownValue;
+        public event Action OnScoreBallBeat;
 
         public void SetFreezeState(bool isFreeze)
         {
@@ -43,6 +47,11 @@ namespace GameCore
             UpdateCurrentCountDownValue(StartCountDownValue);
         }
 
+        public void BindPresenter(IMVPPresenter mvpPresenter)
+        {
+            presenter = (IScoreBallPresenter)mvpPresenter;
+        }
+
         public void Init(int startCountDownValue)
         {
             if (startCountDownValue <= 0)
@@ -51,21 +60,16 @@ namespace GameCore
             StartCountDownValue = startCountDownValue;
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
-            presenter.PlayBeatEffect();
-        }
 
-        public void BindPresenter(IMVPPresenter mvpPresenter)
-        {
-            presenter = (IScoreBallPresenter)mvpPresenter;
-            presenter.BindModel(this);
-            presenter.Init(scoreBallTextColorSetting);
+            OnInit?.Invoke();
         }
 
         public void Reactivate()
         {
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
-            presenter.PlayBeatEffect();
+
+            OnInit?.Invoke();
         }
 
         private void SetEventRegister(bool isListen)
@@ -106,13 +110,13 @@ namespace GameCore
             CheckChangeEventRegisterState(CurrentState, newState);
 
             CurrentState = newState;
-            presenter.UpdateState(newState);
+            OnUpdateState?.Invoke(CurrentState);
         }
 
         private void UpdateCurrentCountDownValue(int newValue)
         {
             CurrentCountDownValue = newValue;
-            presenter.UpdateCountDownNumber(CurrentCountDownValue);
+            OnUpdateCountDownValue?.Invoke(CurrentCountDownValue);
         }
 
         private void Hide()
@@ -123,7 +127,7 @@ namespace GameCore
 
         private void OnBeat(BeatEvent eventInfo)
         {
-            presenter.PlayBeatEffect();
+            OnScoreBallBeat?.Invoke();
 
             if (IsCountDownInProcess == false ||
                 eventInfo.isCountDownBeat == false)

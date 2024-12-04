@@ -4,12 +4,9 @@ namespace GameCore
     {
         int CurrentCountDownValue { get; }
         void Init(IScoreBallTextColorSetting scoreBallTextColorSetting);
-        void UpdateCountDownNumber(int value);
-        void UpdateState(ScoreBallState state);
         void DragOver();
         void StartDrag();
         void DoubleClick();
         void TriggerCatch();
-        void PlayBeatEffect();
     }
 }

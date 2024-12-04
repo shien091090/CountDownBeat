@@ -13,37 +13,9 @@ namespace GameCore
         private IScoreBallView view;
         private IScoreBallTextColorSetting scoreBallTextColorSetting;
 
-        public void UpdateCountDownNumber(int value)
-        {
-            view.SetCountDownNumberText(value.ToString());
-            view.SetTextColor(GetScoreBallTextColor(value));
-        }
-
-        public void UpdateState(ScoreBallState state)
-        {
-            if (state != ScoreBallState.None)
-                view.PlayAnimation(ANIM_KEY_IDLE);
-
-            switch (state)
-            {
-                case ScoreBallState.InCountDown:
-                    view.SetInCountDownColor();
-                    break;
-
-                case ScoreBallState.Hide:
-                    view.Close();
-                    break;
-
-                case ScoreBallState.Freeze:
-                    view.SetFreezeColor();
-                    break;
-            }
-        }
-
         public void BindView(IMVPView mvpView)
         {
             view = (IScoreBallView)mvpView;
-            view.BindPresenter(this);
         }
 
         public void UnbindView()
@@ -69,12 +41,8 @@ namespace GameCore
         public void BindModel(IMVPModel mvpModel)
         {
             model = (IScoreBall)mvpModel;
-        }
 
-        public void PlayBeatEffect()
-        {
-            view.CreateBeatEffectPrefab();
-            view.PlayAnimation(ANIM_KEY_BEAT);
+            SetEventRegister(true);
         }
 
         public void DragOver()
@@ -90,6 +58,55 @@ namespace GameCore
         private Color GetScoreBallTextColor(int countDownValue)
         {
             return scoreBallTextColorSetting.ConvertToColor(countDownValue);
+        }
+
+        private void SetEventRegister(bool isListen)
+        {
+            model.OnInit -= PlayBeatEffect;
+            model.OnUpdateState -= UpdateState;
+            model.OnUpdateCountDownValue -= UpdateCountDownNumber;
+            model.OnScoreBallBeat -= PlayBeatEffect;
+
+            if (isListen)
+            {
+                model.OnInit += PlayBeatEffect;
+                model.OnUpdateState += UpdateState;
+                model.OnUpdateCountDownValue += UpdateCountDownNumber;
+                model.OnScoreBallBeat += PlayBeatEffect;
+            }
+        }
+
+        private void UpdateCountDownNumber(int value)
+        {
+            view.SetCountDownNumberText(value.ToString());
+            view.SetTextColor(GetScoreBallTextColor(value));
+        }
+
+        private void UpdateState(ScoreBallState state)
+        {
+            if (state != ScoreBallState.None)
+                view.PlayAnimation(ANIM_KEY_IDLE);
+
+            switch (state)
+            {
+                case ScoreBallState.InCountDown:
+                    view.SetInCountDownColor();
+                    break;
+
+                case ScoreBallState.Hide:
+                    view.Close();
+                    break;
+
+                case ScoreBallState.Freeze:
+                    view.SetFreezeColor();
+                    break;
+            }
+        }
+
+        private void PlayBeatEffect()
+        {
+            view.CreateBeatEffectPrefab();
+            view.PlayAnimation(ANIM_KEY_BEAT);
         }
     }
 }
