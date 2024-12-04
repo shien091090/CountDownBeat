@@ -19,7 +19,9 @@ namespace GameCore.UnitTests
         private IViewManager viewManager;
 
         private Action<BeatEvent> beatEventCallback;
-        private Action<ScoreBall> spawnScoreBallEvent;
+        private Action<ScoreBall> spawnScoreBallEventCallback;
+        private Action initEventCallback;
+        private Action releaseEventCallback;
         private ScoreBall tempScoreBall;
 
         [SetUp]
@@ -42,14 +44,39 @@ namespace GameCore.UnitTests
             viewManager = Substitute.For<IViewManager>();
             Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
 
-            appProcessor = Substitute.For<IAppProcessor>();
+            InitAppProcessorMock();
             Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
 
             Container.Bind<ScoreBallHandler>().AsSingle();
             scoreBallHandler = Container.Resolve<ScoreBallHandler>();
 
             InitSpawnScoreBallEventMock();
-            scoreBallHandler.OnSpawnScoreBall += spawnScoreBallEvent;
+            scoreBallHandler.OnSpawnScoreBall += spawnScoreBallEventCallback;
+
+            initEventCallback = Substitute.For<Action>();
+            scoreBallHandler.OnInit += initEventCallback;
+
+            releaseEventCallback = Substitute.For<Action>();
+            scoreBallHandler.OnRelease += releaseEventCallback;
+        }
+
+        [Test]
+        //初始化時, 發送初始化事件
+        public void send_init_event_when_execute_model_init()
+        {
+            scoreBallHandler.ExecuteModelInit();
+
+            ShouldSendInitEvent(1);
+        }
+
+        [Test]
+        //釋放時, 發送釋放事件
+        public void send_release_event_when_execute_model_release()
+        {
+            scoreBallHandler.ExecuteModelInit();
+            scoreBallHandler.Release();
+
+            ShouldSendReleaseEvent(1);
         }
 
         [Test]
@@ -59,13 +86,13 @@ namespace GameCore.UnitTests
             GivenSpawnScoreBallBeatSetting(new List<int> { 0, 3, 7 });
 
             scoreBallHandler.ExecuteModelInit();
-            
+
             ShouldSpawnScoreBall(0);
 
             CallBeatEventCallback(); //0*
-            
+
             ShouldSpawnScoreBall(1);
-            
+
             CallBeatEventCallback(); //1
             CallBeatEventCallback(); //2
 
@@ -126,6 +153,13 @@ namespace GameCore.UnitTests
             SpawnedScoreBallStateShouldBe(ScoreBallState.InCountDown);
         }
 
+        private void InitAppProcessorMock()
+        {
+            appProcessor = Substitute.For<IAppProcessor>();
+
+            GivenSpawnScoreBallBeatSetting(new List<int>());
+        }
+
         private void InitGameSettingMock()
         {
             gameSetting = Substitute.For<IGameSetting>();
@@ -135,10 +169,10 @@ namespace GameCore.UnitTests
 
         private void InitSpawnScoreBallEventMock()
         {
-            spawnScoreBallEvent = Substitute.For<Action<ScoreBall>>();
+            spawnScoreBallEventCallback = Substitute.For<Action<ScoreBall>>();
             tempScoreBall = null;
 
-            spawnScoreBallEvent.When(x => x.Invoke(Arg.Any<ScoreBall>())).Do(callInfo =>
+            spawnScoreBallEventCallback.When(x => x.Invoke(Arg.Any<ScoreBall>())).Do(callInfo =>
             {
                 tempScoreBall = (ScoreBall)callInfo.Args()[0];
             });
@@ -175,6 +209,22 @@ namespace GameCore.UnitTests
             beatEventCallback.Invoke(new BeatEvent(false));
         }
 
+        private void ShouldSendInitEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                initEventCallback.DidNotReceive().Invoke();
+            else
+                initEventCallback.Received(expectedCallTimes).Invoke();
+        }
+
+        private void ShouldSendReleaseEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                releaseEventCallback.DidNotReceive().Invoke();
+            else
+                releaseEventCallback.Received(expectedCallTimes).Invoke();
+        }
+
         private void SpawnedScoreBallStateShouldBe(ScoreBallState expectedState)
         {
             Assert.AreEqual(expectedState, tempScoreBall.CurrentState);
@@ -188,9 +238,9 @@ namespace GameCore.UnitTests
         private void ShouldSpawnScoreBall(int expectedCallTimes)
         {
             if (expectedCallTimes == 0)
-                spawnScoreBallEvent.DidNotReceive().Invoke(Arg.Any<ScoreBall>());
+                spawnScoreBallEventCallback.DidNotReceive().Invoke(Arg.Any<ScoreBall>());
             else
-                spawnScoreBallEvent.Received(expectedCallTimes).Invoke(Arg.Any<ScoreBall>());
+                spawnScoreBallEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<ScoreBall>());
         }
 
         //Beat時, 若沒有進行到需要生成分數球的節拍, 則不做事

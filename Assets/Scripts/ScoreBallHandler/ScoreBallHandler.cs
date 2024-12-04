@@ -22,6 +22,9 @@ namespace GameCore
 
         public int CurrentInFieldScoreBallAmount => inFieldScoreBallList?.Count(x => x.CurrentState != ScoreBallState.Hide && x.CurrentState != ScoreBallState.None) ?? 0;
 
+        public event Action OnRelease;
+        public event Action OnInit;
+
         public void ExecuteModelInit()
         {
             Init();
@@ -30,21 +33,19 @@ namespace GameCore
         public void Release()
         {
             SetEventRegister(false);
-            presenter.UnbindModel();
             OnSpawnScoreBall = null;
+            
+            OnRelease?.Invoke();
         }
 
         private void Init()
         {
             InitData();
-            InitPresenter();
             SetEventRegister(true);
-        }
-
-        private void InitPresenter()
-        {
+            
             presenter.BindModel(this);
-            presenter.OpenView();
+            
+            OnInit?.Invoke();
         }
 
         private void InitData()

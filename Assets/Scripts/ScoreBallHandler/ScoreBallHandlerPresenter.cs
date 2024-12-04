@@ -23,11 +23,8 @@ namespace GameCore
         public void BindModel(IScoreBallHandler model)
         {
             this.model = model;
-        }
 
-        public void OpenView()
-        {
-            viewManager.OpenView<ScoreBallHandlerView>(this);
+            SetEventRegister(true);
         }
 
         public void UnbindView()
@@ -35,7 +32,35 @@ namespace GameCore
             view = null;
         }
 
-        public void UnbindModel()
+        private void Init()
+        {
+            OpenView();
+        }
+
+        private void SetEventRegister(bool isListen)
+        {
+            model.OnInit -= Init;
+            model.OnRelease -= Release;
+
+            if (isListen)
+            {
+                model.OnInit += Init;
+                model.OnRelease += Release;
+            }
+        }
+
+        private void Release()
+        {
+            SetEventRegister(false);
+            UnbindModel();
+        }
+
+        private void OpenView()
+        {
+            viewManager.OpenView<ScoreBallHandlerView>(this);
+        }
+
+        private void UnbindModel()
         {
             model = null;
         }

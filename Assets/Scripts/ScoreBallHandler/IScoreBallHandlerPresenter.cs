@@ -5,8 +5,6 @@ namespace GameCore
         IScoreBallView Spawn();
         void BindView(IScoreBallHandlerView view);
         void BindModel(IScoreBallHandler model);
-        void OpenView();
         void UnbindView();
-        void UnbindModel();
     }
 }
