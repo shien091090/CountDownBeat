@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public interface IScoreBallView
+    public interface IScoreBallView : IMVPView
     {
         int GetCurrentCountDownValue { get; }
         void Init();
@@ -12,7 +12,6 @@ namespace GameCore
         void SetTextColor(Color color);
         void Close();
         void TriggerCatch();
-        void BindPresenter(IScoreBallPresenter presenter);
         void CreateBeatEffectPrefab();
         void PlayAnimation(string animKey);
     }

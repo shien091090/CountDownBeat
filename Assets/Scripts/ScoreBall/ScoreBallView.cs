@@ -60,9 +60,14 @@ namespace GameCore
             presenter.TriggerCatch();
         }
 
-        public void BindPresenter(IScoreBallPresenter presenter)
+        public void BindPresenter(IMVPPresenter mvpPresenter)
         {
-            this.presenter = presenter;
+            presenter = (IScoreBallPresenter)mvpPresenter;
+        }
+
+        public void UnbindPresenter()
+        {
+            presenter = null;
         }
 
         public void CreateBeatEffectPrefab()

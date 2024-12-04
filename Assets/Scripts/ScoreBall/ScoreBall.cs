@@ -54,9 +54,9 @@ namespace GameCore
             presenter.PlayBeatEffect();
         }
 
-        public void BindPresenter(IScoreBallPresenter presenter)
+        public void BindPresenter(IMVPPresenter mvpPresenter)
         {
-            this.presenter = presenter;
+            presenter = (IScoreBallPresenter)mvpPresenter;
             presenter.BindModel(this);
             presenter.Init(scoreBallTextColorSetting);
         }

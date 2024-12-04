@@ -14,6 +14,7 @@ namespace GameCore
         [Inject] private IGameSetting gameSetting;
         [Inject] private IAppProcessor appProcessor;
 
+        private DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
         private List<int> tempSpawnBeatIndexList;
         private List<ScoreBall> inFieldScoreBallList;
         private int currentBeatIndex;
@@ -34,7 +35,7 @@ namespace GameCore
         {
             SetEventRegister(false);
             OnSpawnScoreBall = null;
-            
+
             OnRelease?.Invoke();
         }
 
@@ -42,9 +43,9 @@ namespace GameCore
         {
             InitData();
             SetEventRegister(true);
-            
+
             presenter.BindModel(this);
-            
+
             OnInit?.Invoke();
         }
 
@@ -85,21 +86,23 @@ namespace GameCore
 
         private void SpawnScoreBall()
         {
+            IScoreBallView scoreBallView = presenter.Spawn();
+
             if (TryGetHiddenScoreBall(out ScoreBall hiddenScoreBall))
             {
+                dynamicMVPBinder.RebindView(hiddenScoreBall, scoreBallView);
+                
                 hiddenScoreBall.Reactivate();
                 OnSpawnScoreBall?.Invoke(hiddenScoreBall);
             }
             else
             {
-                IScoreBallView scoreBallView = presenter.Spawn();
-                scoreBallView.Init();
-
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
                 ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting.ScoreBallTextColorSetting);
-                scoreBall.BindPresenter(scoreBallPresenter);
-                scoreBallPresenter.BindView(scoreBallView);
 
+                dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
+
+                scoreBallView.Init();
                 scoreBall.Init(gameSetting.ScoreBallStartCountDownValue);
 
                 inFieldScoreBallList.Add(scoreBall);

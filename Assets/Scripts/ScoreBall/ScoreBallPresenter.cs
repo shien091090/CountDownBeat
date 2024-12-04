@@ -40,10 +40,15 @@ namespace GameCore
             }
         }
 
-        public void BindView(IScoreBallView view)
+        public void BindView(IMVPView mvpView)
         {
-            this.view = view;
+            view = (IScoreBallView)mvpView;
             view.BindPresenter(this);
+        }
+
+        public void UnbindView()
+        {
+            view = null;
         }
 
         public void StartDrag()
@@ -61,9 +66,9 @@ namespace GameCore
             model.SuccessSettle();
         }
 
-        public void BindModel(IScoreBall model)
+        public void BindModel(IMVPModel mvpModel)
         {
-            this.model = model;
+            model = (IScoreBall)mvpModel;
         }
 
         public void PlayBeatEffect()

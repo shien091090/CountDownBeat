@@ -1,6 +1,6 @@
 namespace GameCore
 {
-    public interface IScoreBall
+    public interface IScoreBall : IMVPModel
     {
         int CurrentCountDownValue { get; }
         void SetFreezeState(bool isFreeze);
