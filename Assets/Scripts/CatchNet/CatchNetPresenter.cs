@@ -30,17 +30,6 @@ namespace GameCore
             });
         }
 
-        public void UpdateState(CatchNetState currentState)
-        {
-            if (currentState == CatchNetState.SuccessSettle)
-                Hide();
-        }
-
-        public void RefreshCatchNumber()
-        {
-            view.SetCatchNumber(model.TargetNumber.ToString("N0"));
-        }
-
         public void BindView(IMVPView mvpView)
         {
             view = (ICatchNetView)mvpView;
@@ -54,6 +43,8 @@ namespace GameCore
         public void BindModel(IMVPModel mvpModel)
         {
             model = (ICatchNet)mvpModel;
+
+            SetEventRegister(true);
         }
 
         public void ColliderTriggerEnter2D(ICollider2DAdapter col)
@@ -86,9 +77,16 @@ namespace GameCore
         {
         }
 
-        public void PlayBeatEffect()
+        private void SetEventRegister(bool isListen)
         {
-            view.PlayBeatAnimation();
+            model.OnUpdateState -= UpdateState;
+            model.OnCatchNetBeat -= PlayBeatEffect;
+
+            if (isListen)
+            {
+                model.OnUpdateState += UpdateState;
+                model.OnCatchNetBeat += PlayBeatEffect;
+            }
         }
 
         private void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
@@ -100,6 +98,30 @@ namespace GameCore
         {
             catchEnable = false;
             SpawnPosIndex = -1;
+        }
+
+        private void UpdateState(CatchNetState currentState)
+        {
+            switch (currentState)
+            {
+                case CatchNetState.Working:
+                    RefreshCatchNumber();
+                    break;
+
+                case CatchNetState.SuccessSettle:
+                    Hide();
+                    break;
+            }
+        }
+
+        private void RefreshCatchNumber()
+        {
+            view.SetCatchNumber(model.TargetNumber.ToString("N0"));
+        }
+
+        private void PlayBeatEffect()
+        {
+            view.PlayBeatAnimation();
         }
 
         private void Hide()

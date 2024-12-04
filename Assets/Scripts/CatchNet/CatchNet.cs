@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.ProcessTools;
 
 namespace GameCore
@@ -7,6 +8,7 @@ namespace GameCore
         public int TargetNumber { get; private set; }
 
         private readonly IEventRegister eventRegister;
+
         private readonly ICatchNetHandler catchNetHandler;
         private ICatchNetPresenter presenter;
 
@@ -19,6 +21,9 @@ namespace GameCore
 
             CurrentState = CatchNetState.None;
         }
+
+        public event Action<CatchNetState> OnUpdateState;
+        public event Action OnCatchNetBeat;
 
         public bool TryTriggerCatch(int number)
         {
@@ -44,7 +49,6 @@ namespace GameCore
             TargetNumber = targetNumber;
 
             UpdateState(CatchNetState.Working);
-            presenter.RefreshCatchNumber();
         }
 
         private void SetEventRegister(bool isListen)
@@ -60,7 +64,7 @@ namespace GameCore
         private void UpdateState(CatchNetState newState)
         {
             CurrentState = newState;
-            presenter.UpdateState(CurrentState);
+            OnUpdateState?.Invoke(CurrentState);
 
             switch (newState)
             {
@@ -77,7 +81,7 @@ namespace GameCore
 
         private void OnBeat(BeatEvent eventInfo)
         {
-            presenter.PlayBeatEffect();
+            OnCatchNetBeat?.Invoke();
         }
     }
 }

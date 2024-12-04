@@ -14,6 +14,8 @@ namespace GameCore.UnitTests
         private ICatchNetPresenter presenter;
 
         private Action<BeatEvent> beatEventCallback;
+        private Action<CatchNetState> updateStateEventCallback;
+        private Action catchNetBeatEventCallback;
 
         [SetUp]
         public void Setup()
@@ -25,6 +27,12 @@ namespace GameCore.UnitTests
 
             presenter = Substitute.For<ICatchNetPresenter>();
             catchNet.BindPresenter(presenter);
+
+            updateStateEventCallback = Substitute.For<Action<CatchNetState>>();
+            catchNet.OnUpdateState += updateStateEventCallback;
+
+            catchNetBeatEventCallback = Substitute.For<Action>();
+            catchNet.OnCatchNetBeat += catchNetBeatEventCallback;
         }
 
         [Test]
@@ -71,16 +79,16 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //初始化後狀態在"Working", 每次Beat會撥放特效
-        public void play_beat_effect_when_working()
+        //初始化後狀態在"Working", 每次Beat會發送事件
+        public void send_catch_net_beat_event_when_beat()
         {
             catchNet.Init(10);
 
-            ShouldPlayBeatEffect(0);
+            ShouldSendCatchNetBeatEvent(0);
 
             CallBeatEvent();
 
-            ShouldPlayBeatEffect(1);
+            ShouldSendCatchNetBeatEvent(1);
             CurrentStateShouldBe(CatchNetState.Working);
         }
 
@@ -90,7 +98,7 @@ namespace GameCore.UnitTests
         {
             CallBeatEvent();
 
-            ShouldPlayBeatEffect(0);
+            ShouldSendCatchNetBeatEvent(0);
             CurrentStateShouldBe(CatchNetState.None);
         }
 
@@ -102,15 +110,35 @@ namespace GameCore.UnitTests
 
             CallBeatEvent();
 
-            ShouldPlayBeatEffect(1);
+            ShouldSendCatchNetBeatEvent(1);
             CurrentStateShouldBe(CatchNetState.Working);
 
             TryTriggerCatchAndShouldSuccess(10, true);
 
             CallBeatEvent();
 
-            ShouldPlayBeatEffect(1);
+            ShouldSendCatchNetBeatEvent(1);
             CurrentStateShouldBe(CatchNetState.SuccessSettle);
+        }
+
+        [Test]
+        //每次狀態變更時, 會發送事件
+        public void send_update_state_event_when_state_change()
+        {
+            catchNet.Init(10);
+
+            ShouldSendUpdateStateEvent(1);
+            CurrentStateShouldBe(CatchNetState.Working);
+            
+            TryTriggerCatchAndShouldSuccess(10, true);
+            
+            ShouldSendUpdateStateEvent(2);
+            CurrentStateShouldBe(CatchNetState.SuccessSettle);
+            
+            catchNet.Init(20);
+            
+            ShouldSendUpdateStateEvent(3);
+            CurrentStateShouldBe(CatchNetState.Working);
         }
 
         private void InitEventRegisterMock()
@@ -123,7 +151,7 @@ namespace GameCore.UnitTests
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
                 beatEventCallback = callback;
             });
-            
+
             eventRegister.When(x => x.Unregister(Arg.Any<Action<BeatEvent>>())).Do(x =>
             {
                 beatEventCallback = null;
@@ -135,13 +163,22 @@ namespace GameCore.UnitTests
             beatEventCallback?.Invoke(new BeatEvent(true));
         }
 
-        private void ShouldPlayBeatEffect(int expectedCallTimes)
+        private void ShouldSendCatchNetBeatEvent(int expectedCallTimes)
         {
             if (expectedCallTimes == 0)
-                presenter.DidNotReceive().PlayBeatEffect();
+                catchNetBeatEventCallback.DidNotReceive().Invoke();
             else
 
-                presenter.Received(expectedCallTimes).PlayBeatEffect();
+                catchNetBeatEventCallback.Received(expectedCallTimes).Invoke();
+        }
+
+        private void ShouldSendUpdateStateEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                updateStateEventCallback.DidNotReceive().Invoke(Arg.Any<CatchNetState>());
+            else
+
+                updateStateEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<CatchNetState>());
         }
 
         private void TryTriggerCatchAndShouldSuccess(int catchNumber, bool expectedIsSuccess)

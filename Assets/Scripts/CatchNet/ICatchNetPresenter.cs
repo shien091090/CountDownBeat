@@ -8,8 +8,5 @@ namespace GameCore
         int SpawnPosIndex { get; }
         Vector3 Position { get; }
         void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode);
-        void UpdateState(CatchNetState currentState);
-        void RefreshCatchNumber();
-        void PlayBeatEffect();
     }
 }
