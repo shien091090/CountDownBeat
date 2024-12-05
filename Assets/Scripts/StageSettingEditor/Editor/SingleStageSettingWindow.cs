@@ -36,8 +36,8 @@ namespace GameCore
         [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [MinValue(1)] [OnValueChanged("OnSetCountDownBeatFreq")]
         public int countDownBeatFreq;
 
-        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [OnValueChanged("OnSetHpDecreasePerBeat")]
-        public float hpDecreasePerBeat;
+        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [OnValueChanged("OnSetHpDecreasePerSecond")]
+        public float hpDecreasePerSecond;
 
         [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [OnValueChanged("OnSetHpIncreasePerCatch")]
         public float hpIncreasePerCatch;
@@ -84,7 +84,7 @@ namespace GameCore
             audioKey = settingContent.AudioKey;
             bpm = settingContent.Bpm;
             countDownBeatFreq = settingContent.CountDownBeatFreq;
-            hpDecreasePerBeat = settingContent.HpDecreasePerBeat;
+            hpDecreasePerSecond = settingContent.HpDecreasePerSecond;
             hpIncreasePerCatch = settingContent.HpIncreasePerCatch;
 
             CheckRefreshBySetEventReference();
@@ -181,9 +181,9 @@ namespace GameCore
             EditorUtility.SetDirty(stageSetting);
         }
 
-        private void OnSetHpDecreasePerBeat()
+        private void OnSetHpDecreasePerSecond()
         {
-            settingContent.SetHpDecreasePerBeat(hpDecreasePerBeat);
+            settingContent.SetHpDecreasePerSecond(hpDecreasePerSecond);
             EditorUtility.SetDirty(stageSetting);
         }
 

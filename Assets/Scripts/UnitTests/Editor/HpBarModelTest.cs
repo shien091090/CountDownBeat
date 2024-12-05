@@ -76,13 +76,15 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //每次Beat時, 血量會依照關卡設定減少
-        public void decrease_hp_when_beat()
+        //每幀刷新時, 血量會依照關卡設定減少
+        public void decrease_hp_when_update_by_frame()
         {
             GivenHpMax(100);
-            GivenHpDecreasePerBeatSetting(1.5f);
+            GivenHpDecreasePerSecondSetting(10);
 
             hpBarModel.Init();
+            hpBarModel.UpdateFrame();
+            
             CallBeatEventCallback();
 
             CurrentHpShouldBe(98.5f);
@@ -92,10 +94,10 @@ namespace GameCore.UnitTests
         [TestCase(50)]
         [TestCase(52.5f)]
         //Beat減少血量至0時, 會發送GameOver事件
-        public void send_game_over_event_when_hp_is_0(float hpDecreasePerBeat)
+        public void send_game_over_event_when_hp_is_0(float hpDecreasePerSecond)
         {
             GivenHpMax(100);
-            GivenHpDecreasePerBeatSetting(hpDecreasePerBeat);
+            GivenHpDecreasePerSecondSetting(hpDecreasePerSecond);
 
             hpBarModel.Init();
             CallBeatEventCallback();
@@ -116,7 +118,7 @@ namespace GameCore.UnitTests
         public void increase_hp_when_catch_score_ball(float hpIncreasePerCatch, float expectedFinalHp)
         {
             GivenHpMax(100);
-            GivenHpDecreasePerBeatSetting(50);
+            GivenHpDecreasePerSecondSetting(50);
             GivenHpIncreasePerCatchSetting(hpIncreasePerCatch);
 
             hpBarModel.Init();
@@ -131,7 +133,7 @@ namespace GameCore.UnitTests
         public void hp_will_not_exceed_hp_max_when_catch_score_ball()
         {
             GivenHpMax(100);
-            GivenHpDecreasePerBeatSetting(50);
+            GivenHpDecreasePerSecondSetting(50);
             GivenHpIncreasePerCatchSetting(100);
 
             hpBarModel.Init();
@@ -146,7 +148,7 @@ namespace GameCore.UnitTests
         public void call_presenter_to_refresh_hp_when_hp_changed()
         {
             GivenHpMax(100);
-            GivenHpDecreasePerBeatSetting(5);
+            GivenHpDecreasePerSecondSetting(5);
             GivenHpIncreasePerCatchSetting(3);
 
             hpBarModel.Init();
@@ -191,9 +193,9 @@ namespace GameCore.UnitTests
             appProcessor.CurrentStageSettingContent.SetHpIncreasePerCatch(hpIncreasePerCatch);
         }
 
-        private void GivenHpDecreasePerBeatSetting(float hpDecreasePerBeat)
+        private void GivenHpDecreasePerSecondSetting(float hpDecreasePerSecond)
         {
-            appProcessor.CurrentStageSettingContent.SetHpDecreasePerBeat(hpDecreasePerBeat);
+            appProcessor.CurrentStageSettingContent.SetHpDecreasePerSecond(hpDecreasePerSecond);
         }
 
         private void GivenCurrentStageSettingContentNull()

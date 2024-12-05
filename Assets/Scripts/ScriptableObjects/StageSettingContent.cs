@@ -12,7 +12,7 @@ namespace GameCore
         [SerializeField] private int bpm;
         [SerializeField] private int countDownBeatFreq;
         [SerializeField] private string audioKey;
-        [SerializeField] private float hpDecreasePerBeat;
+        [SerializeField] private float hpDecreasePerSecond;
         [SerializeField] private float hpIncreasePerCatch;
         [SerializeField] private List<int> spawnBeatIndexList;
 
@@ -22,7 +22,7 @@ namespace GameCore
         public string AudioKey => audioKey;
         public List<int> SpawnBeatIndexList => spawnBeatIndexList;
         public int CountDownBeatFreq => countDownBeatFreq;
-        public float HpDecreasePerBeat => hpDecreasePerBeat;
+        public float HpDecreasePerSecond => hpDecreasePerSecond;
         public float HpIncreasePerCatch => hpIncreasePerCatch;
 
         public void SetFmodEventReference(EventReference fmodEventReference)
@@ -51,9 +51,9 @@ namespace GameCore
             countDownBeatFreq = freq;
         }
 
-        public void SetHpDecreasePerBeat(float decreaseValue)
+        public void SetHpDecreasePerSecond(float decreaseValue)
         {
-            hpDecreasePerBeat = decreaseValue;
+            hpDecreasePerSecond = decreaseValue;
         }
 
         public void SetHpIncreasePerCatch(float increaseValue)

@@ -1,3 +1,4 @@
+using SNShien.Common.AdapterTools;
 using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
 using Zenject;
@@ -11,6 +12,7 @@ namespace GameCore
         [Inject] private IEventRegister eventRegister;
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IHpBarPresenter presenter;
+        [Inject] private IDeltaTimeGetter deltaTimeGetter;
 
         public float MaxHp { get; private set; }
 
@@ -33,6 +35,7 @@ namespace GameCore
         {
             InitData();
             InitPresenter();
+            UpdateCurrentHp(CurrentHp);
             SetEventRegister(true);
         }
 
@@ -40,7 +43,6 @@ namespace GameCore
         {
             presenter.BindModel(this);
             presenter.OpenView();
-            UpdateCurrentHp(CurrentHp);
         }
 
         private void InitData()
@@ -55,14 +57,37 @@ namespace GameCore
             MaxHp = gameSetting.HpMax;
         }
 
-        private void UpdateCurrentHp(float increaseValue)
+        public void UpdateFrame()
         {
-            CurrentHp += increaseValue;
+            float damage = appProcessor.CurrentStageSettingContent.HpDecreasePerSecond * deltaTimeGetter.deltaTime;
+            IncreaseAndUpdateCurrentHp(-damage);
+        }
 
-            if (CurrentHp > MaxHp)
-                CurrentHp = MaxHp;
-            else if (CurrentHp <= 0)
-                CurrentHp = 0;
+        private void SetEventRegister(bool isListen)
+        {
+            eventRegister.Unregister<GetScoreEvent>(OnGetScoreEvent);
+
+            if (isListen)
+            {
+                eventRegister.Register<GetScoreEvent>(OnGetScoreEvent);
+            }
+        }
+
+        private void IncreaseAndUpdateCurrentHp(float increaseValue)
+        {
+            float newHp = CurrentHp + increaseValue;
+
+            if (newHp > MaxHp)
+                newHp = MaxHp;
+            else if (newHp <= 0)
+                newHp = 0;
+
+            UpdateCurrentHp(newHp);
+        }
+
+        private void UpdateCurrentHp(float newHp)
+        {
+            CurrentHp = newHp;
 
             presenter.RefreshHp(CurrentHp);
 
@@ -70,26 +95,9 @@ namespace GameCore
                 eventInvoker.SendEvent(new GameOverEvent());
         }
 
-        private void SetEventRegister(bool isListen)
-        {
-            eventRegister.Unregister<BeatEvent>(OnBeatEvent);
-            eventRegister.Unregister<GetScoreEvent>(OnGetScoreEvent);
-            
-            if (isListen)
-            {
-                eventRegister.Register<BeatEvent>(OnBeatEvent);
-                eventRegister.Register<GetScoreEvent>(OnGetScoreEvent);
-            }
-        }
-
         private void OnGetScoreEvent(GetScoreEvent eventInfo)
         {
-            UpdateCurrentHp(appProcessor.CurrentStageSettingContent.HpIncreasePerCatch);
-        }
-
-        private void OnBeatEvent(BeatEvent eventInfo)
-        {
-            UpdateCurrentHp(-appProcessor.CurrentStageSettingContent.HpDecreasePerBeat);
+            IncreaseAndUpdateCurrentHp(appProcessor.CurrentStageSettingContent.HpIncreasePerCatch);
         }
     }
 }
