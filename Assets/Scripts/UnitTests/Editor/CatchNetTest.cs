@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
