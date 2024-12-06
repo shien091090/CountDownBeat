@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
@@ -19,6 +20,9 @@ namespace GameCore
         private readonly Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_HP_BAR_MODEL);
 
         public float CurrentHp { get; private set; }
+        public event Action OnRelease;
+        public event Action OnInit;
+        public event Action<float> OnRefreshHp;
 
         public void ExecuteModelInit()
         {
@@ -28,7 +32,8 @@ namespace GameCore
         public void Release()
         {
             SetEventRegister(false);
-            presenter.UnbindModel();
+
+            OnRelease?.Invoke();
         }
 
         public void UpdateFrame()
@@ -40,15 +45,11 @@ namespace GameCore
         public void Init()
         {
             InitData();
-            InitPresenter();
+            presenter.BindModel(this);
+            OnInit?.Invoke();
+
             UpdateCurrentHp(CurrentHp);
             SetEventRegister(true);
-        }
-
-        private void InitPresenter()
-        {
-            presenter.BindModel(this);
-            presenter.OpenView();
         }
 
         private void InitData()
@@ -89,7 +90,7 @@ namespace GameCore
         {
             CurrentHp = newHp;
 
-            presenter.RefreshHp(CurrentHp);
+            OnRefreshHp?.Invoke(CurrentHp);
 
             if (CurrentHp == 0)
                 eventInvoker.SendEvent(new GameOverEvent());

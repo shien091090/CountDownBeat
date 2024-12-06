@@ -15,25 +15,11 @@ namespace GameCore
             model?.UpdateFrame();
         }
 
-        public void RefreshHp(float currentHp)
-        {
-            if (model.MaxHp == 0)
-                view?.RefreshHpSliderValue(0);
-            else
-            {
-                float hpSliderValue = currentHp / model.MaxHp;
-                view?.RefreshHpSliderValue(hpSliderValue);
-            }
-        }
-
         public void BindModel(IHpBarModel model)
         {
             this.model = model;
-        }
 
-        public void OpenView()
-        {
-            viewManager.OpenView<HpBarView>(this);
+            SetEventRegister(true);
         }
 
         public void BindView(IHpBarView view)
@@ -46,9 +32,50 @@ namespace GameCore
             view = null;
         }
 
+        private void Init()
+        {
+            OpenView();
+        }
+
+        public void RefreshHp(float currentHp)
+        {
+            if (model.MaxHp == 0)
+                view?.RefreshHpSliderValue(0);
+            else
+            {
+                float hpSliderValue = currentHp / model.MaxHp;
+                view?.RefreshHpSliderValue(hpSliderValue);
+            }
+        }
+
         public void UnbindModel()
         {
             model = null;
+        }
+
+        private void SetEventRegister(bool isListen)
+        {
+            model.OnInit -= Init;
+            model.OnRelease -= Release;
+            model.OnRefreshHp -= RefreshHp;
+
+            if (isListen)
+            {
+                model.OnInit += Init;
+                model.OnRelease += Release;
+                model.OnRefreshHp += RefreshHp;
+            }
+        }
+
+        private void Release()
+        {
+            UnbindModel();
+            SetEventRegister(false);
+        }
+
+        private void OpenView()
+        {
+            viewManager.OpenView<HpBarView>(this);
         }
     }
 }

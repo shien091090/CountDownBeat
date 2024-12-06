@@ -19,6 +19,9 @@ namespace GameCore.UnitTests
         private IDeltaTimeGetter deltaTimeGetter;
 
         private Action<GetScoreEvent> getScoreEventCallback;
+        private Action<float> refreshHpEventCallback;
+        private Action initEventCallback;
+        private Action releaseEventCallback;
 
         [SetUp]
         public override void Setup()
@@ -45,6 +48,15 @@ namespace GameCore.UnitTests
 
             Container.Bind<HpBarModel>().AsSingle();
             hpBarModel = Container.Resolve<HpBarModel>();
+
+            refreshHpEventCallback = Substitute.For<Action<float>>();
+            hpBarModel.OnRefreshHp += refreshHpEventCallback;
+
+            initEventCallback = Substitute.For<Action>();
+            hpBarModel.OnInit += initEventCallback;
+
+            releaseEventCallback = Substitute.For<Action>();
+            hpBarModel.OnRelease += releaseEventCallback;
         }
 
         [Test]
@@ -77,6 +89,17 @@ namespace GameCore.UnitTests
             GivenHpMax(0);
 
             Assert.Throws<System.Exception>(() => hpBarModel.Init());
+        }
+
+        [Test]
+        //初始化時, 會發送初始化事件
+        public void send_init_event_when_init()
+        {
+            GivenHpMax(100);
+            
+            hpBarModel.Init();
+
+            ShouldSendInitEvent(1);
         }
 
         [Test]
@@ -150,8 +173,8 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //每次更新血量時, 會通知presenter刷新血量顯示
-        public void call_presenter_to_refresh_hp_when_hp_changed()
+        //每次更新血量時, 會發送刷新血量事件
+        public void send_refresh_hp_event_when_hp_changed()
         {
             GivenHpMax(100);
             GivenDeltaTime(1);
@@ -159,13 +182,22 @@ namespace GameCore.UnitTests
             GivenHpIncreasePerCatchSetting(3);
 
             hpBarModel.Init();
-            ShouldCallPresenterRefreshHp(1, 100);
+            ShouldSendRefreshHpEvent(1, 100);
 
             hpBarModel.UpdateFrame();
-            ShouldCallPresenterRefreshHp(2, 95);
+            ShouldSendRefreshHpEvent(2, 95);
 
             CallGetScoreEventCallback();
-            ShouldCallPresenterRefreshHp(3, 98);
+            ShouldSendRefreshHpEvent(3, 98);
+        }
+
+        [Test]
+        //釋放時, 會發送釋放事件
+        public void send_release_event_when_release()
+        {
+            hpBarModel.Release();
+
+            ShouldSendReleaseEvent(1);
         }
 
         private void InitEventRegisterMock()
@@ -179,7 +211,7 @@ namespace GameCore.UnitTests
                 Action<GetScoreEvent> callback = (Action<GetScoreEvent>)x.Args()[0];
                 getScoreEventCallback += callback;
             });
-            
+
             eventRegister.When(x => x.Unregister(Arg.Any<Action<GetScoreEvent>>())).Do(x =>
             {
                 Action<GetScoreEvent> callback = (Action<GetScoreEvent>)x.Args()[0];
@@ -224,13 +256,29 @@ namespace GameCore.UnitTests
             getScoreEventCallback.Invoke(new GetScoreEvent(1));
         }
 
-        private void ShouldCallPresenterRefreshHp(int expectedCallTimes, float expectedHp)
+        private void ShouldSendReleaseEvent(int expectedCallTimes)
         {
-            presenter.Received(expectedCallTimes).RefreshHp(Arg.Any<float>());
+            if (expectedCallTimes == 0)
+                releaseEventCallback.DidNotReceive().Invoke();
+            else
+                releaseEventCallback.Received(expectedCallTimes).Invoke();
+        }
 
-            float hpArg = (float)presenter
+        private void ShouldSendInitEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                initEventCallback.DidNotReceive().Invoke();
+            else
+                initEventCallback.Received(expectedCallTimes).Invoke();
+        }
+
+        private void ShouldSendRefreshHpEvent(int expectedCallTimes, float expectedHp)
+        {
+            refreshHpEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<float>());
+
+            float hpArg = (float)refreshHpEventCallback
                 .ReceivedCalls()
-                .Last(x => x.GetMethodInfo().Name == "RefreshHp")
+                .Last()
                 .GetArguments()[0];
 
             Assert.AreEqual(expectedHp, hpArg);
