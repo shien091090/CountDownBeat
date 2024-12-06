@@ -1,4 +1,5 @@
-﻿using SNShien.Common.MonoBehaviorTools;
+﻿using System;
+using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,13 @@ namespace GameCore
         [SerializeField] private Slider sld_hpBar;
 
         private IHpBarPresenter presenter;
+        private bool isStartUpdateHp;
+
+        private void Update()
+        {
+            if (isStartUpdateHp)
+                presenter.UpdateFrame();
+        }
 
         public override void UpdateView()
         {
@@ -18,6 +26,8 @@ namespace GameCore
         {
             presenter = parameters[0] as IHpBarPresenter;
             presenter.BindView(this);
+
+            isStartUpdateHp = true;
         }
 
         public override void ReOpenView(params object[] parameters)
@@ -27,6 +37,7 @@ namespace GameCore
         public override void CloseView()
         {
             presenter.UnbindView();
+            isStartUpdateHp = false;
         }
 
         public void RefreshHpSliderValue(float value)

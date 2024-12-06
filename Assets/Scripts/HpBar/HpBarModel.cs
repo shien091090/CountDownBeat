@@ -31,6 +31,12 @@ namespace GameCore
             presenter.UnbindModel();
         }
 
+        public void UpdateFrame()
+        {
+            float damage = appProcessor.CurrentStageSettingContent.HpDecreasePerSecond * deltaTimeGetter.deltaTime;
+            IncreaseAndUpdateCurrentHp(-damage);
+        }
+
         public void Init()
         {
             InitData();
@@ -55,12 +61,6 @@ namespace GameCore
 
             CurrentHp = gameSetting.HpMax;
             MaxHp = gameSetting.HpMax;
-        }
-
-        public void UpdateFrame()
-        {
-            float damage = appProcessor.CurrentStageSettingContent.HpDecreasePerSecond * deltaTimeGetter.deltaTime;
-            IncreaseAndUpdateCurrentHp(-damage);
         }
 
         private void SetEventRegister(bool isListen)

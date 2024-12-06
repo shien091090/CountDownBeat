@@ -10,6 +10,11 @@ namespace GameCore
         private IHpBarModel model;
         private IHpBarView view;
 
+        public void UpdateFrame()
+        {
+            model?.UpdateFrame();
+        }
+
         public void RefreshHp(float currentHp)
         {
             if (model.MaxHp == 0)

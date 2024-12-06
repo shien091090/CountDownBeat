@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
+using SNShien.Common.AdapterTools;
 using SNShien.Common.ProcessTools;
 using Zenject;
 
@@ -15,8 +16,8 @@ namespace GameCore.UnitTests
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
         private IHpBarPresenter presenter;
+        private IDeltaTimeGetter deltaTimeGetter;
 
-        private Action<BeatEvent> beatEventCallback;
         private Action<GetScoreEvent> getScoreEventCallback;
 
         [SetUp]
@@ -38,6 +39,9 @@ namespace GameCore.UnitTests
 
             presenter = Substitute.For<IHpBarPresenter>();
             Container.Bind<IHpBarPresenter>().FromInstance(presenter).AsSingle();
+
+            deltaTimeGetter = Substitute.For<IDeltaTimeGetter>();
+            Container.Bind<IDeltaTimeGetter>().FromInstance(deltaTimeGetter).AsSingle();
 
             Container.Bind<HpBarModel>().AsSingle();
             hpBarModel = Container.Resolve<HpBarModel>();
@@ -80,14 +84,13 @@ namespace GameCore.UnitTests
         public void decrease_hp_when_update_by_frame()
         {
             GivenHpMax(100);
+            GivenDeltaTime(0.1f);
             GivenHpDecreasePerSecondSetting(10);
 
             hpBarModel.Init();
             hpBarModel.UpdateFrame();
-            
-            CallBeatEventCallback();
 
-            CurrentHpShouldBe(98.5f);
+            CurrentHpShouldBe(99);
         }
 
         [Test]
@@ -97,14 +100,15 @@ namespace GameCore.UnitTests
         public void send_game_over_event_when_hp_is_0(float hpDecreasePerSecond)
         {
             GivenHpMax(100);
+            GivenDeltaTime(1);
             GivenHpDecreasePerSecondSetting(hpDecreasePerSecond);
 
             hpBarModel.Init();
-            CallBeatEventCallback();
+            hpBarModel.UpdateFrame();
 
             ShouldSendGameOverEvent(0);
 
-            CallBeatEventCallback();
+            hpBarModel.UpdateFrame();
 
             ShouldSendGameOverEvent(1);
             CurrentHpShouldBe(0);
@@ -118,11 +122,12 @@ namespace GameCore.UnitTests
         public void increase_hp_when_catch_score_ball(float hpIncreasePerCatch, float expectedFinalHp)
         {
             GivenHpMax(100);
+            GivenDeltaTime(1);
             GivenHpDecreasePerSecondSetting(50);
             GivenHpIncreasePerCatchSetting(hpIncreasePerCatch);
 
             hpBarModel.Init();
-            CallBeatEventCallback();
+            hpBarModel.UpdateFrame();
             CallGetScoreEventCallback();
 
             CurrentHpShouldBe(expectedFinalHp);
@@ -133,11 +138,12 @@ namespace GameCore.UnitTests
         public void hp_will_not_exceed_hp_max_when_catch_score_ball()
         {
             GivenHpMax(100);
+            GivenDeltaTime(1);
             GivenHpDecreasePerSecondSetting(50);
             GivenHpIncreasePerCatchSetting(100);
 
             hpBarModel.Init();
-            CallBeatEventCallback();
+            hpBarModel.UpdateFrame();
             CallGetScoreEventCallback();
 
             CurrentHpShouldBe(100);
@@ -148,13 +154,14 @@ namespace GameCore.UnitTests
         public void call_presenter_to_refresh_hp_when_hp_changed()
         {
             GivenHpMax(100);
+            GivenDeltaTime(1);
             GivenHpDecreasePerSecondSetting(5);
             GivenHpIncreasePerCatchSetting(3);
 
             hpBarModel.Init();
             ShouldCallPresenterRefreshHp(1, 100);
 
-            CallBeatEventCallback();
+            hpBarModel.UpdateFrame();
             ShouldCallPresenterRefreshHp(2, 95);
 
             CallGetScoreEventCallback();
@@ -163,21 +170,20 @@ namespace GameCore.UnitTests
 
         private void InitEventRegisterMock()
         {
-            beatEventCallback = null;
             getScoreEventCallback = null;
 
             eventRegister = Substitute.For<IEventRegister>();
-
-            eventRegister.When(x => x.Register(Arg.Any<Action<BeatEvent>>())).Do(x =>
-            {
-                Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
-                beatEventCallback += callback;
-            });
 
             eventRegister.When(x => x.Register(Arg.Any<Action<GetScoreEvent>>())).Do(x =>
             {
                 Action<GetScoreEvent> callback = (Action<GetScoreEvent>)x.Args()[0];
                 getScoreEventCallback += callback;
+            });
+            
+            eventRegister.When(x => x.Unregister(Arg.Any<Action<GetScoreEvent>>())).Do(x =>
+            {
+                Action<GetScoreEvent> callback = (Action<GetScoreEvent>)x.Args()[0];
+                getScoreEventCallback -= callback;
             });
         }
 
@@ -186,6 +192,11 @@ namespace GameCore.UnitTests
             appProcessor = Substitute.For<IAppProcessor>();
 
             appProcessor.CurrentStageSettingContent.Returns(new StageSettingContent());
+        }
+
+        private void GivenDeltaTime(float deltaTime)
+        {
+            deltaTimeGetter.deltaTime.Returns(deltaTime);
         }
 
         private void GivenHpIncreasePerCatchSetting(float hpIncreasePerCatch)
@@ -211,11 +222,6 @@ namespace GameCore.UnitTests
         private void CallGetScoreEventCallback()
         {
             getScoreEventCallback.Invoke(new GetScoreEvent(1));
-        }
-
-        private void CallBeatEventCallback()
-        {
-            beatEventCallback.Invoke(new BeatEvent(false));
         }
 
         private void ShouldCallPresenterRefreshHp(int expectedCallTimes, float expectedHp)

@@ -2,6 +2,7 @@
 {
     public interface IHpBarPresenter
     {
+        void UpdateFrame();
         void RefreshHp(float currentHp);
         void BindModel(IHpBarModel model);
         void OpenView();
