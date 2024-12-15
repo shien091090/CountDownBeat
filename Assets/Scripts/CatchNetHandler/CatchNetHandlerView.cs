@@ -30,13 +30,13 @@ namespace GameCore
         public ICatchNetView Spawn(int spawnPosIndex)
         {
             CatchNetSpawnPos posInfo = RandomSpawnPosInfoList[spawnPosIndex];
-            CatchNetView view = objectPoolManager.SpawnGameObject<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position);
+            CatchNetView view = objectPoolManager.SpawnGameObjectAndSetPosition<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position, TransformType.World);
             return view;
         }
 
         public void PlayCatchSuccessEffect(Vector3 position)
         {
-            objectPoolManager.SpawnGameObject(GameConst.PREFAB_NAME_CATCH_SUCCESS_EFFECT, position);
+            objectPoolManager.SpawnGameObjectAndSetPosition(GameConst.PREFAB_NAME_CATCH_SUCCESS_EFFECT, position, TransformType.World);
         }
 
         public override void UpdateView()

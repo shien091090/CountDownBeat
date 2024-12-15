@@ -72,7 +72,7 @@ namespace GameCore
 
         public void CreateBeatEffectPrefab()
         {
-            objectPool.SpawnGameObject<AutoParticleEffectObject>(PREFAB_NAME_BEAT_EFFECT);
+            objectPool.SpawnGameObject(PREFAB_NAME_BEAT_EFFECT);
         }
 
         public void PlayAnimation(string animKey)

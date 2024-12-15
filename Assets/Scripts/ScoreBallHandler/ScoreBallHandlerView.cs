@@ -6,9 +6,19 @@ namespace GameCore
     public class ScoreBallHandlerView : ArchitectureView, IScoreBallHandlerView
     {
         [SerializeField] private ObjectPoolManager objectPoolManager;
+        [SerializeField] private RandomPositionInRect randomPositionInRect;
 
         private IScoreBallHandlerPresenter presenter;
-        private RandomPositionInRect randomPositionInRect;
+
+        public IScoreBallView Spawn()
+        {
+            IScoreBallView scoreBallView = objectPoolManager.SpawnGameObjectAndSetPosition<ScoreBallView>(
+                GameConst.PREFAB_NAME_SCORE_BALL,
+                randomPositionInRect.GetRandomPosition(),
+                TransformType.Local);
+            
+            return scoreBallView;
+        }
 
         public override void UpdateView()
         {
@@ -27,17 +37,6 @@ namespace GameCore
         public override void CloseView()
         {
             presenter.UnbindView();
-        }
-
-        public IScoreBallView Spawn()
-        {
-            IScoreBallView scoreBallView = objectPoolManager.SpawnGameObject<ScoreBallView>(GameConst.PREFAB_NAME_SCORE_BALL, randomPositionInRect.GetRandomPosition());
-            return scoreBallView;
-        }
-
-        private void Awake()
-        {
-            randomPositionInRect = gameObject.GetComponent<RandomPositionInRect>();
         }
     }
 }
