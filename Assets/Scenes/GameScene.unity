@@ -233,6 +233,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4428c973f014fae94f09b637bef2b42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1287694071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1287694073}
+  - component: {fileID: 1287694072}
+  m_Layer: 0
+  m_Name: ScenePrefabPreviewer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1287694072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287694071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb0175045e5c5924bb5bb686758b734f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  prefabList:
+  - {fileID: 7850605610804480675, guid: 3db70435fcbfcfa4e9d3d5a864729dcb, type: 3}
+  - {fileID: 7850605610804480675, guid: 33213b6f51e15c14d91e170a160c8e17, type: 3}
+  - {fileID: 7850605610804480675, guid: b93071ecd5c5ecb4e8ca4c54fdc4b8a7, type: 3}
+  - {fileID: 7850605610804480675, guid: 6060c33d1e3eb7b4c922ac3a49708b90, type: 3}
+  - {fileID: 7850605610804480675, guid: cc7a67ade8ff1054bbb81f10e943870c, type: 3}
+  isAutoResponsiveBySafeArea: 1
+  deviceScreenSizeReferenceSetting: {fileID: 11400000, guid: 00c8e7839c5090a48bf66e647223c0c7, type: 2}
+  deviceType: Samsung Galaxy S10+
+  isAutoSetupSortOrderByViewSetting: 1
+  viewSetting: {fileID: 11400000, guid: aab5ddc3687d9d04f888df5894b13e81, type: 2}
+--- !u!4 &1287694073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287694071}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1458065112
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,6 +466,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1287694073}
   - {fileID: 763336822}
   - {fileID: 983025895}
   - {fileID: 1902988852}

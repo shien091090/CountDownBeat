@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cf8be8708194857809023b74abeee89, type: 3}
+  m_Name: DeviceScreenSizeReferenceSetting
+  m_EditorClassIdentifier: 
+  defineList:
+  - deviceType: Apple IPad Air
+    screenSize: {x: 1536, y: 2048}
+  - deviceType: Apple iPhone 13 Pro
+    screenSize: {x: 1170, y: 2532}
+  - deviceType: Motorola Nexus 6
+    screenSize: {x: 1440, y: 2560}
+  - deviceType: Samsung Galaxy S9
+    screenSize: {x: 1440, y: 2960}
+  - deviceType: Samsung Galaxy S10+
+    screenSize: {x: 1440, y: 3040}
+  - deviceType: Samsung Galaxy Z Fold2 5G
+    screenSize: {x: 960, y: 2658}
