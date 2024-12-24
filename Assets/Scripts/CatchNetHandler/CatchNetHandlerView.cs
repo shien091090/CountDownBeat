@@ -1,36 +1,29 @@
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using SNShien.Common.MonoBehaviorTools;
+using UnityEditor;
 using UnityEngine;
 
 namespace GameCore
 {
     public class CatchNetHandlerView : ArchitectureView, ICatchNetHandlerView
     {
+        [SerializeField] private bool isShowEditorDrawer;
+        [SerializeField] [ShowIf("isShowEditorDrawer")] private float editorDrawerRadius;
         [SerializeField] private GameSettingScriptableObject gameSetting;
         [SerializeField] private ObjectPoolManager objectPoolManager;
-        [SerializeField] private bool isShowEditorDrawer;
         [SerializeField] private List<CatchNetSpawnPos> randomSpawnPosInfoList;
 
         public List<CatchNetSpawnPos> RandomSpawnPosInfoList => randomSpawnPosInfoList;
         private ICatchNetHandlerPresenter presenter;
-        public bool IsShowEditorDrawer => isShowEditorDrawer;
-
-        public List<Vector3> RandomSpawnPositionList
-        {
-            get
-            {
-                if (randomSpawnPosInfoList == null || randomSpawnPosInfoList.Count == 0)
-                    return new List<Vector3>();
-                else
-                    return randomSpawnPosInfoList.Select(x => x.Position).ToList();
-            }
-        }
 
         public ICatchNetView Spawn(int spawnPosIndex)
         {
             CatchNetSpawnPos posInfo = RandomSpawnPosInfoList[spawnPosIndex];
-            CatchNetView view = objectPoolManager.SpawnGameObjectAndSetPosition<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.Position, TransformType.World);
+            CatchNetView view =
+                objectPoolManager.SpawnGameObjectAndSetPosition<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.WorldPosition, TransformType.World);
+
             return view;
         }
 
@@ -58,28 +51,22 @@ namespace GameCore
             presenter.UnbindView();
         }
 
-        public void SetPos(int index, Vector2 newPos)
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
         {
-            List<CatchNetSpawnPos> catchNetSpawnPosList = RandomSpawnPosInfoList;
-            if (catchNetSpawnPosList == null)
+            if (isShowEditorDrawer == false)
                 return;
 
-            if (catchNetSpawnPosList.Count > index)
-                catchNetSpawnPosList[index].SetPosition(newPos);
-        }
+            List<Vector3> worldPosList = randomSpawnPosInfoList
+                .Where(x => x.HasRectTransform)
+                .Select(x => x.WorldPosition)
+                .ToList();
 
-        public void CheckCreateRandomSpawnPositionList()
-        {
-            if (gameSetting == null)
-                return;
-
-            if (randomSpawnPosInfoList.Count > gameSetting.CatchNetLimit)
-                return;
-
-            for (int i = randomSpawnPosInfoList.Count; i <= gameSetting.CatchNetLimit; i++)
+            foreach (Vector3 pos in worldPosList)
             {
-                randomSpawnPosInfoList.Add(CatchNetSpawnPos.CreateEmptyInstance());
+                Handles.DrawWireDisc(pos, Vector3.forward, editorDrawerRadius);
             }
         }
+# endif
     }
 }
