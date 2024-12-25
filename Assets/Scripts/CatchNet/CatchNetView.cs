@@ -49,11 +49,11 @@ namespace GameCore
             switch (fadeInMode)
             {
                 case CatchNetSpawnFadeInMode.FromTop:
-                    startLocalPos = new Vector3(go_root.rect.height, 0, 0);
+                    startLocalPos = new Vector3(0, go_root.rect.height, 0);
                     break;
 
                 case CatchNetSpawnFadeInMode.FromBottom:
-                    startLocalPos = new Vector3(-go_root.rect.height, 0, 0);
+                    startLocalPos = new Vector3(0, -go_root.rect.height, 0);
                     break;
 
                 case CatchNetSpawnFadeInMode.FromLeft:
