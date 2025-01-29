@@ -28,7 +28,7 @@ namespace GameCore
             model.SetFreezeState(true);
         }
 
-        public void DoubleClick()
+        public void CrossResetWall()
         {
             model.ResetToBeginning();
         }

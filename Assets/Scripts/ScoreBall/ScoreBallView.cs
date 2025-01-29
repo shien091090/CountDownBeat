@@ -1,4 +1,3 @@
-using System;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.TesterTools;
@@ -10,6 +9,7 @@ using Zenject;
 namespace GameCore
 {
     [RequireComponent(typeof(Collider2DAdapterComponent))]
+    [RequireComponent(typeof(ComputableTriggerUI))]
     public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
         private const string PREFAB_NAME_BEAT_EFFECT = "BeatEffect";
@@ -82,7 +82,6 @@ namespace GameCore
 
         public void Init()
         {
-            operableUI = gameObject.GetComponent<OperableUI>();
             operableUI.Init();
             RegisterEvent();
             SetInCountDownColor();
@@ -93,10 +92,16 @@ namespace GameCore
             operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
         }
 
+        public void CrossResetWall()
+        {
+            presenter.CrossResetWall();
+        }
+
         private void Awake()
         {
             colliderComponent = GetComponent<Collider2DAdapterComponent>();
             animator = GetComponent<Animator>();
+            operableUI = gameObject.GetComponent<OperableUI>();
 
             colliderComponent.SetHandlerType(ColliderHandleType.Trigger);
         }
@@ -108,14 +113,6 @@ namespace GameCore
 
             operableUI.OnDragOverEvent -= DragOver;
             operableUI.OnDragOverEvent += DragOver;
-
-            operableUI.OnDoubleClickEvent -= DoubleClick;
-            operableUI.OnDoubleClickEvent += DoubleClick;
-        }
-
-        private void DoubleClick()
-        {
-            presenter.DoubleClick();
         }
 
         private void DragOver()

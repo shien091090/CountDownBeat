@@ -6,7 +6,7 @@ namespace GameCore
         void Init(IScoreBallTextColorSetting scoreBallTextColorSetting);
         void DragOver();
         void StartDrag();
-        void DoubleClick();
+        void CrossResetWall();
         void TriggerCatch();
     }
 }
