@@ -1,5 +1,6 @@
 using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
+using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
 using TMPro;
 using UnityEngine;
@@ -15,8 +16,8 @@ namespace GameCore
         private const string PREFAB_NAME_BEAT_EFFECT = "BeatEffect";
 
         [Inject] private IDeltaTimeGetter deltaTimeGetter;
+        [Inject] private IEventInvoker eventInvoker;
 
-        [SerializeField] private ComputableColliderCrossDetector crossDetector;
         [SerializeField] private ObjectPoolManager objectPool;
         [SerializeField] private Color inCountDownColor;
         [SerializeField] private Color freezeColor;
@@ -107,10 +108,6 @@ namespace GameCore
             animator = GetComponent<Animator>();
             operableUI = gameObject.GetComponent<OperableUI>();
             computableCollider = GetComponent<ComputableCollider>();
-
-            //TODO:待優化寫法
-            //從整個場景上尋找ComputableColliderCrossDetector
-            crossDetector = FindObjectOfType<ComputableColliderCrossDetector>();
         }
 
         private void RegisterEvent()
@@ -125,13 +122,13 @@ namespace GameCore
         private void DragOver()
         {
             presenter.DragOver();
-            crossDetector.ComputableCollider.RemoveTrackingTarget();
+            eventInvoker.SendEvent(new ScoreBallOperateEvent(false, computableCollider));
         }
 
         private void StartDrag()
         {
             presenter.StartDrag();
-            crossDetector.ComputableCollider.StartTrackingTarget(computableCollider);
+            eventInvoker.SendEvent(new ScoreBallOperateEvent(true, computableCollider));
         }
     }
 }
