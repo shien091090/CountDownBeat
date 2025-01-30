@@ -1,28 +1,25 @@
-using System;
 using SNShien.Common.MonoBehaviorTools;
 using UnityEngine;
 
 namespace GameCore
 {
-    [RequireComponent(typeof(BoxCollider2D))]
-    [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(TriggerUICrossDetector))]
+    [RequireComponent(typeof(ComputableColliderCrossDetector))]
     public class ResetWallView : MonoBehaviour
     {
-        private TriggerUICrossDetector triggerUICrossDetector;
+        private ComputableColliderCrossDetector crossDetector;
 
         private void SetEventRegister(bool isListen)
         {
-            triggerUICrossDetector.OnTriggerCross -= OnTriggerCross;
+            crossDetector.OnTriggerCross -= OnTriggerCross;
             if (isListen)
             {
-                triggerUICrossDetector.OnTriggerCross += OnTriggerCross;
+                crossDetector.OnTriggerCross += OnTriggerCross;
             }
         }
 
         private void Awake()
         {
-            triggerUICrossDetector = GetComponent<TriggerUICrossDetector>();
+            crossDetector = GetComponent<ComputableColliderCrossDetector>();
         }
 
         private void OnTriggerCross(GameObject target)

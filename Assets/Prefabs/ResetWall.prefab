@@ -238,11 +238,8 @@ GameObject:
   - component: {fileID: 7917381154423387411}
   - component: {fileID: 4819777600118413545}
   - component: {fileID: 3487421560298111545}
-  - component: {fileID: 6231890448192353134}
   - component: {fileID: 6167900169279901987}
   - component: {fileID: 6787001212748865999}
-  - component: {fileID: 5423915805587019762}
-  - component: {fileID: 9215890169237649837}
   - component: {fileID: 827718613540959840}
   m_Layer: 5
   m_Name: ResetWall
@@ -293,19 +290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeaa8a48d7cc43ecb725c42beffbfe7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6231890448192353134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3281551937696070968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60a64f25de1b466d9527b351f1ca2178, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handleType: 0
 --- !u!114 &6167900169279901987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,17 +302,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45030574da2c4743a06b1386a418aecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  isShowHighlightHintForTest: 0
   shapeType: 1
+  isShowHighlightHintForTest: 0
   img_highlightForTest: {fileID: 827718613540959840}
 --- !u!114 &6787001212748865999
 MonoBehaviour:
@@ -353,78 +328,6 @@ MonoBehaviour:
   txt_exitPosAngle: {fileID: 5543570427771652898}
   go_crossSuccessHint: {fileID: 9159539038093691259}
   go_crossFailHint: {fileID: 6102666773486172699}
---- !u!61 &5423915805587019762
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3281551937696070968}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 100, y: 300}
-  m_EdgeRadius: 0
---- !u!50 &9215890169237649837
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3281551937696070968}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &827718613540959840
 MonoBehaviour:
   m_ObjectHideFlags: 0
