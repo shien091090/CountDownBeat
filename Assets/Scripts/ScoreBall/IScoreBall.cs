@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace GameCore
 {
@@ -9,6 +10,7 @@ namespace GameCore
         event Action<int> OnUpdateCountDownValue;
         event Action OnScoreBallBeat;
         int CurrentCountDownValue { get; }
+        Vector2Int PassCountDownValueRange { get; }
         void SetFreezeState(bool isFreeze);
         void ResetToBeginning();
         void SuccessSettle();

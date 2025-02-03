@@ -1,15 +1,41 @@
 using System;
 using SNShien.Common.ProcessTools;
+using UnityEngine;
 
 namespace GameCore
 {
     public class ScoreBall : IScoreBall
     {
         public int CurrentCountDownValue { get; private set; }
+
+        public Vector2Int PassCountDownValueRange
+        {
+            get
+            {
+                if (isExpand)
+                {
+                    int maxValue = CurrentCountDownValue + 1;
+                    if (maxValue > StartCountDownValue)
+                        maxValue = StartCountDownValue;
+
+                    int minValue = CurrentCountDownValue - 1;
+                    if (minValue < 1)
+                        minValue = 1;
+
+                    return new Vector2Int(minValue, maxValue);
+                }
+                else
+                {
+                    return new Vector2Int(CurrentCountDownValue, CurrentCountDownValue);
+                }
+            }
+        }
+
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
 
         private IScoreBallPresenter presenter;
+        private bool isExpand;
 
         public int StartCountDownValue { get; private set; }
         public ScoreBallState CurrentState { get; private set; }
@@ -118,6 +144,8 @@ namespace GameCore
             CheckChangeEventRegisterState(CurrentState, newState);
 
             CurrentState = newState;
+            isExpand = newState == ScoreBallState.FreezeAndExpand;
+
             OnUpdateState?.Invoke(CurrentState);
         }
 

@@ -375,7 +375,7 @@ namespace GameCore.UnitTests
 
         #endregion
 
-        #region 數字倒數
+        #region 倒數數字
 
         [Test]
         [TestCase(0)]
@@ -523,6 +523,29 @@ namespace GameCore.UnitTests
 
             CurrentCountDownValueShouldBe(9);
         }
+
+        [Test]
+        //從凍結狀態觸發判定擴大時, 若倒數數字為起始值, 則判定範圍上下限為當前值減一到起始值
+        public void pass_count_down_value_range_is_current_value_minus_one_to_start_value_when_expand_and_count_down_value_is_start_value()
+        {
+            scoreBall.Init(10);
+            scoreBall.SetFreezeState(true);
+            scoreBall.TriggerExpand();
+
+            PassCountDownValueRangeShouldBe(9, 10);
+        }
+
+        private void PassCountDownValueRangeShouldBe(int expectedMin, int expectedMax)
+        {
+            int min = scoreBall.PassCountDownValueRange.x;
+            int max = scoreBall.PassCountDownValueRange.y;
+
+            Assert.AreEqual(expectedMin, min);
+            Assert.AreEqual(expectedMax, max);
+        }
+
+        //從凍結狀態觸發判定擴大時, 若倒數數字為1, 則判定範圍上下限為1到當前值加一
+        //從凍結狀態觸發判定擴大時, 若倒數數字大於1且小於起始值, 則判定範圍上下限為當前值加減一
 
         #endregion
     }
