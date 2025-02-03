@@ -129,7 +129,7 @@ namespace GameCore.UnitTests
 
         [Test]
         //設定初始倒數數字並切換狀態為"InCountDown"
-        public void init_and_switch_state()
+        public void init_then_change_state_to_in_count_down()
         {
             scoreBall.Init(20);
 
@@ -139,7 +139,7 @@ namespace GameCore.UnitTests
 
         [Test]
         //收到Beat事件時, 倒數數字減至0, 切換狀態為"Hide"
-        public void count_down_to_zero_then_change_to_hide_state()
+        public void count_down_to_zero_then_change_state_to_hide()
         {
             scoreBall.Init(1);
 
@@ -150,49 +150,35 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //拖曳時, 凍結倒數數字並切換狀態"Freeze"
-        public void set_freeze_state_and_stop_count_down()
+        //設定凍結狀態並切換狀態為"Freeze"
+        public void set_freeze_state_then_change_state_to_freeze()
         {
             scoreBall.Init(20);
             scoreBall.SetFreezeState(true);
 
-            CurrentCountDownValueShouldBe(20);
-            CurrentStateShouldBe(ScoreBallState.Freeze);
-
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(20);
             CurrentStateShouldBe(ScoreBallState.Freeze);
         }
 
         [Test]
+        //取消凍結狀態並切換狀態為"InCountDown"
+        public void unset_freeze_state_then_change_state_to_in_count_down()
+        {
+            scoreBall.Init(10);
+            scoreBall.SetFreezeState(true);
+            scoreBall.SetFreezeState(false);
+
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+        }
+
+        [Test]
         //成功結算, 切換狀態為"Hide"
-        public void success_settle_and_hide()
+        public void success_settle_then_change_state_to_hide()
         {
             scoreBall.Init(10);
             scoreBall.SuccessSettle();
 
             CurrentCountDownValueShouldBe(0);
             CurrentStateShouldBe(ScoreBallState.Hide);
-        }
-
-        [Test]
-        //取消拖曳狀態, 切換狀態為"InCountDown", 數字繼續倒數
-        public void cancel_freeze_then_continue_count_down()
-        {
-            scoreBall.Init(10);
-            scoreBall.SetFreezeState(true);
-
-            CallBeatEventCallback();
-
-            scoreBall.SetFreezeState(false);
-
-            CurrentCountDownValueShouldBe(10);
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(9);
         }
 
         [Test]
@@ -219,6 +205,9 @@ namespace GameCore.UnitTests
 
             CurrentStateShouldBe(ScoreBallState.InCountDown);
         }
+
+        //當前狀態不為Hide時, 觸發判定擴大, 狀態切換為"Expand"
+        //當前狀態為Hide時, 觸發判定擴大, 無反應
 
         #endregion
 
@@ -381,6 +370,38 @@ namespace GameCore.UnitTests
             CallBeatEventCallback(false);
 
             CurrentCountDownValueShouldBe(20);
+        }
+
+        [Test]
+        //設為凍結狀態時, 收到Beat事件不會倒數
+        public void do_not_count_down_when_freeze()
+        {
+            scoreBall.Init(20);
+            scoreBall.SetFreezeState(true);
+
+            CurrentCountDownValueShouldBe(20);
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(20);
+        }
+        
+        [Test]
+        //取消凍結狀態, 收到Beat事件數字繼續倒數
+        public void continue_count_down_when_unfreeze()
+        {
+            scoreBall.Init(10);
+            scoreBall.SetFreezeState(true);
+
+            CallBeatEventCallback();
+
+            scoreBall.SetFreezeState(false);
+
+            CurrentCountDownValueShouldBe(10);
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(9);
         }
 
         [Test]
