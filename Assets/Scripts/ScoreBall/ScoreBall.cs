@@ -64,6 +64,14 @@ namespace GameCore
             OnInit?.Invoke();
         }
 
+        public void TriggerExpand()
+        {
+            if (CurrentState != ScoreBallState.Freeze)
+                return;
+
+            UpdateCurrentState(ScoreBallState.FreezeAndExpand);
+        }
+
         public void Reactivate()
         {
             UpdateCurrentCountDownValue(StartCountDownValue);

@@ -206,8 +206,48 @@ namespace GameCore.UnitTests
             CurrentStateShouldBe(ScoreBallState.InCountDown);
         }
 
-        //當前狀態不為Hide時, 觸發判定擴大, 狀態切換為"Expand"
-        //當前狀態為Hide時, 觸發判定擴大, 無反應
+        [Test]
+        //當前狀態為Freeze時, 觸發判定擴大, 狀態切換為"FreezeAndExpand"
+        public void set_and_change_state_to_freeze_and_expand_when_freeze_state()
+        {
+            scoreBall.Init(10);
+
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+
+            scoreBall.SetFreezeState(true);
+            scoreBall.TriggerExpand();
+
+            CurrentStateShouldBe(ScoreBallState.FreezeAndExpand);
+        }
+
+        [Test]
+        //當前狀態不為Freeze時, 觸發判定擴大, 無反應
+        public void do_nothing_when_set_expand_state_in_not_freeze_state()
+        {
+            scoreBall.Init(10);
+
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+
+            scoreBall.TriggerExpand();
+
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+        }
+
+        [Test]
+        //狀態為"FreezeAndExpand"時, 若解除凍結狀態, 則狀態切換為"InCountDown"
+        public void change_state_to_in_count_down_when_unset_freeze_state_in_freeze_and_expand_state()
+        {
+            scoreBall.Init(10);
+
+            scoreBall.SetFreezeState(true);
+            scoreBall.TriggerExpand();
+
+            CurrentStateShouldBe(ScoreBallState.FreezeAndExpand);
+
+            scoreBall.SetFreezeState(false);
+
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+        }
 
         #endregion
 
@@ -385,7 +425,7 @@ namespace GameCore.UnitTests
 
             CurrentCountDownValueShouldBe(20);
         }
-        
+
         [Test]
         //取消凍結狀態, 收到Beat事件數字繼續倒數
         public void continue_count_down_when_unfreeze()
