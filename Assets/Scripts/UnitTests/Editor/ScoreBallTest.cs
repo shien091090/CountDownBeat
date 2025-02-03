@@ -42,299 +42,6 @@ namespace GameCore.UnitTests
             scoreBall.OnUpdateCountDownValue += updateCountDownValueEventCallback;
         }
 
-        [Test]
-        //設定初始倒數數字並切換狀態為"InCountDown"
-        public void init_and_switch_state()
-        {
-            scoreBall.Init(20);
-
-            CurrentCountDownValueShouldBe(20);
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-        }
-
-        [Test]
-        //設定初始化時, 監聽事件
-        public void init_and_register_event()
-        {
-            scoreBall.Init(20);
-
-            ShouldRegisterBeatEvent();
-        }
-
-        [Test]
-        //初始化時, 發送初始化事件
-        public void send_init_event_when_init()
-        {
-            scoreBall.Init(20);
-
-            ShouldSendInitEvent(1);
-        }
-
-        [Test]
-        [TestCase(0)]
-        [TestCase(-1)]
-        [TestCase(-10)]
-        //設定初始倒數數字, 若數字小於0則不做事
-        public void init_with_negative_value(int startCountDownValue)
-        {
-            scoreBall.Init(startCountDownValue);
-
-            CurrentCountDownValueShouldBe(0);
-            CurrentStateShouldBe(ScoreBallState.None);
-        }
-
-        [Test]
-        //收到Beat事件時, 若為倒數拍點, 則倒數數字減一
-        public void count_down_when_receive_beat_event_and_is_count_down_beat()
-        {
-            scoreBall.Init(20);
-
-            CallBeatEventCallback(true);
-
-            CurrentCountDownValueShouldBe(19);
-        }
-
-        [Test]
-        //收到Beat事件時, 若不是倒數拍點, 則不做事
-        public void do_nothing_when_receive_beat_event_and_not_count_down_beat()
-        {
-            scoreBall.Init(20);
-
-            CallBeatEventCallback(false);
-
-            CurrentCountDownValueShouldBe(20);
-        }
-
-        [Test]
-        //收到Beat事件時, 倒數數字減至0, 發送Damage事件並切換狀態為"Hide"
-        public void count_down_to_zero_and_send_damage_event()
-        {
-            scoreBall.Init(1);
-
-            CallBeatEventCallback();
-
-            ShouldSendDamageEvent();
-            CurrentCountDownValueShouldBe(0);
-            CurrentStateShouldBe(ScoreBallState.Hide);
-        }
-
-        [Test]
-        //更新倒數數字時, 發送倒數數字更新事件
-        public void send_update_count_down_value_event_when_update_count_down_value()
-        {
-            scoreBall.Init(20);
-            
-            ShouldSendUpdateCountDownValueEvent(1);
-
-            CallBeatEventCallback(true);
-
-            ShouldSendUpdateCountDownValueEvent(2);
-
-            CallBeatEventCallback(false);
-
-            ShouldSendUpdateCountDownValueEvent(2);
-
-            CallBeatEventCallback(true);
-
-            ShouldSendUpdateCountDownValueEvent(3);
-        }
-
-        [Test]
-        //分數球重新激活時, 發送Init事件
-        public void send_score_ball_beat_event_when_reactivate()
-        {
-            scoreBall.Init(20);
-            
-            ShouldSendInitEvent(1);
-            
-            scoreBall.SuccessSettle();
-            
-            ShouldSendInitEvent(1);
-            
-            scoreBall.Reactivate();
-
-            ShouldSendInitEvent(2);
-        }
-
-        [Test]
-        //收到Beat事件時, 發送分數球Beat事件
-        public void send_score_ball_beat_event_when_receive_beat_event()
-        {
-            scoreBall.Init(20);
-
-            ShouldSendScoreBallBeatEvent(0);
-
-            CallBeatEventCallback();
-
-            ShouldSendScoreBallBeatEvent(1);
-
-            CallBeatEventCallback();
-
-            ShouldSendScoreBallBeatEvent(2);
-        }
-
-        [Test]
-        //收到Beat事件時, 若狀態為"Hide"則不會發送分數球Beat事件
-        public void do_not_send_score_ball_beat_event_when_hide()
-        {
-            scoreBall.Init(20);
-
-            CallBeatEventCallback();
-            
-            ShouldSendScoreBallBeatEvent(1);
-
-            scoreBall.SuccessSettle();
-            CurrentStateShouldBe(ScoreBallState.Hide);
-
-            CallBeatEventCallback();
-
-            ShouldSendScoreBallBeatEvent(1);
-        }
-
-        [Test]
-        //拖曳時, 凍結倒數數字並切換狀態"Freeze"
-        public void set_freeze_state_and_stop_count_down()
-        {
-            scoreBall.Init(20);
-            scoreBall.SetFreezeState(true);
-
-            CurrentCountDownValueShouldBe(20);
-            CurrentStateShouldBe(ScoreBallState.Freeze);
-
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(20);
-            CurrentStateShouldBe(ScoreBallState.Freeze);
-        }
-
-        [Test]
-        //成功結算, 切換狀態為"Hide"
-        public void success_settle_and_hide()
-        {
-            scoreBall.Init(10);
-            scoreBall.SuccessSettle();
-
-            CurrentCountDownValueShouldBe(0);
-            CurrentStateShouldBe(ScoreBallState.Hide);
-        }
-
-        [Test]
-        //取消拖曳狀態, 切換狀態為"InCountDown", 數字繼續倒數
-        public void cancel_freeze_then_continue_count_down()
-        {
-            scoreBall.Init(10);
-            scoreBall.SetFreezeState(true);
-
-            CallBeatEventCallback();
-
-            scoreBall.SetFreezeState(false);
-
-            CurrentCountDownValueShouldBe(10);
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(9);
-        }
-
-        [Test]
-        //變更狀態時, 會發送變更狀態事件
-        public void send_update_state_event_when_state_change()
-        {
-            scoreBall.Init(10);
-            LastSendUpdateStateEventShouldBe(ScoreBallState.InCountDown);
-
-            scoreBall.SetFreezeState(true);
-            LastSendUpdateStateEventShouldBe(ScoreBallState.Freeze);
-
-            scoreBall.SetFreezeState(false);
-            LastSendUpdateStateEventShouldBe(ScoreBallState.InCountDown);
-
-            scoreBall.SuccessSettle();
-            LastSendUpdateStateEventShouldBe(ScoreBallState.Hide);
-        }
-
-        [Test]
-        //重設倒數數字, 數字恢復到起始值
-        public void reset_count_down_value()
-        {
-            scoreBall.Init(10);
-
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(7);
-
-            scoreBall.ResetToBeginning();
-
-            CurrentCountDownValueShouldBe(10);
-        }
-
-        [Test]
-        //重設倒數數字, 若狀態為"Hide"則不做事
-        public void do_not_reset_count_down_value_when_hide()
-        {
-            scoreBall.Init(10);
-            scoreBall.SuccessSettle();
-
-            scoreBall.ResetToBeginning();
-
-            CurrentCountDownValueShouldBe(0);
-            CurrentStateShouldBe(ScoreBallState.Hide);
-        }
-
-        [Test]
-        [TestCase(true)]
-        [TestCase(false)]
-        //結算或倒數完畢後再度激活, 倒數數字恢復到起始值, 狀態切換為"InCountDown"
-        public void reactivate_and_reset_count_down_value_and_update_state_to_in_count_down(bool isSuccessSettle)
-        {
-            scoreBall.Init(10);
-
-            if (isSuccessSettle)
-                scoreBall.SuccessSettle();
-            else
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    CallBeatEventCallback();
-                }
-            }
-
-            CurrentStateShouldBe(ScoreBallState.Hide);
-
-            scoreBall.Reactivate();
-
-            CurrentCountDownValueShouldBe(10);
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-        }
-
-        [Test]
-        [TestCase(true)]
-        [TestCase(false)]
-        //結算或倒數完畢後再度激活, 收到Beat事件倒數數字減一
-        public void reactivate_and_count_down(bool isSuccessSettle)
-        {
-            scoreBall.Init(10);
-
-            if (isSuccessSettle)
-                scoreBall.SuccessSettle();
-            else
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    CallBeatEventCallback();
-                }
-            }
-
-            scoreBall.Reactivate();
-
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(9);
-        }
-
         private void InitEventHandlerMock()
         {
             beatEventCallback = null;
@@ -417,5 +124,345 @@ namespace GameCore.UnitTests
             else
                 updateCountDownValueEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<int>());
         }
+
+        #region 狀態變化
+
+        [Test]
+        //設定初始倒數數字並切換狀態為"InCountDown"
+        public void init_and_switch_state()
+        {
+            scoreBall.Init(20);
+
+            CurrentCountDownValueShouldBe(20);
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+        }
+
+        [Test]
+        //收到Beat事件時, 倒數數字減至0, 切換狀態為"Hide"
+        public void count_down_to_zero_then_change_to_hide_state()
+        {
+            scoreBall.Init(1);
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(0);
+            CurrentStateShouldBe(ScoreBallState.Hide);
+        }
+
+        [Test]
+        //拖曳時, 凍結倒數數字並切換狀態"Freeze"
+        public void set_freeze_state_and_stop_count_down()
+        {
+            scoreBall.Init(20);
+            scoreBall.SetFreezeState(true);
+
+            CurrentCountDownValueShouldBe(20);
+            CurrentStateShouldBe(ScoreBallState.Freeze);
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(20);
+            CurrentStateShouldBe(ScoreBallState.Freeze);
+        }
+
+        [Test]
+        //成功結算, 切換狀態為"Hide"
+        public void success_settle_and_hide()
+        {
+            scoreBall.Init(10);
+            scoreBall.SuccessSettle();
+
+            CurrentCountDownValueShouldBe(0);
+            CurrentStateShouldBe(ScoreBallState.Hide);
+        }
+
+        [Test]
+        //取消拖曳狀態, 切換狀態為"InCountDown", 數字繼續倒數
+        public void cancel_freeze_then_continue_count_down()
+        {
+            scoreBall.Init(10);
+            scoreBall.SetFreezeState(true);
+
+            CallBeatEventCallback();
+
+            scoreBall.SetFreezeState(false);
+
+            CurrentCountDownValueShouldBe(10);
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(9);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        //結算或倒數完畢後再度激活, 狀態切換為"InCountDown"
+        public void reactivate_then_change_state_to_in_count_down(bool isSuccessSettle)
+        {
+            scoreBall.Init(10);
+
+            if (isSuccessSettle)
+                scoreBall.SuccessSettle();
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    CallBeatEventCallback();
+                }
+            }
+
+            CurrentStateShouldBe(ScoreBallState.Hide);
+
+            scoreBall.Reactivate();
+
+            CurrentStateShouldBe(ScoreBallState.InCountDown);
+        }
+
+        #endregion
+
+        #region 事件註冊&發送事件
+
+        [Test]
+        //設定初始化時, 監聽事件
+        public void register_beat_event()
+        {
+            scoreBall.Init(20);
+
+            ShouldRegisterBeatEvent();
+        }
+
+        [Test]
+        //初始化時, 發送初始化事件
+        public void send_init_event_when_init()
+        {
+            scoreBall.Init(20);
+
+            ShouldSendInitEvent(1);
+        }
+
+        [Test]
+        //更新倒數數字時, 發送倒數數字更新事件
+        public void send_update_count_down_value_event_when_update_count_down_value()
+        {
+            scoreBall.Init(20);
+
+            ShouldSendUpdateCountDownValueEvent(1);
+
+            CallBeatEventCallback(true);
+
+            ShouldSendUpdateCountDownValueEvent(2);
+
+            CallBeatEventCallback(false);
+
+            ShouldSendUpdateCountDownValueEvent(2);
+
+            CallBeatEventCallback(true);
+
+            ShouldSendUpdateCountDownValueEvent(3);
+        }
+
+        [Test]
+        //分數球重新激活時, 發送Init事件
+        public void send_score_ball_beat_event_when_reactivate()
+        {
+            scoreBall.Init(20);
+
+            ShouldSendInitEvent(1);
+
+            scoreBall.SuccessSettle();
+
+            ShouldSendInitEvent(1);
+
+            scoreBall.Reactivate();
+
+            ShouldSendInitEvent(2);
+        }
+
+        [Test]
+        //收到Beat事件時, 發送分數球Beat事件
+        public void send_score_ball_beat_event_when_receive_beat_event()
+        {
+            scoreBall.Init(20);
+
+            ShouldSendScoreBallBeatEvent(0);
+
+            CallBeatEventCallback();
+
+            ShouldSendScoreBallBeatEvent(1);
+
+            CallBeatEventCallback();
+
+            ShouldSendScoreBallBeatEvent(2);
+        }
+
+        [Test]
+        //收到Beat事件時, 若狀態為"Hide"則不會發送分數球Beat事件
+        public void do_not_send_score_ball_beat_event_when_hide()
+        {
+            scoreBall.Init(20);
+
+            CallBeatEventCallback();
+
+            ShouldSendScoreBallBeatEvent(1);
+
+            scoreBall.SuccessSettle();
+            CurrentStateShouldBe(ScoreBallState.Hide);
+
+            CallBeatEventCallback();
+
+            ShouldSendScoreBallBeatEvent(1);
+        }
+
+        [Test]
+        //變更狀態時, 會發送變更狀態事件
+        public void send_update_state_event_when_state_change()
+        {
+            scoreBall.Init(10);
+            LastSendUpdateStateEventShouldBe(ScoreBallState.InCountDown);
+
+            scoreBall.SetFreezeState(true);
+            LastSendUpdateStateEventShouldBe(ScoreBallState.Freeze);
+
+            scoreBall.SetFreezeState(false);
+            LastSendUpdateStateEventShouldBe(ScoreBallState.InCountDown);
+
+            scoreBall.SuccessSettle();
+            LastSendUpdateStateEventShouldBe(ScoreBallState.Hide);
+        }
+
+        [Test]
+        //收到Beat事件時, 倒數數字減至0, 發送Damage事件
+        public void count_down_to_zero_and_send_damage_event()
+        {
+            scoreBall.Init(1);
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(0);
+            ShouldSendDamageEvent();
+        }
+
+        #endregion
+
+        #region 數字倒數
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-10)]
+        //設定初始倒數數字, 若數字小於0則不做事
+        public void init_with_negative_value(int startCountDownValue)
+        {
+            scoreBall.Init(startCountDownValue);
+
+            CurrentCountDownValueShouldBe(0);
+            CurrentStateShouldBe(ScoreBallState.None);
+        }
+
+        [Test]
+        //收到Beat事件時, 若為倒數拍點, 則倒數數字減一
+        public void count_down_when_receive_beat_event_and_is_count_down_beat()
+        {
+            scoreBall.Init(20);
+
+            CallBeatEventCallback(true);
+
+            CurrentCountDownValueShouldBe(19);
+        }
+
+        [Test]
+        //收到Beat事件時, 若不是倒數拍點, 則不做事
+        public void do_nothing_when_receive_beat_event_and_not_count_down_beat()
+        {
+            scoreBall.Init(20);
+
+            CallBeatEventCallback(false);
+
+            CurrentCountDownValueShouldBe(20);
+        }
+
+        [Test]
+        //重設倒數數字, 數字恢復到起始值
+        public void reset_count_down_value()
+        {
+            scoreBall.Init(10);
+
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(7);
+
+            scoreBall.ResetToBeginning();
+
+            CurrentCountDownValueShouldBe(10);
+        }
+
+        [Test]
+        //重設倒數數字, 若狀態為"Hide"則不做事
+        public void do_not_reset_count_down_value_when_hide()
+        {
+            scoreBall.Init(10);
+            scoreBall.SuccessSettle();
+
+            scoreBall.ResetToBeginning();
+
+            CurrentCountDownValueShouldBe(0);
+            CurrentStateShouldBe(ScoreBallState.Hide);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        //結算或倒數完畢後再度激活, 倒數數字恢復到起始值
+        public void reactivate_then_reset_count_down_value(bool isSuccessSettle)
+        {
+            scoreBall.Init(10);
+
+            if (isSuccessSettle)
+                scoreBall.SuccessSettle();
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    CallBeatEventCallback();
+                }
+            }
+
+            CurrentStateShouldBe(ScoreBallState.Hide);
+
+            scoreBall.Reactivate();
+
+            CurrentCountDownValueShouldBe(10);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        //結算或倒數完畢後再度激活, 收到Beat事件倒數數字減一
+        public void reactivate_and_count_down(bool isSuccessSettle)
+        {
+            scoreBall.Init(10);
+
+            if (isSuccessSettle)
+                scoreBall.SuccessSettle();
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    CallBeatEventCallback();
+                }
+            }
+
+            scoreBall.Reactivate();
+
+            CallBeatEventCallback();
+
+            CurrentCountDownValueShouldBe(9);
+        }
+
+        #endregion
     }
 }
