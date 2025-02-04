@@ -78,6 +78,14 @@ namespace GameCore
             presenter = (IScoreBallPresenter)mvpPresenter;
         }
 
+        public void TriggerExpand()
+        {
+            if (CurrentState != ScoreBallState.Freeze)
+                return;
+
+            UpdateCurrentState(ScoreBallState.FreezeAndExpand);
+        }
+
         public void Init(int startCountDownValue)
         {
             if (startCountDownValue <= 0)
@@ -88,14 +96,6 @@ namespace GameCore
             UpdateCurrentState(ScoreBallState.InCountDown);
 
             OnInit?.Invoke();
-        }
-
-        public void TriggerExpand()
-        {
-            if (CurrentState != ScoreBallState.Freeze)
-                return;
-
-            UpdateCurrentState(ScoreBallState.FreezeAndExpand);
         }
 
         public void Reactivate()

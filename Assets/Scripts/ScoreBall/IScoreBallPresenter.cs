@@ -8,5 +8,6 @@ namespace GameCore
         void StartDrag();
         void CrossResetWall();
         void TriggerCatch();
+        void TriggerTrajectoryAnglePass();
     }
 }

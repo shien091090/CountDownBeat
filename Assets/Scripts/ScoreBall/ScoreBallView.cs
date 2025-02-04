@@ -11,6 +11,7 @@ namespace GameCore
 {
     [RequireComponent(typeof(Collider2DAdapterComponent))]
     [RequireComponent(typeof(ComputableCollider))]
+    [RequireComponent(typeof(TrajectoryAngleCalculator))]
     public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
         private const string PREFAB_NAME_BEAT_EFFECT = "BeatEffect";
@@ -21,6 +22,7 @@ namespace GameCore
         [SerializeField] private ObjectPoolManager objectPool;
         [SerializeField] private Color inCountDownColor;
         [SerializeField] private Color freezeColor;
+        [SerializeField] private Color expandColor;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
 
@@ -32,6 +34,7 @@ namespace GameCore
         private Collider2DAdapterComponent colliderComponent;
         private Animator animator;
         private ComputableCollider computableCollider;
+        private TrajectoryAngleCalculator trajectoryAngleCalculator;
 
         public void SetCountDownNumberText(string text)
         {
@@ -46,6 +49,11 @@ namespace GameCore
         public void SetFreezeColor()
         {
             img_back.color = freezeColor;
+        }
+
+        public void SetExpandColor()
+        {
+            img_back.color = expandColor;
         }
 
         public void SetTextColor(Color color)
@@ -95,11 +103,6 @@ namespace GameCore
             operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
         }
 
-        public void CrossResetWall()
-        {
-            presenter.CrossResetWall();
-        }
-
         private void Awake()
         {
             colliderComponent = GetComponent<Collider2DAdapterComponent>();
@@ -108,6 +111,12 @@ namespace GameCore
             animator = GetComponent<Animator>();
             operableUI = gameObject.GetComponent<OperableUI>();
             computableCollider = GetComponent<ComputableCollider>();
+            trajectoryAngleCalculator = GetComponent<TrajectoryAngleCalculator>();
+        }
+
+        public void CrossResetWall()
+        {
+            presenter.CrossResetWall();
         }
 
         private void RegisterEvent()
@@ -117,6 +126,14 @@ namespace GameCore
 
             operableUI.OnDragOverEvent -= DragOver;
             operableUI.OnDragOverEvent += DragOver;
+
+            trajectoryAngleCalculator.OnAnglePass -= TriggerTrajectoryAnglePass;
+            trajectoryAngleCalculator.OnAnglePass += TriggerTrajectoryAnglePass;
+        }
+
+        private void TriggerTrajectoryAnglePass()
+        {
+            presenter.TriggerTrajectoryAnglePass();
         }
 
         private void DragOver()

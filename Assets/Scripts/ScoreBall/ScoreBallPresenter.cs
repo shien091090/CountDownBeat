@@ -55,6 +55,11 @@ namespace GameCore
             this.scoreBallTextColorSetting = scoreBallTextColorSetting;
         }
 
+        public void TriggerTrajectoryAnglePass()
+        {
+            model.TriggerExpand();
+        }
+
         private Color GetScoreBallTextColor(int countDownValue)
         {
             return scoreBallTextColorSetting.ConvertToColor(countDownValue);
@@ -99,6 +104,10 @@ namespace GameCore
 
                 case ScoreBallState.Freeze:
                     view.SetFreezeColor();
+                    break;
+                
+                case ScoreBallState.FreezeAndExpand:
+                    view.SetExpandColor();
                     break;
             }
         }

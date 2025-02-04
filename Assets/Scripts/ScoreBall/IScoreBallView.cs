@@ -10,6 +10,7 @@ namespace GameCore
         void SetInCountDownColor();
         void SetFreezeColor();
         void SetTextColor(Color color);
+        void SetExpandColor();
         void Close();
         void TriggerCatch();
         void CreateBeatEffectPrefab();
