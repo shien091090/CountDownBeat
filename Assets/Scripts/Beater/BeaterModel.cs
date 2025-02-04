@@ -13,8 +13,9 @@ namespace GameCore
         [Inject] private IAudioManager audioManager;
         [Inject] private IAppProcessor appProcessor;
         [Inject] private IBeaterPresenter presenter;
-        
+
         private int beatCounter;
+        private int totalBeatCounter;
 
         public void ExecuteModelInit()
         {
@@ -34,16 +35,13 @@ namespace GameCore
             presenter.OpenView();
         }
 
-        private void StartStage(StageSettingContent stageSetting)
+        private void CheckSetHalfBeatOffset()
         {
-            audioManager
-                .PlayWithCallback(stageSetting.AudioKey)
-                .Register(EVENT_CALLBACK_TYPE.TIMELINE_BEAT, OnBeat);
-
-            beatCounter = 0;
+            float halfBeatTimeOffset = presenter.CurrentTimer / totalBeatCounter / 2;
+            presenter.SetHalfBeatTimeOffset(halfBeatTimeOffset);
         }
 
-        private void OnBeat()
+        private void SendBeatEvent()
         {
             beatCounter++;
 
@@ -55,6 +53,23 @@ namespace GameCore
             }
 
             eventInvoker.SendEvent(new BeatEvent(isCountDownBeat));
+        }
+
+        private void StartStage(StageSettingContent stageSetting)
+        {
+            audioManager
+                .PlayWithCallback(stageSetting.AudioKey)
+                .Register(EVENT_CALLBACK_TYPE.TIMELINE_BEAT, OnBeat);
+
+            beatCounter = 0;
+        }
+
+        private void OnBeat()
+        {
+            totalBeatCounter++;
+
+            SendBeatEvent();
+            CheckSetHalfBeatOffset();
             presenter.PlayBeatAnimation();
         }
     }
