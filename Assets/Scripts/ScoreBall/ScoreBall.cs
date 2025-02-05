@@ -52,6 +52,7 @@ namespace GameCore
         public event Action<ScoreBallState> OnUpdateState;
         public event Action<int> OnUpdateCountDownValue;
         public event Action OnScoreBallBeat;
+        public event Action OnScoreBallHalfBeat;
 
         public void SetFreezeState(bool isFreeze)
         {
@@ -109,10 +110,12 @@ namespace GameCore
         private void SetEventRegister(bool isListen)
         {
             eventRegister.Unregister<BeatEvent>(OnBeat);
+            eventRegister.Unregister<HalfBeatEvent>(OnHalfBeat);
 
             if (isListen)
             {
                 eventRegister.Register<BeatEvent>(OnBeat);
+                eventRegister.Register<HalfBeatEvent>(OnHalfBeat);
             }
         }
 
@@ -171,6 +174,11 @@ namespace GameCore
 
             UpdateCurrentCountDownValue(CurrentCountDownValue - 1);
             CheckDamageAndHide();
+        }
+
+        private void OnHalfBeat(HalfBeatEvent eventInfo)
+        {
+            OnScoreBallHalfBeat?.Invoke();
         }
     }
 }

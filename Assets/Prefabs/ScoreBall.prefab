@@ -299,7 +299,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   passAngleMinAndMax: {x: 0, y: 0}
-  isTestMode: 0
+  isTestMode: 1
+  isAutoRecordNode: 0
   txt_angle: {fileID: 0}
   testRecordInterval: 0
 --- !u!114 &1120050436895664717

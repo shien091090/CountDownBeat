@@ -71,6 +71,8 @@ namespace GameCore
             model.OnUpdateState -= UpdateState;
             model.OnUpdateCountDownValue -= UpdateCountDownNumber;
             model.OnScoreBallBeat -= PlayBeatEffect;
+            model.OnScoreBallBeat -= RecordTrajectoryNode;
+            model.OnScoreBallHalfBeat -= RecordTrajectoryNode;
 
             if (isListen)
             {
@@ -78,7 +80,14 @@ namespace GameCore
                 model.OnUpdateState += UpdateState;
                 model.OnUpdateCountDownValue += UpdateCountDownNumber;
                 model.OnScoreBallBeat += PlayBeatEffect;
+                model.OnScoreBallBeat += RecordTrajectoryNode;
+                model.OnScoreBallHalfBeat += RecordTrajectoryNode;
             }
+        }
+
+        private void RecordTrajectoryNode()
+        {
+            view.RecordTrajectoryNode();
         }
 
         private void UpdateCountDownNumber(int value)
@@ -105,7 +114,7 @@ namespace GameCore
                 case ScoreBallState.Freeze:
                     view.SetFreezeColor();
                     break;
-                
+
                 case ScoreBallState.FreezeAndExpand:
                     view.SetExpandColor();
                     break;

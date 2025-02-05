@@ -89,11 +89,6 @@ namespace GameCore.UnitTests
                 scoreBallBeatEventCallback.Received(expectedCallTimes).Invoke();
         }
 
-        private void ShouldSendUpdateStateEvent(int expectedCallTimes, ScoreBallState expectedNewState)
-        {
-            updateStateEventCallback.Received(expectedCallTimes).Invoke(expectedNewState);
-        }
-
         private void ShouldSendDamageEvent(int expectedCallTimes = 1)
         {
             eventInvoker.Received(expectedCallTimes).SendEvent(Arg.Any<DamageEvent>());
@@ -103,6 +98,12 @@ namespace GameCore.UnitTests
         {
             eventRegister.Received().Unregister(Arg.Any<Action<BeatEvent>>());
             eventRegister.Received().Register(Arg.Any<Action<BeatEvent>>());
+        }
+
+        private void ShouldRegisterHalfBeatEvent()
+        {
+            eventRegister.Received().Unregister(Arg.Any<Action<HalfBeatEvent>>());
+            eventRegister.Received().Register(Arg.Any<Action<HalfBeatEvent>>());
         }
 
         private void CurrentStateShouldBe(ScoreBallState expectedState)
@@ -264,11 +265,12 @@ namespace GameCore.UnitTests
 
         [Test]
         //設定初始化時, 監聽事件
-        public void register_beat_event()
+        public void verify_register_event()
         {
             scoreBall.Init(20);
 
             ShouldRegisterBeatEvent();
+            ShouldRegisterHalfBeatEvent();
         }
 
         [Test]
@@ -617,7 +619,7 @@ namespace GameCore.UnitTests
 
             CurrentCountDownValueShouldBe(10);
         }
-        
+
         [Test]
         //解除凍結+判定擴大狀態時, 收到Beat事件數字繼續倒數
         public void continue_count_down_when_unfreeze_and_cancel_expand()
@@ -634,19 +636,19 @@ namespace GameCore.UnitTests
 
             CurrentCountDownValueShouldBe(9);
         }
-        
+
         [Test]
         //設為凍結+判定擴大狀態時, 若重設倒數數字, 則判定範圍上下線為起始值到起始值減一
         public void pass_count_down_value_range_is_start_value_to_start_value_minus_one_when_reset_count_down_value_in_freeze_and_expand_state()
         {
             scoreBall.Init(10);
-            
+
             CallBeatEventCallback();
             CallBeatEventCallback();
             CallBeatEventCallback();
-            
+
             CurrentCountDownValueShouldBe(7);
-            
+
             scoreBall.SetFreezeState(true);
             scoreBall.TriggerExpand();
             scoreBall.ResetToBeginning();

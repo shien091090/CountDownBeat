@@ -56,6 +56,11 @@ namespace GameCore
             img_back.color = expandColor;
         }
 
+        public void RecordTrajectoryNode()
+        {
+            trajectoryAngleCalculator.RecordPositionNode();
+        }
+
         public void SetTextColor(Color color)
         {
             tmp_countDownNum.color = color;

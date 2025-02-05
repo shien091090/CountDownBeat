@@ -9,6 +9,7 @@ namespace GameCore
         event Action<ScoreBallState> OnUpdateState;
         event Action<int> OnUpdateCountDownValue;
         event Action OnScoreBallBeat;
+        event Action OnScoreBallHalfBeat;
         int CurrentCountDownValue { get; }
         Vector2Int PassCountDownValueRange { get; }
         void SetFreezeState(bool isFreeze);
