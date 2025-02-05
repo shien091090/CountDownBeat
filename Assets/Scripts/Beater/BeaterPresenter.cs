@@ -8,27 +8,52 @@ namespace GameCore
     {
         [Inject] private IViewManager viewManager;
 
-        public float CurrentTimer => view.CurrentTimer;
+        public float CurrentTimer { get; private set; }
 
-        private IBeaterModel model;
         private readonly Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_BEATER_PRESENTER);
 
+        private IBeaterModel model;
         private IBeaterView view;
+        private float halfBeatTimeOffset;
+        private float halfBeatEventTimer;
+        private bool isWaitForNextBeat;
 
-        public void SetHalfBeatTimeOffset(float halfBeatTimeOffset)
+        public void SetHalfBeatTimeOffset(float offset)
         {
-            view.SetHalfBeatTimeOffset(halfBeatTimeOffset);
+            bool isSetFirstTime = halfBeatEventTimer == 0 && offset > 0;
+            if (isSetFirstTime)
+                isWaitForNextBeat = false;
+
+            halfBeatTimeOffset = offset;
+        }
+
+        public void UpdateFrame(float deltaTime)
+        {
+            CurrentTimer += deltaTime;
+            halfBeatEventTimer += deltaTime;
+
+            if (isWaitForNextBeat)
+                return;
+
+            if (halfBeatEventTimer >= halfBeatTimeOffset)
+            {
+                halfBeatEventTimer = 0;
+                model.TriggerHalfBeat();
+                isWaitForNextBeat = true;
+            }
         }
 
         public void BindView(IBeaterView view)
         {
+            ClearData();
             this.view = view;
-            view.SetBeatHintActive(false);
+            view.HideAllHint();
         }
 
         public void UnbindView()
         {
             view = null;
+            ClearData();
         }
 
         public void BindModel(IBeaterModel model)
@@ -43,8 +68,13 @@ namespace GameCore
 
         public void PlayBeatAnimation()
         {
+            StartHalfBeatTimer();
             view?.PlayBeatAnimation();
-            view?.ClearHalfBeatEventTimer();
+        }
+
+        public void PlayHalfBeatAnimation()
+        {
+            view?.PlayHalfBeatAnimation();
         }
 
         public void UnbindModel()
@@ -52,8 +82,18 @@ namespace GameCore
             model = null;
         }
 
-        public void TriggerHalfBeat()
+        private void ClearData()
         {
+            halfBeatEventTimer = 0;
+            CurrentTimer = 0;
+            halfBeatTimeOffset = 0;
+            isWaitForNextBeat = true;
+        }
+
+        private void StartHalfBeatTimer()
+        {
+            halfBeatEventTimer = 0;
+            isWaitForNextBeat = false;
         }
     }
 }

@@ -29,6 +29,12 @@ namespace GameCore
             presenter.UnbindModel();
         }
 
+        public void TriggerHalfBeat()
+        {
+            eventInvoker.SendEvent(new HalfBeatEvent());
+            presenter.PlayHalfBeatAnimation();
+        }
+
         private void InitPresenter()
         {
             presenter.BindModel(this);

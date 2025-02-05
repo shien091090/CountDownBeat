@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
@@ -13,31 +12,24 @@ namespace GameCore
 
         [SerializeField] private float beatHintStaySeconds;
         [SerializeField] private GameObject go_beatHint;
+        [SerializeField] private GameObject go_halfBeatHint;
 
-        public float CurrentTimer { get; private set; }
-
-        private IBeaterPresenter beaterPresenter;
-        private float halfBeatTimeOffset;
-        private float halfBeatEventTimer;
-
-        public void SetHalfBeatTimeOffset(float halfBeatTimeOffset)
-        {
-            this.halfBeatTimeOffset = halfBeatTimeOffset;
-        }
-
-        public void ClearHalfBeatEventTimer()
-        {
-            halfBeatEventTimer = 0;
-        }
+        private IBeaterPresenter presenter;
 
         public void PlayBeatAnimation()
         {
-            StartCoroutine(Cor_PlayBeatAnimation());
+            StartCoroutine(Cor_PlayHintFlashAnimation(go_beatHint));
         }
 
-        public void SetBeatHintActive(bool isActive)
+        public void PlayHalfBeatAnimation()
         {
-            go_beatHint.SetActive(isActive);
+            StartCoroutine(Cor_PlayHintFlashAnimation(go_halfBeatHint));
+        }
+
+        public void HideAllHint()
+        {
+            go_beatHint.SetActive(false);
+            go_halfBeatHint.SetActive(false);
         }
 
         public override void UpdateView()
@@ -46,9 +38,8 @@ namespace GameCore
 
         public override void OpenView(params object[] parameters)
         {
-            beaterPresenter = parameters[0] as IBeaterPresenter;
-            beaterPresenter.BindView(this);
-            ClearData();
+            presenter = parameters[0] as IBeaterPresenter;
+            presenter.BindView(this);
         }
 
         public override void ReOpenView(params object[] parameters)
@@ -58,35 +49,21 @@ namespace GameCore
         public override void CloseView()
         {
             StopAllCoroutines();
-            beaterPresenter.UnbindView();
-            ClearData();
+            presenter.UnbindView();
         }
 
         private void Update()
         {
-            CurrentTimer += deltaTimeGetter.deltaTime;
-            halfBeatEventTimer += deltaTimeGetter.deltaTime;
-            if (halfBeatEventTimer >= halfBeatTimeOffset)
-            {
-                halfBeatEventTimer = 0;
-                beaterPresenter.TriggerHalfBeat();
-            }
+            presenter.UpdateFrame(deltaTimeGetter.deltaTime);
         }
 
-        private void ClearData()
+        private IEnumerator Cor_PlayHintFlashAnimation(GameObject obj)
         {
-            halfBeatEventTimer = 0;
-            CurrentTimer = 0;
-            halfBeatTimeOffset = 0;
-        }
-
-        private IEnumerator Cor_PlayBeatAnimation()
-        {
-            SetBeatHintActive(true);
+            obj.SetActive(true);
 
             yield return new WaitForSeconds(beatHintStaySeconds);
 
-            SetBeatHintActive(false);
+            obj.SetActive(false);
         }
     }
 }
