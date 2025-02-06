@@ -14,8 +14,7 @@ namespace GameCore
         private IScoreBall model;
         private IScoreBallView view;
         private IScoreBallTextColorSetting scoreBallTextColorSetting;
-        private bool isStartRecordTrajectory;
-        private int recordTrajectoryTimes;
+        private ScoreBallRecordTrajectoryState recordTrajectoryState;
 
         public void BindView(IMVPView mvpView)
         {
@@ -33,7 +32,7 @@ namespace GameCore
         {
             model.SetFreezeState(true);
 
-            isStartRecordTrajectory = true;
+            recordTrajectoryState = ScoreBallRecordTrajectoryState.StartDrag;
             view.ClearTrajectoryNode();
             CheckRecordTrajectoryNode();
         }
@@ -82,7 +81,8 @@ namespace GameCore
             model.OnUpdateState -= UpdateState;
             model.OnUpdateCountDownValue -= UpdateCountDownNumber;
             model.OnScoreBallBeat -= PlayBeatEffect;
-            model.OnScoreBallBeat -= CheckRecordTrajectoryNode;
+            model.OnScoreBallBeat -= OnScoreBallBeat;
+            model.OnScoreBallHalfBeat -= OnScoreBallHalfBeat;
 
             if (isListen)
             {
@@ -90,23 +90,38 @@ namespace GameCore
                 model.OnUpdateState += UpdateState;
                 model.OnUpdateCountDownValue += UpdateCountDownNumber;
                 model.OnScoreBallBeat += PlayBeatEffect;
-                model.OnScoreBallBeat += CheckRecordTrajectoryNode;
+                model.OnScoreBallBeat += OnScoreBallBeat;
+                model.OnScoreBallHalfBeat += OnScoreBallHalfBeat;
             }
         }
 
-        private void CheckRecordTrajectoryNode()
+        private void CheckRecordTrajectoryNode(ScoreBallBeatType beatType = ScoreBallBeatType.None)
         {
-            if (isStartRecordTrajectory == false)
-                return;
-
-            if (recordTrajectoryTimes >= RECORD_TRAJECTORY_TIMES_LIMIT)
+            switch (recordTrajectoryState)
             {
-                ResetRecordTrajectoryState();
-                return;
-            }
+                case ScoreBallRecordTrajectoryState.StartDrag:
+                    view.RecordTrajectoryNode();
+                    recordTrajectoryState = ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode;
+                    break;
 
-            view.RecordTrajectoryNode();
-            recordTrajectoryTimes++;
+                case ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode:
+                    if (beatType == ScoreBallBeatType.Beat)
+                    {
+                        view.RecordTrajectoryNode();
+                        recordTrajectoryState = ScoreBallRecordTrajectoryState.WaitForNextHalfBeatToRecordThirdNode;
+                    }
+
+                    break;
+
+                case ScoreBallRecordTrajectoryState.WaitForNextHalfBeatToRecordThirdNode:
+                    if (beatType == ScoreBallBeatType.HalfBeat)
+                    {
+                        view.RecordTrajectoryNode();
+                        ResetRecordTrajectoryState();
+                    }
+
+                    break;
+            }
         }
 
         private void ClearData()
@@ -147,14 +162,23 @@ namespace GameCore
 
         private void ResetRecordTrajectoryState()
         {
-            isStartRecordTrajectory = false;
-            recordTrajectoryTimes = 0;
+            recordTrajectoryState = ScoreBallRecordTrajectoryState.None;
         }
 
         private void PlayBeatEffect()
         {
             view.CreateBeatEffectPrefab();
             view.PlayAnimation(ANIM_KEY_BEAT);
+        }
+
+        private void OnScoreBallHalfBeat()
+        {
+            CheckRecordTrajectoryNode(ScoreBallBeatType.HalfBeat);
+        }
+
+        private void OnScoreBallBeat()
+        {
+            CheckRecordTrajectoryNode(ScoreBallBeatType.Beat);
         }
     }
 }
