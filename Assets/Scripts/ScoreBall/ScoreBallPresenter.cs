@@ -7,25 +7,35 @@ namespace GameCore
         private const string ANIM_KEY_BEAT = "score_ball_beat";
         private const string ANIM_KEY_IDLE = "score_ball_idle";
 
+        private const int RECORD_TRAJECTORY_TIMES_LIMIT = 3;
+
         public Vector2Int CurrentPassCountDownValueRange => model.PassCountDownValueRange;
 
         private IScoreBall model;
         private IScoreBallView view;
         private IScoreBallTextColorSetting scoreBallTextColorSetting;
+        private bool isStartRecordTrajectory;
+        private int recordTrajectoryTimes;
 
         public void BindView(IMVPView mvpView)
         {
             view = (IScoreBallView)mvpView;
+            ClearData();
         }
 
         public void UnbindView()
         {
             view = null;
+            ClearData();
         }
 
         public void StartDrag()
         {
             model.SetFreezeState(true);
+
+            isStartRecordTrajectory = true;
+            view.ClearTrajectoryNode();
+            CheckRecordTrajectoryNode();
         }
 
         public void CrossResetWall()
@@ -48,6 +58,7 @@ namespace GameCore
         public void DragOver()
         {
             model.SetFreezeState(false);
+            ResetRecordTrajectoryState();
         }
 
         public void Init(IScoreBallTextColorSetting scoreBallTextColorSetting)
@@ -71,8 +82,7 @@ namespace GameCore
             model.OnUpdateState -= UpdateState;
             model.OnUpdateCountDownValue -= UpdateCountDownNumber;
             model.OnScoreBallBeat -= PlayBeatEffect;
-            model.OnScoreBallBeat -= RecordTrajectoryNode;
-            model.OnScoreBallHalfBeat -= RecordTrajectoryNode;
+            model.OnScoreBallBeat -= CheckRecordTrajectoryNode;
 
             if (isListen)
             {
@@ -80,14 +90,28 @@ namespace GameCore
                 model.OnUpdateState += UpdateState;
                 model.OnUpdateCountDownValue += UpdateCountDownNumber;
                 model.OnScoreBallBeat += PlayBeatEffect;
-                model.OnScoreBallBeat += RecordTrajectoryNode;
-                model.OnScoreBallHalfBeat += RecordTrajectoryNode;
+                model.OnScoreBallBeat += CheckRecordTrajectoryNode;
             }
         }
 
-        private void RecordTrajectoryNode()
+        private void CheckRecordTrajectoryNode()
         {
+            if (isStartRecordTrajectory == false)
+                return;
+
+            if (recordTrajectoryTimes >= RECORD_TRAJECTORY_TIMES_LIMIT)
+            {
+                ResetRecordTrajectoryState();
+                return;
+            }
+
             view.RecordTrajectoryNode();
+            recordTrajectoryTimes++;
+        }
+
+        private void ClearData()
+        {
+            ResetRecordTrajectoryState();
         }
 
         private void UpdateCountDownNumber(int value)
@@ -119,6 +143,12 @@ namespace GameCore
                     view.SetExpandColor();
                     break;
             }
+        }
+
+        private void ResetRecordTrajectoryState()
+        {
+            isStartRecordTrajectory = false;
+            recordTrajectoryTimes = 0;
         }
 
         private void PlayBeatEffect()

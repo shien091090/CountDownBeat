@@ -61,6 +61,11 @@ namespace GameCore
             trajectoryAngleCalculator.RecordPositionNode();
         }
 
+        public void ClearTrajectoryNode()
+        {
+            trajectoryAngleCalculator.ClearData();
+        }
+
         public void SetTextColor(Color color)
         {
             tmp_countDownNum.color = color;
