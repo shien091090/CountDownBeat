@@ -298,7 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0387bcdd589d4f1fbd7464ed0508cc81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passAngleMinAndMax: {x: 0, y: 0}
+  passAngleMinAndMax: {x: 120, y: 180}
   isTestMode: 1
   isAutoRecordNode: 0
   txt_angle: {fileID: 0}
