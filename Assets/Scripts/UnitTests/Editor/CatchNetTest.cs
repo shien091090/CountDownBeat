@@ -2,6 +2,7 @@ using System;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
+using UnityEngine;
 
 namespace GameCore.UnitTests
 {
@@ -45,12 +46,15 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //當狀態為"Working"時觸發捕獲判斷, 若數字不一致則不做事
-        public void do_nothing_when_trigger_catch_and_number_not_match()
+        [TestCase(1, 9)]
+        [TestCase(5, 5)]
+        [TestCase(11, 12)]
+        //當狀態為"Working"時觸發捕獲判斷, 若數字不在範圍內則不做事
+        public void do_nothing_when_trigger_catch_and_number_not_in_match_range(int passRangeMin, int passRangeMax)
         {
             catchNet.Init(10);
 
-            TryTriggerCatchAndShouldSuccess(5, false);
+            TryTriggerCatchAndShouldSuccess(new Vector2Int(passRangeMin, passRangeMax), false);
 
             CurrentStateShouldBe(CatchNetState.Working);
             ShouldSettleCatchNet(0);
@@ -60,18 +64,21 @@ namespace GameCore.UnitTests
         //當狀態不為"Working"時觸發捕獲判斷, 不做事
         public void do_nothing_when_trigger_catch_and_not_working()
         {
-            TryTriggerCatchAndShouldSuccess(10, false);
+            TryTriggerCatchAndShouldSuccess(new Vector2Int(1, 10), false);
 
             CurrentStateShouldBe(CatchNetState.None);
             ShouldSettleCatchNet(0);
         }
 
         [Test]
-        //觸發捕獲判斷, 若數字一致則切換狀態為"SuccessSettle", 並發送得分事件
-        public void trigger_catch_and_number_match()
+        [TestCase(1, 10)]
+        [TestCase(10, 10)]
+        [TestCase(8, 12)]
+        //觸發捕獲判斷, 若數字在範圍內則切換狀態為"SuccessSettle", 並發送得分事件
+        public void trigger_catch_and_number_match(int passRangeMin, int passRangeMax)
         {
             catchNet.Init(10);
-            TryTriggerCatchAndShouldSuccess(10, true);
+            TryTriggerCatchAndShouldSuccess(new Vector2Int(passRangeMin, passRangeMax), true);
 
             CurrentStateShouldBe(CatchNetState.SuccessSettle);
             ShouldSettleCatchNet(1);
@@ -112,7 +119,7 @@ namespace GameCore.UnitTests
             ShouldSendCatchNetBeatEvent(1);
             CurrentStateShouldBe(CatchNetState.Working);
 
-            TryTriggerCatchAndShouldSuccess(10, true);
+            TryTriggerCatchAndShouldSuccess(new Vector2Int(10, 10), true);
 
             CallBeatEvent();
 
@@ -128,14 +135,14 @@ namespace GameCore.UnitTests
 
             ShouldSendUpdateStateEvent(1);
             CurrentStateShouldBe(CatchNetState.Working);
-            
-            TryTriggerCatchAndShouldSuccess(10, true);
-            
+
+            TryTriggerCatchAndShouldSuccess(new Vector2Int(10, 10), true);
+
             ShouldSendUpdateStateEvent(2);
             CurrentStateShouldBe(CatchNetState.SuccessSettle);
-            
+
             catchNet.Init(20);
-            
+
             ShouldSendUpdateStateEvent(3);
             CurrentStateShouldBe(CatchNetState.Working);
         }
@@ -180,9 +187,9 @@ namespace GameCore.UnitTests
                 updateStateEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<CatchNetState>());
         }
 
-        private void TryTriggerCatchAndShouldSuccess(int catchNumber, bool expectedIsSuccess)
+        private void TryTriggerCatchAndShouldSuccess(Vector2Int passNumberRange, bool expectedIsSuccess)
         {
-            bool tryTriggerCatch = catchNet.TryTriggerCatch(catchNumber);
+            bool tryTriggerCatch = catchNet.TryTriggerCatch(passNumberRange);
             Assert.AreEqual(expectedIsSuccess, tryTriggerCatch);
         }
 

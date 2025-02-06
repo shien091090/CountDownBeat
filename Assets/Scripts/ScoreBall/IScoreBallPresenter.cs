@@ -1,8 +1,10 @@
+using UnityEngine;
+
 namespace GameCore
 {
     public interface IScoreBallPresenter : IMVPPresenter
     {
-        int CurrentCountDownValue { get; }
+        Vector2Int CurrentPassCountDownValueRange { get; }
         void Init(IScoreBallTextColorSetting scoreBallTextColorSetting);
         void DragOver();
         void StartDrag();

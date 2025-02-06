@@ -7,7 +7,7 @@ namespace GameCore
         private const string ANIM_KEY_BEAT = "score_ball_beat";
         private const string ANIM_KEY_IDLE = "score_ball_idle";
 
-        public int CurrentCountDownValue => model.CurrentCountDownValue;
+        public Vector2Int CurrentPassCountDownValueRange => model.PassCountDownValueRange;
 
         private IScoreBall model;
         private IScoreBallView view;

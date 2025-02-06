@@ -26,7 +26,7 @@ namespace GameCore
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
 
-        public int GetCurrentCountDownValue => presenter.CurrentCountDownValue;
+        public Vector2Int CurrentPassCountDownValueRange => presenter.CurrentPassCountDownValueRange;
 
         private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_SCORE_BALL_VIEW);
         private IScoreBallPresenter presenter;

@@ -56,8 +56,7 @@ namespace GameCore
             if (scoreBall == null)
                 return;
 
-            int currentCountDownValue = scoreBall.GetCurrentCountDownValue;
-            if (model.TryTriggerCatch(currentCountDownValue))
+            if (model.TryTriggerCatch(scoreBall.CurrentPassCountDownValueRange))
                 scoreBall.TriggerCatch();
         }
 

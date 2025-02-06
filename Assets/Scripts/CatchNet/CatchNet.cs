@@ -1,5 +1,6 @@
 using System;
 using SNShien.Common.ProcessTools;
+using UnityEngine;
 
 namespace GameCore
 {
@@ -25,12 +26,12 @@ namespace GameCore
         public event Action<CatchNetState> OnUpdateState;
         public event Action OnCatchNetBeat;
 
-        public bool TryTriggerCatch(int number)
+        public bool TryTriggerCatch(Vector2Int passNumberRange)
         {
             if (CurrentState != CatchNetState.Working)
                 return false;
 
-            if (number != TargetNumber)
+            if (passNumberRange.x > TargetNumber || passNumberRange.y < TargetNumber)
                 return false;
 
             catchNetHandler.SettleCatchNet(this);

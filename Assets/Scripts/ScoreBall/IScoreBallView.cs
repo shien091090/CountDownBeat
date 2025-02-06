@@ -4,7 +4,7 @@ namespace GameCore
 {
     public interface IScoreBallView : IMVPView
     {
-        int GetCurrentCountDownValue { get; }
+        Vector2Int CurrentPassCountDownValueRange { get; }
         void Init();
         void SetCountDownNumberText(string text);
         void SetInCountDownColor();
