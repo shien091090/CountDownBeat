@@ -2,6 +2,7 @@ using FMOD.Studio;
 using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
+using UnityEngine;
 using Zenject;
 
 namespace GameCore
@@ -16,6 +17,8 @@ namespace GameCore
 
         private int beatCounter;
         private int totalBeatCounter;
+        private float avgBeatInterval;
+        private float halfBeatTimeOffset;
 
         public void ExecuteModelInit()
         {
@@ -26,6 +29,7 @@ namespace GameCore
 
         public void Release()
         {
+            ClearData();
             presenter.UnbindModel();
         }
 
@@ -41,10 +45,37 @@ namespace GameCore
             presenter.OpenView();
         }
 
-        private void CheckSetHalfBeatOffset()
+        public BeatAccuracyResult DetectBeatAccuracy(float currentTime)
         {
-            float halfBeatTimeOffset = presenter.CurrentTimer / totalBeatCounter / 2;
-            presenter.SetHalfBeatTimeOffset(halfBeatTimeOffset);
+            if(totalBeatCounter == 0)
+                return BeatAccuracyResult.CreateInvalidResult();
+            
+            //預估下一個beat的時間點
+            float nextBeatTiming = (totalBeatCounter + 1) * avgBeatInterval;
+            
+            //以beat時間點為基準, 減半拍時間到加半拍時間的範圍內, 判斷currentTime的準度, 回應準度結果(0~1), 1為最準, 0為最不準, 在beat時間點上為1, 在半拍時間點上為0
+            float accuracy = 1f - Mathf.Abs(nextBeatTiming - currentTime) / halfBeatTimeOffset;
+            
+            BeatTimingDirection direction = currentTime >= nextBeatTiming ? BeatTimingDirection.Late : BeatTimingDirection.Early;
+
+            return new BeatAccuracyResult(accuracy, direction);
+        }
+
+        private void ClearData()
+        {
+            beatCounter = 0;
+            totalBeatCounter = 0;
+            avgBeatInterval = 0;
+            halfBeatTimeOffset = 0;
+        }
+
+        private void UpdateBeatTimeInfo()
+        {
+            if (totalBeatCounter == 0)
+                return;
+
+            avgBeatInterval = presenter.CurrentTimer / totalBeatCounter;
+            halfBeatTimeOffset = avgBeatInterval / 2;
         }
 
         private void SendBeatEvent()
@@ -75,7 +106,8 @@ namespace GameCore
             totalBeatCounter++;
 
             SendBeatEvent();
-            CheckSetHalfBeatOffset();
+            UpdateBeatTimeInfo();
+            presenter.SetHalfBeatTimeOffset(halfBeatTimeOffset);
             presenter.PlayBeatAnimation();
         }
     }

@@ -109,6 +109,15 @@ namespace GameCore.UnitTests
             callbackSetting.TryCallback(type);
         }
 
+        private void AccuracyResultShouldBe(float currentTime, BeatTimingDirection expectedBeatTimingDirection, float expectedAccuracy)
+        {
+            BeatAccuracyResult accuracyResult = beaterModel.DetectBeatAccuracy(currentTime);
+            Assert.AreEqual(expectedBeatTimingDirection, accuracyResult.BeatTimingDirection);
+
+            //使用近似值的方式比對, 只要是在expectedAccuracy的加減0.01範圍內都算正確
+            Assert.IsTrue(Math.Abs(expectedAccuracy - accuracyResult.AccuracyValue) < 0.01f);
+        }
+
         private void LastSetHalfBeatTimeOffsetShouldBe(float expectedHalfBeatTimeOffset)
         {
             float arg = (float)beaterPresenter
@@ -136,6 +145,13 @@ namespace GameCore.UnitTests
             audioManager.Received(expectedCallTimes).PlayWithCallback(expectedAudioKey, expectedTrackIndex);
         }
 
+        private void AccuracyResultShouldBeInvalid(float currentTime)
+        {
+            BeatAccuracyResult accuracyResult = beaterModel.DetectBeatAccuracy(currentTime);
+            Assert.AreEqual(BeatTimingDirection.Invalid, accuracyResult.BeatTimingDirection);
+            Assert.AreEqual(0, accuracyResult.AccuracyValue);
+        }
+
         #region 初始化
 
         [Test]
@@ -160,7 +176,7 @@ namespace GameCore.UnitTests
 
         #endregion
 
-        #region 節拍事件
+        #region 整拍事件
 
         [Test]
         //當收到音樂節拍事件時，若沒有達到分數球倒數拍點, 驗證BeatEvent事件中的參數
@@ -189,6 +205,10 @@ namespace GameCore.UnitTests
             ShouldSendBeatEvent(1);
             LastBeatEventShouldBe(true);
         }
+
+        #endregion
+
+        #region 半拍事件
 
         [Test]
         [TestCase(0.5f, 1f, 0.25f)]
@@ -230,6 +250,65 @@ namespace GameCore.UnitTests
             CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
 
             LastSetHalfBeatTimeOffsetShouldBe(0.2f);
+        }
+
+        #endregion
+
+        #region 拍點準度偵測
+
+        [Test]
+        [TestCase(2.5f, 0)]
+        [TestCase(2.75f, 0.5f)]
+        [TestCase(2.975f, 0.95f)]
+        //以兩個半拍為範圍偵測拍點準度, 偵測點在節拍前
+        public void detect_beat_accuracy_and_detect_point_before_beat(float currentTime, float expectedAccuracy)
+        {
+            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+
+            beaterModel.ExecuteModelInit();
+
+            GivenCurrentTimer(1f);
+            CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+
+            GivenCurrentTimer(2f);
+            CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+
+            //下一拍預計時間為3秒
+
+            AccuracyResultShouldBe(currentTime, BeatTimingDirection.Early, expectedAccuracy);
+        }
+
+        [Test]
+        [TestCase(3, 1)]
+        [TestCase(3.25f, 0.5f)]
+        [TestCase(3.495f, 0.01f)]
+        //以兩個半拍為範圍偵測拍點準度, 偵測點在節拍後
+        public void detect_beat_accuracy_and_detect_point_after_beat(float currentTime, float expectedAccuracy)
+        {
+            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+
+            beaterModel.ExecuteModelInit();
+
+            GivenCurrentTimer(1f);
+            CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+
+            GivenCurrentTimer(2f);
+            CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
+
+            //下一拍預計時間為3秒
+
+            AccuracyResultShouldBe(currentTime, BeatTimingDirection.Late, expectedAccuracy);
+        }
+
+        [Test]
+        //尚未收到音樂節拍事件時, 偵測拍點準度回傳Invalid
+        public void detect_beat_accuracy_but_not_receive_beat_callback()
+        {
+            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+
+            beaterModel.ExecuteModelInit();
+
+            AccuracyResultShouldBeInvalid(0.5f);
         }
 
         #endregion
