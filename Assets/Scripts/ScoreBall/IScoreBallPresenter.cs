@@ -5,7 +5,7 @@ namespace GameCore
     public interface IScoreBallPresenter : IMVPPresenter
     {
         Vector2Int CurrentPassCountDownValueRange { get; }
-        void Init(IScoreBallTextColorSetting scoreBallTextColorSetting);
+        void Init(IBeaterModel beaterModel, IScoreBallTextColorSetting scoreBallTextColorSetting);
         void DragOver();
         void StartDrag();
         void CrossResetWall();

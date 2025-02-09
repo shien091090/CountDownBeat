@@ -39,26 +39,33 @@ namespace GameCore
             presenter.PlayHalfBeatAnimation();
         }
 
-        private void InitPresenter()
+        public BeatAccuracyResult DetectBeatAccuracyCurrentTime()
         {
-            presenter.BindModel(this);
-            presenter.OpenView();
+            return DetectBeatAccuracy(presenter.CurrentTimer);
         }
 
         public BeatAccuracyResult DetectBeatAccuracy(float currentTime)
         {
-            if(totalBeatCounter == 0)
+            if (totalBeatCounter == 0)
                 return BeatAccuracyResult.CreateInvalidResult();
-            
+
             //預估下一個beat的時間點
             float nextBeatTiming = (totalBeatCounter + 1) * avgBeatInterval;
-            
+
             //以beat時間點為基準, 減半拍時間到加半拍時間的範圍內, 判斷currentTime的準度, 回應準度結果(0~1), 1為最準, 0為最不準, 在beat時間點上為1, 在半拍時間點上為0
             float accuracy = 1f - Mathf.Abs(nextBeatTiming - currentTime) / halfBeatTimeOffset;
-            
-            BeatTimingDirection direction = currentTime >= nextBeatTiming ? BeatTimingDirection.Late : BeatTimingDirection.Early;
+
+            BeatTimingDirection direction = currentTime >= nextBeatTiming ?
+                BeatTimingDirection.Late :
+                BeatTimingDirection.Early;
 
             return new BeatAccuracyResult(accuracy, direction);
+        }
+
+        private void InitPresenter()
+        {
+            presenter.BindModel(this);
+            presenter.OpenView();
         }
 
         private void ClearData()

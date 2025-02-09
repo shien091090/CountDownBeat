@@ -14,6 +14,7 @@ namespace GameCore
         private IScoreBall model;
         private IScoreBallView view;
         private IScoreBallTextColorSetting scoreBallTextColorSetting;
+        private IBeaterModel beaterModel;
         private ScoreBallRecordTrajectoryState recordTrajectoryState;
 
         public void BindView(IMVPView mvpView)
@@ -32,8 +33,23 @@ namespace GameCore
         {
             model.SetFreezeState(true);
 
-            recordTrajectoryState = ScoreBallRecordTrajectoryState.StartDrag;
             view.ClearTrajectoryNode();
+
+            BeatAccuracyResult detectBeatAccuracyResult = beaterModel.DetectBeatAccuracyCurrentTime();
+            switch (detectBeatAccuracyResult.BeatTimingDirection)
+            {
+                case BeatTimingDirection.Early:
+                    recordTrajectoryState = ScoreBallRecordTrajectoryState.StartDragAndWaitForAfterNextBeat;
+                    break;
+
+                case BeatTimingDirection.Late:
+                    recordTrajectoryState = ScoreBallRecordTrajectoryState.StartDragAndWaitForNextBeat;
+                    break;
+
+                default:
+                    return;
+            }
+
             CheckRecordTrajectoryNode();
         }
 
@@ -60,14 +76,15 @@ namespace GameCore
             ResetRecordTrajectoryState();
         }
 
-        public void Init(IScoreBallTextColorSetting scoreBallTextColorSetting)
-        {
-            this.scoreBallTextColorSetting = scoreBallTextColorSetting;
-        }
-
         public void TriggerTrajectoryAnglePass()
         {
             model.TriggerExpand();
+        }
+
+        public void Init(IBeaterModel beaterModel, IScoreBallTextColorSetting scoreBallTextColorSetting)
+        {
+            this.beaterModel = beaterModel;
+            this.scoreBallTextColorSetting = scoreBallTextColorSetting;
         }
 
         private Color GetScoreBallTextColor(int countDownValue)
@@ -99,9 +116,19 @@ namespace GameCore
         {
             switch (recordTrajectoryState)
             {
-                case ScoreBallRecordTrajectoryState.StartDrag:
+                case ScoreBallRecordTrajectoryState.StartDragAndWaitForNextBeat:
                     view.RecordTrajectoryNode();
                     recordTrajectoryState = ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode;
+                    break;
+
+                case ScoreBallRecordTrajectoryState.StartDragAndWaitForAfterNextBeat:
+                    view.RecordTrajectoryNode();
+                    recordTrajectoryState = ScoreBallRecordTrajectoryState.BypassNextBeat;
+                    break;
+
+                case ScoreBallRecordTrajectoryState.BypassNextBeat:
+                    if (beatType == ScoreBallBeatType.Beat)
+                        recordTrajectoryState = ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode;
                     break;
 
                 case ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode:

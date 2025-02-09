@@ -3,8 +3,10 @@ namespace GameCore
     public enum ScoreBallRecordTrajectoryState
     {
         None,
-        StartDrag,
+        StartDragAndWaitForNextBeat,
+        StartDragAndWaitForAfterNextBeat,
+        BypassNextBeat,
         WaitForNextBeatToRecordSecondNode,
-        WaitForNextHalfBeatToRecordThirdNode
+        WaitForNextHalfBeatToRecordThirdNode,
     }
 }

@@ -13,6 +13,7 @@ namespace GameCore
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IGameSetting gameSetting;
         [Inject] private IAppProcessor appProcessor;
+        [Inject] private IBeaterModel beaterModel;
 
         private DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
         private List<int> tempSpawnBeatIndexList;
@@ -103,7 +104,7 @@ namespace GameCore
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 
                 scoreBallView.Init();
-                scoreBallPresenter.Init(gameSetting.ScoreBallTextColorSetting);
+                scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting);
                 scoreBall.Init(gameSetting.ScoreBallStartCountDownValue);
 
                 inFieldScoreBallList.Add(scoreBall);
