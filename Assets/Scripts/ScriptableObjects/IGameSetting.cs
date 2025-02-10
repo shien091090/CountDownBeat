@@ -12,6 +12,8 @@ namespace GameCore
         float HpMax { get; }
         IScoreBallTextColorSetting ScoreBallTextColorSetting { get; }
         float AccuracyPassThreshold { get; }
-        float FeverEnergyIncrease { get; }
+        int FeverEnergyIncrease { get; }
+        int FeverEnergyDecrease { get; }
+        int[] FeverEnergyBarSetting { get; }
     }
 }
