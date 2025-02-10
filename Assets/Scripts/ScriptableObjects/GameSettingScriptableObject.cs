@@ -12,6 +12,8 @@ namespace GameCore
         [SerializeField] private int catchNetLimit;
         [SerializeField] private Vector2Int catchNetNumberRange;
         [SerializeField] private float hpMax;
+        [SerializeField] private float accuracyPassThreshold;
+        [SerializeField] private float feverEnergyIncrease;
 
         public int ScoreBallStartCountDownValue => scoreBallStartCountDownValue;
         public int SuccessSettleScore => successSettleScore;
@@ -20,6 +22,7 @@ namespace GameCore
         public Vector2Int CatchNetNumberRange => catchNetNumberRange;
         public float HpMax => hpMax;
         public IScoreBallTextColorSetting ScoreBallTextColorSetting => scoreBallTextColorSetting;
+        public float AccuracyPassThreshold => accuracyPassThreshold;
+        public float FeverEnergyIncrease => feverEnergyIncrease;
     }
-
 }
