@@ -50,7 +50,7 @@ namespace GameCore
                 return BeatAccuracyResult.CreateInvalidResult();
 
             //預估下一個beat的時間點
-            float nextBeatTiming = (totalBeatCounter + 1) * avgBeatInterval;
+            float nextBeatTiming = GetNextBeatTiming();
 
             //以beat時間點為基準, 減半拍時間到加半拍時間的範圍內, 判斷currentTime的準度, 回應準度結果(0~1), 1為最準, 0為最不準, 在beat時間點上為1, 在半拍時間點上為0
             float accuracy = 1f - Mathf.Abs(nextBeatTiming - currentTime) / halfBeatTimeOffset;
@@ -66,6 +66,11 @@ namespace GameCore
         {
             presenter.BindModel(this);
             presenter.OpenView();
+        }
+
+        public float GetNextBeatTiming()
+        {
+            return (totalBeatCounter + 1) * avgBeatInterval;
         }
 
         private void ClearData()
