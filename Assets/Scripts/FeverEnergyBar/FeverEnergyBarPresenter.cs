@@ -34,5 +34,10 @@ namespace GameCore
         {
             view = null;
         }
+
+        public void Hit()
+        {
+            model.Hit();
+        }
     }
 }

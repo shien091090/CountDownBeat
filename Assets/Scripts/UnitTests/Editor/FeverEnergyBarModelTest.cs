@@ -14,6 +14,7 @@ namespace GameCore.UnitTests
         private IBeaterModel beaterModel;
         private IGameSetting gameSetting;
         private IEventRegister eventRegister;
+        private IFeverEnergyBarPresenter feverEnergyBarPresenter;
 
         private Action<HalfBeatEvent> halfBeatEventCallback;
 
@@ -25,10 +26,17 @@ namespace GameCore.UnitTests
             InitBeaterModelMock();
             InitGameSettingMock();
             InitEventRegisterMock();
+            InitFeverEnergyBarPresenterMock();
 
             Container.Bind<FeverEnergyBarModel>().AsSingle();
             feverEnergyBarModel = Container.Resolve<FeverEnergyBarModel>();
             feverEnergyBarModel.ExecuteModelInit();
+        }
+
+        private void InitFeverEnergyBarPresenterMock()
+        {
+            feverEnergyBarPresenter = Substitute.For<IFeverEnergyBarPresenter>();
+            Container.Bind<IFeverEnergyBarPresenter>().FromInstance(feverEnergyBarPresenter).AsSingle();
         }
 
         private void InitGameSettingMock()
@@ -139,7 +147,7 @@ namespace GameCore.UnitTests
             GivenFeverEnergyIncrease(5);
 
             GivenBeatAccuracyResult(beatTimingDirection, accuracyValue);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(5);
         }
 
@@ -152,13 +160,13 @@ namespace GameCore.UnitTests
             GivenFeverEnergyIncrease(25);
             GivenFeverEnergyBarSetting(10, 15, 25);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(25);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(50);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(50);
         }
 
@@ -175,11 +183,11 @@ namespace GameCore.UnitTests
             GivenFeverEnergyDecrease(2);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 0.8f);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(10);
 
             GivenBeatAccuracyResult(beatTimingDirection, accuracyValue);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(8);
         }
 
@@ -192,19 +200,19 @@ namespace GameCore.UnitTests
             GivenFeverEnergyDecrease(5);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 0.8f);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(10);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 0.1f);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(5);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 0.1f);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(0);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 0.1f);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(0);
         }
 
@@ -220,7 +228,7 @@ namespace GameCore.UnitTests
             GivenFeverEnergyDecrease(10);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(50);
 
             CallHalfBeatEvent();
@@ -236,7 +244,7 @@ namespace GameCore.UnitTests
             GivenFeverEnergyDecrease(10);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(50);
 
             CallHalfBeatEvent();
@@ -253,7 +261,7 @@ namespace GameCore.UnitTests
             GivenFeverEnergyDecrease(10);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(50);
 
             CallHalfBeatEvent();
@@ -269,13 +277,13 @@ namespace GameCore.UnitTests
 
         [Test]
         //連續Miss(兩次半拍扣能量條), 若有正確打擊則下次經過半拍不會扣能量條
-        public void energy_bar_not_decrease_when_hit_beat_after_two_miss()
+        public void energy_bar_not_decrease_when_hit_correct_beat_after_two_miss()
         {
             GivenFeverEnergyIncrease(100);
             GivenFeverEnergyDecrease(10);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(100);
 
             CallHalfBeatEvent();
@@ -283,11 +291,34 @@ namespace GameCore.UnitTests
             EnergyValueShouldBe(90);
 
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
             EnergyValueShouldBe(100);
 
             CallHalfBeatEvent();
+            EnergyValueShouldBe(100);
+        }
+        
+        [Test]
+        //連續Miss(兩次半拍扣能量條), 若有錯誤打擊則下次經過半拍仍會扣能量條
+        public void energy_bar_decrease_when_hit_wrong_beat_after_two_miss()
+        {
+            GivenFeverEnergyIncrease(100);
+            GivenFeverEnergyDecrease(10);
+
+            GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
+            feverEnergyBarModel.Hit();
+            EnergyValueShouldBe(100);
+
+            CallHalfBeatEvent();
+            CallHalfBeatEvent();
             EnergyValueShouldBe(90);
+
+            GivenBeatAccuracyResult(BeatTimingDirection.Late, 0);
+            feverEnergyBarModel.Hit();
+            EnergyValueShouldBe(80);
+
+            CallHalfBeatEvent();
+            EnergyValueShouldBe(70);
         }
 
         #endregion
@@ -303,22 +334,22 @@ namespace GameCore.UnitTests
             GivenFeverEnergyBarSetting(10, 20, 30);
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
 
             EnergyValueShouldBe(9);
             CurrentFeverStageShouldBe(0);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
 
             EnergyValueShouldBe(18);
             CurrentFeverStageShouldBe(1);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
 
             EnergyValueShouldBe(27);
             CurrentFeverStageShouldBe(1);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
 
             EnergyValueShouldBe(36);
             CurrentFeverStageShouldBe(2);
@@ -333,7 +364,7 @@ namespace GameCore.UnitTests
             GivenFeverEnergyBarSetting(5, 5, 5);
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
 
-            feverEnergyBarModel.HitBeat();
+            feverEnergyBarModel.Hit();
 
             EnergyValueShouldBe(15);
             CurrentFeverStageShouldBe(2);

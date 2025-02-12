@@ -35,20 +35,29 @@ namespace GameCore
             presenter.UnbindModel();
         }
 
+        public void Hit()
+        {
+            BeatAccuracyResult beatAccuracyResult = beaterModel.DetectBeatAccuracyCurrentTime();
+
+            int changeValue;
+            bool isCorrectHit = gameSetting.AccuracyPassThreshold >= 1 - beatAccuracyResult.AccuracyValue;
+            if (isCorrectHit)
+            {
+                changeValue = gameSetting.FeverEnergyIncrease;
+                beatPenaltyCounter = 0;
+            }
+            else
+            {
+                changeValue = -gameSetting.FeverEnergyDecrease;
+            }
+
+            AddEnergyValue(changeValue);
+        }
+
         private void InitPresenter()
         {
             presenter.BindModel(this);
             presenter.OpenView();
-        }
-
-        public void HitBeat()
-        {
-            BeatAccuracyResult beatAccuracyResult = beaterModel.DetectBeatAccuracyCurrentTime();
-            int changeValue = gameSetting.AccuracyPassThreshold >= 1 - beatAccuracyResult.AccuracyValue ?
-                gameSetting.FeverEnergyIncrease :
-                -gameSetting.FeverEnergyDecrease;
-
-            AddEnergyValue(changeValue);
         }
 
         private int GetEnergyBarMaxValue()
@@ -72,6 +81,8 @@ namespace GameCore
             EnergyValue += addValue;
             EnergyValue = Mathf.Clamp(EnergyValue, 0, GetEnergyBarMaxValue());
             UpdateFeverStage();
+
+            debugger.ShowLog($"EnergyValue: {EnergyValue}, CurrentFeverStage: {CurrentFeverStage}", true);
         }
 
         private void ClearData()

@@ -17,6 +17,7 @@ namespace GameCore
             Container.Bind<IGameObjectSpawner>().To<GameObjectSpawner>().AsSingle();
             Container.Bind<IAudioManager>().To<FmodAudioManager>().AsSingle();
             Container.Bind<IDeltaTimeGetter>().FromInstance(new DeltaTimeGetter()).AsSingle();
+            Container.Bind<IInputGetter>().FromInstance(new InputGetter()).AsSingle();
             Container.Bind(typeof(IEventInvoker), typeof(IEventRegister)).To<ArchitectureEventHandler>().AsSingle();
             Container.Bind<ISceneProcessManager>().FromInstance(sceneProcessManager).AsSingle();
             Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();

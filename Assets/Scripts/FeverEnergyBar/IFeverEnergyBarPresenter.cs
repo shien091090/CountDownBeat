@@ -7,5 +7,6 @@ namespace GameCore
         void OpenView();
         void BindView(IFeverEnergyBarView view);
         void UnbindView();
+        void Hit();
     }
 }

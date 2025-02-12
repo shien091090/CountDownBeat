@@ -1,13 +1,15 @@
+using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.TesterTools;
-using UnityEngine;
+using Zenject;
 
 namespace GameCore
 {
     public class FeverEnergyBarView : ArchitectureView, IFeverEnergyBarView
     {
-        private IFeverEnergyBarPresenter presenter;
+        [Inject] private IInputGetter inputGetter;
 
+        private IFeverEnergyBarPresenter presenter;
         private Debugger debugger = new Debugger("FeverEnergyBarView");
 
         public override void UpdateView()
@@ -31,8 +33,8 @@ namespace GameCore
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-                debugger.ShowLog("Mouse Down");
+            if (inputGetter.IsClickDown())
+                presenter.Hit();
         }
     }
 }
