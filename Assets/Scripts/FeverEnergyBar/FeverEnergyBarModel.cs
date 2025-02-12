@@ -6,7 +6,7 @@ using Zenject;
 
 namespace GameCore
 {
-    public class FeverEnergyBarModel
+    public class FeverEnergyBarModel : IFeverEnergyBarModel
     {
         [Inject] private IBeaterModel beaterModel;
         [Inject] private IGameSetting gameSetting;
@@ -19,11 +19,17 @@ namespace GameCore
         public float EnergyValue { get; private set; }
         public int CurrentFeverStage { get; private set; }
 
-        public void Init()
+        public void ExecuteModelInit()
         {
             ClearData();
             UpdateFeverStage();
             SetEventRegister(true);
+        }
+
+        public void Release()
+        {
+            SetEventRegister(false);
+            ClearData();
         }
 
         public void HitBeat()

@@ -28,9 +28,8 @@ namespace GameCore.UnitTests
 
             Container.Bind<FeverEnergyBarModel>().AsSingle();
             feverEnergyBarModel = Container.Resolve<FeverEnergyBarModel>();
-            feverEnergyBarModel.Init();
+            feverEnergyBarModel.ExecuteModelInit();
         }
-
 
         private void InitGameSettingMock()
         {
