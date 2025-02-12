@@ -69,8 +69,8 @@ namespace GameCore
 
         private void Release()
         {
-            UnbindModel();
             SetEventRegister(false);
+            UnbindModel();
         }
 
         private void OpenView()
