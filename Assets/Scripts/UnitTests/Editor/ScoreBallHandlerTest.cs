@@ -17,6 +17,7 @@ namespace GameCore.UnitTests
         private IEventInvoker eventInvoker;
         private IGameSetting gameSetting;
         private IViewManager viewManager;
+        private IBeaterModel beaterModel;
 
         private Action<BeatEvent> beatEventCallback;
         private Action<ScoreBall> spawnScoreBallEventCallback;
@@ -30,22 +31,12 @@ namespace GameCore.UnitTests
             base.Setup();
 
             InitEventRegisterMock();
-            Container.Bind<IEventRegister>().FromInstance(eventRegister).AsSingle();
-
             InitGameSettingMock();
-            Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
-
-            scoreBallHandlerPresenter = Substitute.For<IScoreBallHandlerPresenter>();
-            Container.Bind<IScoreBallHandlerPresenter>().FromInstance(scoreBallHandlerPresenter).AsSingle();
-
-            eventInvoker = Substitute.For<IEventInvoker>();
-            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
-
-            viewManager = Substitute.For<IViewManager>();
-            Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
-
+            InitScoreBallHandlerPresenterMock();
+            InitEventInvokerMock();
+            InitViewManagerMock();
             InitAppProcessorMock();
-            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
+            InitBeaterModelMock();
 
             Container.Bind<ScoreBallHandler>().AsSingle();
             scoreBallHandler = Container.Resolve<ScoreBallHandler>();
@@ -153,11 +144,37 @@ namespace GameCore.UnitTests
             SpawnedScoreBallStateShouldBe(ScoreBallState.InCountDown);
         }
 
+        private void InitBeaterModelMock()
+        {
+            beaterModel = Substitute.For<IBeaterModel>();
+            Container.Bind<IBeaterModel>().FromInstance(beaterModel).AsSingle();
+        }
+
+        private void InitViewManagerMock()
+        {
+            viewManager = Substitute.For<IViewManager>();
+            Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
+        }
+
+        private void InitEventInvokerMock()
+        {
+            eventInvoker = Substitute.For<IEventInvoker>();
+            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
+        }
+
+        private void InitScoreBallHandlerPresenterMock()
+        {
+            scoreBallHandlerPresenter = Substitute.For<IScoreBallHandlerPresenter>();
+            Container.Bind<IScoreBallHandlerPresenter>().FromInstance(scoreBallHandlerPresenter).AsSingle();
+        }
+
         private void InitAppProcessorMock()
         {
             appProcessor = Substitute.For<IAppProcessor>();
 
             GivenSpawnScoreBallBeatSetting(new List<int>());
+
+            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
         }
 
         private void InitGameSettingMock()
@@ -165,6 +182,8 @@ namespace GameCore.UnitTests
             gameSetting = Substitute.For<IGameSetting>();
 
             GivenStartCountDownValueSetting(20);
+
+            Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
         }
 
         private void InitSpawnScoreBallEventMock()
@@ -189,6 +208,8 @@ namespace GameCore.UnitTests
                 Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
                 beatEventCallback += callback;
             });
+
+            Container.Bind<IEventRegister>().FromInstance(eventRegister).AsSingle();
         }
 
         private void GivenStartCountDownValueSetting(int startCountDownValue)
