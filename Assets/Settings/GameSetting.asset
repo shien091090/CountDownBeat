@@ -19,3 +19,7 @@ MonoBehaviour:
   catchNetLimit: 5
   catchNetNumberRange: {x: 5, y: 17}
   hpMax: 100
+  accuracyPassThreshold: 0.5
+  feverEnergyIncrease: 2
+  feverEnergyDecrease: 5
+  feverEnergyBarSetting: 0a0000000a0000000a000000
