@@ -34,6 +34,7 @@ MonoBehaviour:
     - modelName: ScoreBallHandler
     - modelName: CatchNetHandler
     - modelName: HpBarModel
+    - modelName: FeverEnergyBarModel
   - sceneName: SelectionMenuScene
     modelDefineList:
     - modelName: SelectionMenuHandler

@@ -11,6 +11,7 @@ namespace GameCore
         [Inject] private IBeaterModel beaterModel;
         [Inject] private IGameSetting gameSetting;
         [Inject] private IEventRegister eventRegister;
+        [Inject] private IFeverEnergyBarPresenter presenter;
 
         private int beatPenaltyCounter;
 
@@ -24,12 +25,20 @@ namespace GameCore
             ClearData();
             UpdateFeverStage();
             SetEventRegister(true);
+            InitPresenter();
         }
 
         public void Release()
         {
             SetEventRegister(false);
             ClearData();
+            presenter.UnbindModel();
+        }
+
+        private void InitPresenter()
+        {
+            presenter.BindModel(this);
+            presenter.OpenView();
         }
 
         public void HitBeat()
