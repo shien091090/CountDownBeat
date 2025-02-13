@@ -126,13 +126,9 @@ namespace GameCore.UnitTests
                 updateCountDownValueEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<int>());
         }
 
-        private void PassCountDownValueRangeShouldBe(int expectedMin, int expectedMax)
+        private void CurrentFlagNumberShouldBe(int expectedFlagNumber)
         {
-            int min = scoreBall.PassCountDownValueRange.x;
-            int max = scoreBall.PassCountDownValueRange.y;
-
-            Assert.AreEqual(expectedMin, min);
-            Assert.AreEqual(expectedMax, max);
+            Assert.AreEqual(expectedFlagNumber, scoreBall.CurrentFlagNumber);
         }
 
         #region 狀態變化
@@ -212,49 +208,6 @@ namespace GameCore.UnitTests
             CurrentStateShouldBe(ScoreBallState.Hide);
 
             scoreBall.Reactivate();
-
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-        }
-
-        [Test]
-        //當前狀態為Freeze時, 觸發判定擴大, 狀態切換為"FreezeAndExpand"
-        public void set_and_change_state_to_freeze_and_expand_when_freeze_state()
-        {
-            scoreBall.Init(10);
-
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-
-            CurrentStateShouldBe(ScoreBallState.FreezeAndExpand);
-        }
-
-        [Test]
-        //當前狀態不為Freeze時, 觸發判定擴大, 無反應
-        public void do_nothing_when_set_expand_state_in_not_freeze_state()
-        {
-            scoreBall.Init(10);
-
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-
-            scoreBall.TriggerExpand();
-
-            CurrentStateShouldBe(ScoreBallState.InCountDown);
-        }
-
-        [Test]
-        //狀態為"FreezeAndExpand"時, 若解除凍結狀態, 則狀態切換為"InCountDown"
-        public void change_state_to_in_count_down_when_unset_freeze_state_in_freeze_and_expand_state()
-        {
-            scoreBall.Init(10);
-
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-
-            CurrentStateShouldBe(ScoreBallState.FreezeAndExpand);
-
-            scoreBall.SetFreezeState(false);
 
             CurrentStateShouldBe(ScoreBallState.InCountDown);
         }
@@ -535,127 +488,14 @@ namespace GameCore.UnitTests
             CurrentCountDownValueShouldBe(9);
         }
 
-        [Test]
-        //從凍結狀態觸發判定擴大時, 若倒數數字為起始值, 則判定範圍上下限為當前值減一到起始值
-        public void pass_count_down_value_range_is_current_value_minus_one_to_start_value_when_expand_and_count_down_value_is_start_value()
-        {
-            scoreBall.Init(10);
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
+        #endregion
 
-            PassCountDownValueRangeShouldBe(9, 10);
-        }
-
-        [Test]
-        //從凍結狀態觸發判定擴大時, 若倒數數字為1, 則判定範圍上下限為1到當前值加一
-        public void pass_count_down_value_range_is_one_to_current_value_plus_one_when_expand_and_count_down_value_is_one()
-        {
-            scoreBall.Init(3);
-
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(1);
-
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-
-            PassCountDownValueRangeShouldBe(1, 2);
-        }
-
-        [Test]
-        //從凍結狀態觸發判定擴大時, 若倒數數字大於1且小於起始值, 則判定範圍上下限為當前值加減一
-        public void pass_count_down_value_range_is_current_value_plus_minus_one_when_expand_and_count_down_value_is_between_one_and_start_value()
-        {
-            scoreBall.Init(10);
-
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(8);
-
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-
-            PassCountDownValueRangeShouldBe(7, 9);
-        }
-
-        [Test]
-        [TestCase(0, 4, 5, 5)]
-        [TestCase(2, 2, 4, 3)]
-        [TestCase(4, 1, 2, 1)]
-        //解除判定擴大狀態時, 判定範圍上下限縮回當前值
-        public void pass_count_down_value_range_is_current_value_when_cancel_expand_state(int beatCount, int expectedMinWhenExpand, int expectedMaxWhenExpand,
-            int expectedPassValueWhenCancelExpand)
-        {
-            scoreBall.Init(5);
-
-            for (int i = 0; i < beatCount; i++)
-            {
-                CallBeatEventCallback();
-            }
-
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-
-            PassCountDownValueRangeShouldBe(expectedMinWhenExpand, expectedMaxWhenExpand);
-
-            scoreBall.SetFreezeState(false);
-
-            PassCountDownValueRangeShouldBe(expectedPassValueWhenCancelExpand, expectedPassValueWhenCancelExpand);
-        }
-
-        [Test]
-        //設為凍結+判定擴大狀態時, 收到Beat事件不會倒數
-        public void do_not_count_down_when_freeze_and_expand()
-        {
-            scoreBall.Init(10);
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-
-            CurrentCountDownValueShouldBe(10);
-
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(10);
-        }
-
-        [Test]
-        //解除凍結+判定擴大狀態時, 收到Beat事件數字繼續倒數
-        public void continue_count_down_when_unfreeze_and_cancel_expand()
-        {
-            scoreBall.Init(10);
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-
-            CurrentCountDownValueShouldBe(10);
-
-            scoreBall.SetFreezeState(false);
-
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(9);
-        }
-
-        [Test]
-        //設為凍結+判定擴大狀態時, 若重設倒數數字, 則判定範圍上下線為起始值到起始值減一
-        public void pass_count_down_value_range_is_start_value_to_start_value_minus_one_when_reset_count_down_value_in_freeze_and_expand_state()
-        {
-            scoreBall.Init(10);
-
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-
-            CurrentCountDownValueShouldBe(7);
-
-            scoreBall.SetFreezeState(true);
-            scoreBall.TriggerExpand();
-            scoreBall.ResetToBeginning();
-
-            PassCountDownValueRangeShouldBe(9, 10);
-        }
-
+        #region 捕獲旗標
+        
+        //初始化時, 依據當前Fever階段對應的旗標編號權重設定, 設定當前旗標編號
+        //初始化時, 若取不到旗標編號權重設定則回應錯誤
+        //結算或倒數完畢後再度激活, 重新抽取旗標編號
+        
         #endregion
     }
 }

@@ -6,7 +6,7 @@ namespace GameCore
 {
     public class CatchNet : ICatchNet
     {
-        public int TargetNumber { get; private set; }
+        public int TargetFlagNumber { get; private set; }
 
         private readonly IEventRegister eventRegister;
 
@@ -26,12 +26,12 @@ namespace GameCore
         public event Action<CatchNetState> OnUpdateState;
         public event Action OnCatchNetBeat;
 
-        public bool TryTriggerCatch(Vector2Int passNumberRange)
+        public bool TryTriggerCatch(int flagNumber)
         {
             if (CurrentState != CatchNetState.Working)
                 return false;
 
-            if (passNumberRange.x > TargetNumber || passNumberRange.y < TargetNumber)
+            if (flagNumber != TargetFlagNumber)
                 return false;
 
             catchNetHandler.SettleCatchNet(this);
@@ -45,9 +45,9 @@ namespace GameCore
             presenter.BindModel(this);
         }
 
-        public void Init(int targetNumber)
+        public void Init(int targetFlagNumber)
         {
-            TargetNumber = targetNumber;
+            TargetFlagNumber = targetFlagNumber;
 
             UpdateState(CatchNetState.Working);
         }

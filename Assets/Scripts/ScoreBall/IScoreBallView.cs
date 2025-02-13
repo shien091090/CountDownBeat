@@ -4,13 +4,12 @@ namespace GameCore
 {
     public interface IScoreBallView : IMVPView
     {
-        Vector2Int CurrentPassCountDownValueRange { get; }
+        int CurrentFlagNumber { get; }
         void Init();
         void SetCountDownNumberText(string text);
         void SetInCountDownColor();
         void SetFreezeColor();
         void SetTextColor(Color color);
-        void SetExpandColor();
         void RecordTrajectoryNode();
         void ClearTrajectoryNode();
         void Close();

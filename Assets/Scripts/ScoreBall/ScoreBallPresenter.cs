@@ -9,7 +9,7 @@ namespace GameCore
 
         private const int RECORD_TRAJECTORY_TIMES_LIMIT = 3;
 
-        public Vector2Int CurrentPassCountDownValueRange => model.PassCountDownValueRange;
+        public int CurrentFlagNumber => model.CurrentFlagNumber;
 
         private IScoreBall model;
         private IScoreBallView view;
@@ -74,11 +74,6 @@ namespace GameCore
         {
             model.SetFreezeState(false);
             ResetRecordTrajectoryState();
-        }
-
-        public void TriggerTrajectoryAnglePass()
-        {
-            model.TriggerExpand();
         }
 
         public void Init(IBeaterModel beaterModel, IScoreBallTextColorSetting scoreBallTextColorSetting)
@@ -179,10 +174,6 @@ namespace GameCore
 
                 case ScoreBallState.Freeze:
                     view.SetFreezeColor();
-                    break;
-
-                case ScoreBallState.FreezeAndExpand:
-                    view.SetExpandColor();
                     break;
             }
         }

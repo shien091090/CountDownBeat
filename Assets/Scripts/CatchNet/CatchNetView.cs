@@ -25,12 +25,12 @@ namespace GameCore
         private Tween spawnCatchNetTween;
         private Animator animator;
 
-        public void SetCatchNumber(string catchNumberText)
+        public void SetCatchFlagNumber(string catchNumberText)
         {
             tmp_catchNumber.text = catchNumberText;
         }
 
-        public void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
+        public void SetCatchFlagNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
         {
             CatchNetNumberPosSetting setting = catchNumberPosSettings.FirstOrDefault(x => x.FadeInMode == fadeInMode);
             if (setting != null)

@@ -6,6 +6,5 @@ namespace GameCore
         InCountDown,
         Hide,
         Freeze,
-        FreezeAndExpand
     }
 }

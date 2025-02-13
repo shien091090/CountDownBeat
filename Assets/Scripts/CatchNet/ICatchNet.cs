@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace GameCore
 {
@@ -7,7 +6,7 @@ namespace GameCore
     {
         event Action<CatchNetState> OnUpdateState;
         event Action OnCatchNetBeat;
-        int TargetNumber { get; }
-        bool TryTriggerCatch(Vector2Int passNumberRange);
+        int TargetFlagNumber { get; }
+        bool TryTriggerCatch(int flagNumber);
     }
 }

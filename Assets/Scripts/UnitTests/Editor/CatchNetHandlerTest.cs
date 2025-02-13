@@ -133,7 +133,7 @@ namespace GameCore.UnitTests
         private void CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet)
         {
             CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-            arg.TryTriggerCatch(new Vector2Int(arg.TargetNumber, arg.TargetNumber));
+            arg.TryTriggerCatch(arg.TargetFlagNumber);
 
             lastCatchNet = arg;
         }
@@ -401,7 +401,7 @@ namespace GameCore.UnitTests
             {
                 CallBeatEventCallback();
                 CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-                tempTargetNumList.Add(arg.TargetNumber);
+                tempTargetNumList.Add(arg.TargetFlagNumber);
             }
 
             tempTargetNumList = tempTargetNumList.Distinct().ToList();

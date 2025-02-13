@@ -23,7 +23,7 @@ namespace GameCore
             SpawnPosIndex = spawnPosIndex;
             catchEnable = false;
 
-            SetCatchNumberPosType(fadeInMode);
+            SetCatchFlagNumberPosType(fadeInMode);
             PlaySpawnAnimation(fadeInMode, () =>
             {
                 catchEnable = true;
@@ -56,7 +56,7 @@ namespace GameCore
             if (scoreBall == null)
                 return;
 
-            if (model.TryTriggerCatch(scoreBall.CurrentPassCountDownValueRange))
+            if (model.TryTriggerCatch(scoreBall.CurrentFlagNumber))
                 scoreBall.TriggerCatch();
         }
 
@@ -88,9 +88,9 @@ namespace GameCore
             }
         }
 
-        private void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
+        private void SetCatchFlagNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
         {
-            view.SetCatchNumberPosType(fadeInMode);
+            view.SetCatchFlagNumberPosType(fadeInMode);
         }
 
         private void ClearData()
@@ -104,7 +104,7 @@ namespace GameCore
             switch (currentState)
             {
                 case CatchNetState.Working:
-                    RefreshCatchNumber();
+                    RefreshCatchFlagNumber();
                     break;
 
                 case CatchNetState.SuccessSettle:
@@ -113,9 +113,9 @@ namespace GameCore
             }
         }
 
-        private void RefreshCatchNumber()
+        private void RefreshCatchFlagNumber()
         {
-            view.SetCatchNumber(model.TargetNumber.ToString("N0"));
+            view.SetCatchFlagNumber(model.TargetFlagNumber.ToString("N0"));
         }
 
         private void PlayBeatEffect()

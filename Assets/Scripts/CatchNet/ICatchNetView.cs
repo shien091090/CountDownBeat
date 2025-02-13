@@ -6,8 +6,8 @@ namespace GameCore
     public interface ICatchNetView : IMVPView
     {
         Vector3 Position { get; }
-        void SetCatchNumber(string catchNumberText);
-        void SetCatchNumberPosType(CatchNetSpawnFadeInMode fadeInMode);
+        void SetCatchFlagNumber(string catchNumberText);
+        void SetCatchFlagNumberPosType(CatchNetSpawnFadeInMode fadeInMode);
         void Close();
         void PlaySpawnAnimation(CatchNetSpawnFadeInMode fadeInMode, Action callback);
         void PlayBeatAnimation();

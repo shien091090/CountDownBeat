@@ -22,11 +22,10 @@ namespace GameCore
         [SerializeField] private ObjectPoolManager objectPool;
         [SerializeField] private Color inCountDownColor;
         [SerializeField] private Color freezeColor;
-        [SerializeField] private Color expandColor;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
 
-        public Vector2Int CurrentPassCountDownValueRange => presenter.CurrentPassCountDownValueRange;
+        public int CurrentFlagNumber => presenter.CurrentFlagNumber;
 
         private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_SCORE_BALL_VIEW);
         private IScoreBallPresenter presenter;
@@ -49,11 +48,6 @@ namespace GameCore
         public void SetFreezeColor()
         {
             img_back.color = freezeColor;
-        }
-
-        public void SetExpandColor()
-        {
-            img_back.color = expandColor;
         }
 
         public void RecordTrajectoryNode()
@@ -136,14 +130,6 @@ namespace GameCore
 
             operableUI.OnDragOverEvent -= DragOver;
             operableUI.OnDragOverEvent += DragOver;
-
-            trajectoryAngleCalculator.OnAnglePass -= TriggerTrajectoryAnglePass;
-            trajectoryAngleCalculator.OnAnglePass += TriggerTrajectoryAnglePass;
-        }
-
-        private void TriggerTrajectoryAnglePass()
-        {
-            presenter.TriggerTrajectoryAnglePass();
         }
 
         private void DragOver()
