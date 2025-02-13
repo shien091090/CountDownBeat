@@ -56,230 +56,6 @@ namespace GameCore.UnitTests
             catchNetHandler.OnSettleCatchNet += settleCatchNetEventCallback;
         }
 
-        [Test]
-        //初始化時, 發送初始化事件
-        public void send_init_event_when_init()
-        {
-            catchNetHandler.ExecuteModelInit();
-
-            ShouldSendInitEvent(1);
-        }
-
-        [Test]
-        //每固定次數Beat時, 生成捕獲網
-        public void spawn_catch_net_when_beat()
-        {
-            GivenSpawnCatchNetFreqSetting(3);
-
-            catchNetHandler.ExecuteModelInit();
-
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-            ShouldSpawnCatchNet(0);
-
-            CallBeatEventCallback();
-            ShouldSpawnCatchNet(1);
-        }
-
-        [Test]
-        //釋放之後, 收到Beat事件, 無反應
-        public void do_nothing_when_beat_after_release()
-        {
-            GivenSpawnCatchNetFreqSetting(1);
-
-            catchNetHandler.ExecuteModelInit();
-            CallBeatEventCallback();
-
-            ShouldSpawnCatchNet(1);
-
-            catchNetHandler.Release();
-            CallBeatEventCallback();
-
-            ShouldSpawnCatchNet(1);
-        }
-
-        [Test]
-        //釋放時, 發送釋放事件
-        public void send_release_event_when_release()
-        {
-            catchNetHandler.Release();
-
-            ShouldSendReleaseEvent(1);
-        }
-
-        [Test]
-        //設定生成頻率為0時, 不會生成捕獲網
-        public void not_spawn_catch_net_when_freq_is_0()
-        {
-            GivenSpawnCatchNetFreqSetting(0);
-
-            catchNetHandler.ExecuteModelInit();
-
-            CallBeatEventCallback();
-
-            ShouldSpawnCatchNet(0);
-        }
-
-        [Test]
-        //捕獲網達上限數量時, 即使達Beat次數門檻也不會生成捕獲網
-        public void not_spawn_catch_net_when_reach_limit()
-        {
-            GivenSpawnCatchNetFreqSetting(1);
-            GivenCatchNetLimit(4);
-
-            catchNetHandler.ExecuteModelInit();
-
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-
-            ShouldSpawnCatchNet(4);
-            CurrentInFieldCatchNetAmountShouldBe(4);
-
-            CallBeatEventCallback();
-
-            ShouldSpawnCatchNet(4);
-            CurrentInFieldCatchNetAmountShouldBe(4);
-        }
-
-        [Test]
-        //捕獲網達上限數量後, 若有捕獲網成功結算, 則後續會再生成捕獲網
-        public void spawn_catch_net_after_success_settle()
-        {
-            GivenSpawnCatchNetFreqSetting(1);
-            GivenCatchNetLimit(4);
-
-            catchNetHandler.ExecuteModelInit();
-
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-            CallBeatEventCallback();
-
-            ShouldSpawnCatchNet(4);
-            CurrentInFieldCatchNetAmountShouldBe(4);
-
-            CallLastSpawnCatchNetSuccessSettle(out _);
-
-            CallBeatEventCallback();
-
-            ShouldSpawnCatchNet(5);
-            CurrentInFieldCatchNetAmountShouldBe(4);
-        }
-
-        [Test]
-        //生成捕獲網, 驗證捕獲數字
-        public void spawn_catch_net_then_verify_target_number()
-        {
-            GivenCatchNetNumberRange(1, 5);
-            GivenSpawnCatchNetFreqSetting(1);
-            GivenCatchNetLimit(100);
-
-            catchNetHandler.ExecuteModelInit();
-
-            List<int> tempTargetNumList = new List<int>();
-            for (int i = 0; i < 100; i++)
-            {
-                CallBeatEventCallback();
-                CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-                tempTargetNumList.Add(arg.TargetNumber);
-            }
-
-            tempTargetNumList = tempTargetNumList.Distinct().ToList();
-            Assert.AreEqual(5, tempTargetNumList.Count);
-            for (int i = 1; i <= 5; i++)
-            {
-                Assert.IsTrue(tempTargetNumList.Contains(i));
-            }
-        }
-
-        [Test]
-        //生成捕獲網時若沒有隱藏中的捕獲網, 會產出新的捕獲網
-        public void spawn_new_catch_net_when_no_hidden_catch_net()
-        {
-            GivenSpawnCatchNetFreqSetting(1);
-            GivenCatchNetLimit(10);
-
-            catchNetHandler.ExecuteModelInit();
-
-            CurrentInFieldCatchNetAmountShouldBe(0);
-            ShouldSpawnCatchNet(0);
-
-            CallBeatEventCallback();
-
-            CurrentInFieldCatchNetAmountShouldBe(1);
-            ShouldSpawnCatchNet(1);
-            LastSpawnCatchNetStateShouldBe(CatchNetState.Working);
-
-            CallBeatEventCallback();
-
-            CurrentInFieldCatchNetAmountShouldBe(2);
-            ShouldSpawnCatchNet(2);
-        }
-
-        [Test]
-        //生成捕獲網時若有隱藏中的捕獲網, 會重新激活該捕獲網
-        public void reactivate_hidden_catch_net_when_spawn_catch_net()
-        {
-            GivenSpawnCatchNetFreqSetting(1);
-            GivenCatchNetLimit(10);
-
-            catchNetHandler.ExecuteModelInit();
-
-            CurrentInFieldCatchNetAmountShouldBe(0);
-            ShouldSpawnCatchNet(0);
-
-            CallBeatEventCallback();
-
-            CurrentInFieldCatchNetAmountShouldBe(1);
-            ShouldSpawnCatchNet(1);
-
-            CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet);
-
-            CatchNetStateShouldBe(lastCatchNet, CatchNetState.SuccessSettle);
-
-            CallBeatEventCallback();
-
-            CurrentInFieldCatchNetAmountShouldBe(1);
-            ShouldSpawnCatchNet(2);
-            CatchNetStateShouldBe(lastCatchNet, CatchNetState.Working);
-        }
-
-        [Test]
-        [TestCase(1)]
-        [TestCase(5)]
-        [TestCase(10)]
-        //驗證成功捕獲時的獲得分數
-        public void verify_get_score_event_when_success_settle(int score)
-        {
-            GivenSpawnCatchNetFreqSetting(1);
-            GivenScoreWhenSuccessSettle(score);
-
-            catchNetHandler.ExecuteModelInit();
-
-            CallBeatEventCallback();
-            CallLastSpawnCatchNetSuccessSettle(out _);
-
-            LastGetScoreEventShouldBe(score);
-        }
-
-        [Test]
-        //成功捕獲時, 發送成功結算事件
-        public void send_settle_catch_net_event_when_success_settle()
-        {
-            GivenSpawnCatchNetFreqSetting(1);
-
-            catchNetHandler.ExecuteModelInit();
-
-            ShouldSendSettleCatchNetEvent(0);
-
-            CallBeatEventCallback();
-            CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet);
-
-            ShouldSendSettleCatchNetEvent(1);
-        }
-
         private void InitGameSettingMock()
         {
             gameSetting = Substitute.For<IGameSetting>();
@@ -419,5 +195,241 @@ namespace GameCore.UnitTests
             else
                 spawnCatchNetEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<ICatchNet>());
         }
+
+        #region 發送事件
+
+        [Test]
+        //初始化時, 發送初始化事件
+        public void send_init_event_when_init()
+        {
+            catchNetHandler.ExecuteModelInit();
+
+            ShouldSendInitEvent(1);
+        }
+
+        [Test]
+        //釋放時, 發送釋放事件
+        public void send_release_event_when_release()
+        {
+            catchNetHandler.Release();
+
+            ShouldSendReleaseEvent(1);
+        }
+
+        [Test]
+        //成功捕獲時, 發送成功結算事件
+        public void send_settle_catch_net_event_when_success_settle()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+
+            catchNetHandler.ExecuteModelInit();
+
+            ShouldSendSettleCatchNetEvent(0);
+
+            CallBeatEventCallback();
+            CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet);
+
+            ShouldSendSettleCatchNetEvent(1);
+        }
+
+        #endregion
+
+        #region 生成捕獲網
+
+        [Test]
+        //每固定次數Beat時, 生成捕獲網
+        public void spawn_catch_net_when_beat()
+        {
+            GivenSpawnCatchNetFreqSetting(3);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            ShouldSpawnCatchNet(0);
+
+            CallBeatEventCallback();
+            ShouldSpawnCatchNet(1);
+        }
+
+        [Test]
+        //釋放之後, 收到Beat事件, 無反應
+        public void do_nothing_when_beat_after_release()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+
+            catchNetHandler.ExecuteModelInit();
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(1);
+
+            catchNetHandler.Release();
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(1);
+        }
+
+        [Test]
+        //設定生成頻率為0時, 不會生成捕獲網
+        public void not_spawn_catch_net_when_freq_is_0()
+        {
+            GivenSpawnCatchNetFreqSetting(0);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(0);
+        }
+
+        [Test]
+        //捕獲網達上限數量時, 即使達Beat次數門檻也不會生成捕獲網
+        public void not_spawn_catch_net_when_reach_limit()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(4);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(4);
+            CurrentInFieldCatchNetAmountShouldBe(4);
+
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(4);
+            CurrentInFieldCatchNetAmountShouldBe(4);
+        }
+
+        [Test]
+        //捕獲網達上限數量後, 若有捕獲網成功結算, 則後續會再生成捕獲網
+        public void spawn_catch_net_after_success_settle()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(4);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(4);
+            CurrentInFieldCatchNetAmountShouldBe(4);
+
+            CallLastSpawnCatchNetSuccessSettle(out _);
+
+            CallBeatEventCallback();
+
+            ShouldSpawnCatchNet(5);
+            CurrentInFieldCatchNetAmountShouldBe(4);
+        }
+
+        [Test]
+        //生成捕獲網時若沒有隱藏中的捕獲網, 會產出新的捕獲網
+        public void spawn_new_catch_net_when_no_hidden_catch_net()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(10);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CurrentInFieldCatchNetAmountShouldBe(0);
+            ShouldSpawnCatchNet(0);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(1);
+            ShouldSpawnCatchNet(1);
+            LastSpawnCatchNetStateShouldBe(CatchNetState.Working);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(2);
+            ShouldSpawnCatchNet(2);
+        }
+
+        [Test]
+        //生成捕獲網時若有隱藏中的捕獲網, 會重新激活該捕獲網
+        public void reactivate_hidden_catch_net_when_spawn_catch_net()
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(10);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CurrentInFieldCatchNetAmountShouldBe(0);
+            ShouldSpawnCatchNet(0);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(1);
+            ShouldSpawnCatchNet(1);
+
+            CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet);
+
+            CatchNetStateShouldBe(lastCatchNet, CatchNetState.SuccessSettle);
+
+            CallBeatEventCallback();
+
+            CurrentInFieldCatchNetAmountShouldBe(1);
+            ShouldSpawnCatchNet(2);
+            CatchNetStateShouldBe(lastCatchNet, CatchNetState.Working);
+        }
+
+        #endregion
+
+        #region 捕獲數字&結算
+
+        [Test]
+        //生成捕獲網, 驗證捕獲數字
+        public void spawn_catch_net_then_verify_target_number()
+        {
+            GivenCatchNetNumberRange(1, 5);
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenCatchNetLimit(100);
+
+            catchNetHandler.ExecuteModelInit();
+
+            List<int> tempTargetNumList = new List<int>();
+            for (int i = 0; i < 100; i++)
+            {
+                CallBeatEventCallback();
+                CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
+                tempTargetNumList.Add(arg.TargetNumber);
+            }
+
+            tempTargetNumList = tempTargetNumList.Distinct().ToList();
+            Assert.AreEqual(5, tempTargetNumList.Count);
+            for (int i = 1; i <= 5; i++)
+            {
+                Assert.IsTrue(tempTargetNumList.Contains(i));
+            }
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(5)]
+        [TestCase(10)]
+        //驗證成功捕獲時的獲得分數
+        public void verify_get_score_event_when_success_settle(int score)
+        {
+            GivenSpawnCatchNetFreqSetting(1);
+            GivenScoreWhenSuccessSettle(score);
+
+            catchNetHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+            CallLastSpawnCatchNetSuccessSettle(out _);
+
+            LastGetScoreEventShouldBe(score);
+        }
+
+        #endregion
     }
 }
