@@ -265,8 +265,8 @@ namespace GameCore.UnitTests
         [TestCase(2.5f, 0)]
         [TestCase(2.75f, 0.5f)]
         [TestCase(2.975f, 0.95f)]
-        //以兩個半拍為範圍偵測拍點準度, 偵測點在節拍前
-        public void detect_beat_accuracy_and_detect_point_before_beat(float currentTime, float expectedAccuracy)
+        //以兩個半拍為範圍偵測拍點準度, 偵測點在下一個節拍前
+        public void detect_beat_accuracy_and_detect_point_before_next_beat(float currentTime, float expectedAccuracy)
         {
             GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
@@ -278,17 +278,16 @@ namespace GameCore.UnitTests
             GivenCurrentTimer(2f);
             CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
 
-            //下一拍預計時間為3秒
-
+            //下一拍預計時間為3秒, 故下一拍偵測點為2.5~3.5秒間, 下一個節拍前則是2.5~3秒間
             AccuracyResultShouldBe(currentTime, BeatTimingDirection.Early, expectedAccuracy);
         }
 
         [Test]
-        [TestCase(3, 1)]
-        [TestCase(3.25f, 0.5f)]
-        [TestCase(3.495f, 0.01f)]
-        //以兩個半拍為範圍偵測拍點準度, 偵測點在節拍後
-        public void detect_beat_accuracy_and_detect_point_after_beat(float currentTime, float expectedAccuracy)
+        [TestCase(2, 1)]
+        [TestCase(2.25f, 0.5f)]
+        [TestCase(2.495f, 0.01f)]
+        //以兩個半拍為範圍偵測拍點準度, 偵測點在目前節拍後
+        public void detect_beat_accuracy_and_detect_point_after_current_beat(float currentTime, float expectedAccuracy)
         {
             GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
@@ -300,10 +299,11 @@ namespace GameCore.UnitTests
             GivenCurrentTimer(2f);
             CallAudioCallback(EVENT_CALLBACK_TYPE.TIMELINE_BEAT);
 
-            //下一拍預計時間為3秒
-
+            //目前節拍為2秒, 下一拍預計時間為3秒, 故目前節拍後偵測點為1.5~2.5秒間, 目前節拍後則是2~2.5秒間
             AccuracyResultShouldBe(currentTime, BeatTimingDirection.Late, expectedAccuracy);
         }
+        
+        //
 
         [Test]
         //尚未收到音樂節拍事件時, 偵測拍點準度回傳Invalid
@@ -317,10 +317,10 @@ namespace GameCore.UnitTests
         }
 
         [Test]
+        [TestCase(3.9f, BeatTimingDirection.Late, 0.5f)]
+        [TestCase(4.2f, BeatTimingDirection.Late, 0)]
         [TestCase(4.5f, BeatTimingDirection.Early, 0.5f)]
-        [TestCase(4.2f, BeatTimingDirection.Early, 0)]
-        [TestCase(5.1f, BeatTimingDirection.Late, 0.5f)]
-        [TestCase(5.4f, BeatTimingDirection.Late, 0)]
+        [TestCase(4.65f, BeatTimingDirection.Early, 0.75f)]
         //收到節拍事件後更新平均半拍時間差, 並且偵測拍點準度
         public void update_half_beat_time_offset_and_detect_beat_accuracy_when_receive_beat_callback(float currentTime, BeatTimingDirection expectedBeatTimingDirection,
             float expectedAccuracy)
