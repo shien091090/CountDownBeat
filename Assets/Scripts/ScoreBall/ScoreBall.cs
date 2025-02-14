@@ -9,6 +9,7 @@ namespace GameCore
 
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
+        private readonly IGameSetting gameSetting;
 
         private IScoreBallPresenter presenter;
         public int CurrentCountDownValue { get; private set; }
@@ -18,10 +19,11 @@ namespace GameCore
 
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker, IGameSetting gameSetting)
         {
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
+            this.gameSetting = gameSetting;
         }
 
         public event Action OnInit;
@@ -55,12 +57,9 @@ namespace GameCore
             presenter = (IScoreBallPresenter)mvpPresenter;
         }
 
-        public void Init(int startCountDownValue)
+        public void Init()
         {
-            if (startCountDownValue <= 0)
-                return;
-
-            StartCountDownValue = startCountDownValue;
+            StartCountDownValue = gameSetting.ScoreBallStartCountDownValue;
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
 

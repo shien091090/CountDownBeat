@@ -99,13 +99,13 @@ namespace GameCore
             else
             {
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
-                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker);
+                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting);
 
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 
                 scoreBallView.Init();
                 scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting);
-                scoreBall.Init(gameSetting.ScoreBallStartCountDownValue);
+                scoreBall.Init();
 
                 inFieldScoreBallList.Add(scoreBall);
                 OnSpawnScoreBall?.Invoke(scoreBall);
