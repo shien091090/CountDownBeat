@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GameCore
@@ -15,5 +16,6 @@ namespace GameCore
         int FeverEnergyIncrease { get; }
         int FeverEnergyDecrease { get; }
         int[] FeverEnergyBarSetting { get; }
+        Dictionary<int, int> GetScoreBallFlagWeightSetting(int feverStage);
     }
 }

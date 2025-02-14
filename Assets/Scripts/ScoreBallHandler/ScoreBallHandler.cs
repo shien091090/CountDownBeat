@@ -14,6 +14,7 @@ namespace GameCore
         [Inject] private IGameSetting gameSetting;
         [Inject] private IAppProcessor appProcessor;
         [Inject] private IBeaterModel beaterModel;
+        [Inject] private IFeverEnergyBarModel feverEnergyBarModel;
 
         private DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
         private List<int> tempSpawnBeatIndexList;
@@ -99,7 +100,7 @@ namespace GameCore
             else
             {
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
-                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting);
+                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting, feverEnergyBarModel);
 
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 

@@ -12,13 +12,14 @@ namespace GameCore
         [Inject] private IGameSetting gameSetting;
         [Inject] private IEventRegister eventRegister;
         [Inject] private IFeverEnergyBarPresenter presenter;
+        
+        public int CurrentFeverStage { get; private set; }
 
         private int beatPenaltyCounter;
 
         private readonly Debugger debugger = new Debugger("FeverEnergyBarModel");
 
         public float EnergyValue { get; private set; }
-        public int CurrentFeverStage { get; private set; }
 
         public void ExecuteModelInit()
         {

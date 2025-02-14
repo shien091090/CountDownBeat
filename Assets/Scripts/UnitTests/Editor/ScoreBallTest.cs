@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
@@ -13,6 +14,7 @@ namespace GameCore.UnitTests
         private IEventInvoker eventInvoker;
         private IScoreBallPresenter presenter;
         private IGameSetting gameSetting;
+        private IFeverEnergyBarModel feverEnergyBarModel;
 
         private Action<BeatEvent> beatEventCallback;
         private Action scoreBallBeatEventCallback;
@@ -24,9 +26,10 @@ namespace GameCore.UnitTests
         public void Setup()
         {
             InitEventHandlerMock();
-            gameSetting = Substitute.For<IGameSetting>();
+            InitGameSettingMock();
+            feverEnergyBarModel = Substitute.For<IFeverEnergyBarModel>();
 
-            scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting);
+            scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting, feverEnergyBarModel);
 
             presenter = Substitute.For<IScoreBallPresenter>();
             scoreBall.BindPresenter(presenter);
@@ -42,6 +45,16 @@ namespace GameCore.UnitTests
 
             updateCountDownValueEventCallback = Substitute.For<Action<int>>();
             scoreBall.OnUpdateCountDownValue += updateCountDownValueEventCallback;
+        }
+
+        private void InitGameSettingMock()
+        {
+            gameSetting = Substitute.For<IGameSetting>();
+
+            GivenScoreBallFlagWeightSetting(0, new Dictionary<int, int>
+            {
+                { 1, 1 }
+            });
         }
 
         private void InitEventHandlerMock()
@@ -67,6 +80,21 @@ namespace GameCore.UnitTests
         private void GivenStartCountDownValue(int startCountDownValue)
         {
             gameSetting.ScoreBallStartCountDownValue.Returns(startCountDownValue);
+        }
+
+        private void GivenCurrentFeverStage(int feverStage)
+        {
+            feverEnergyBarModel.CurrentFeverStage.Returns(feverStage);
+        }
+
+        private void GivenScoreBallFlagWeightSetting(int currentFeverStage, Dictionary<int, int> flagWeightSetting)
+        {
+            gameSetting.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
+        }
+
+        private void GivenScoreBallFlagWeightSettingIsEmpty()
+        {
+            gameSetting.GetScoreBallFlagWeightSetting(Arg.Any<int>()).Returns(new Dictionary<int, int>());
         }
 
         private void CallBeatEventCallback(bool isCountDownBeat = true)
@@ -545,9 +573,90 @@ namespace GameCore.UnitTests
 
         #region 捕獲旗標
 
+        [Test]
         //初始化時, 依據當前Fever階段對應的旗標編號權重設定, 設定當前旗標編號
+        public void init_with_flag_number()
+        {
+            GivenStartCountDownValue(10);
+            GivenCurrentFeverStage(2);
+            GivenScoreBallFlagWeightSetting(2, new Dictionary<int, int>
+            {
+                { 4, 1 }
+            });
+
+            scoreBall.Init();
+
+            CurrentFlagNumberShouldBe(4);
+        }
+
+        [Test]
+        //初始化時, 依據當前Fever階段對應的旗標編號權重設定, 若有多個權重設定則按照權重隨機抽取旗標編號
+        public void init_with_multiple_flag_number()
+        {
+            GivenStartCountDownValue(10);
+            GivenCurrentFeverStage(2);
+            GivenScoreBallFlagWeightSetting(2, new Dictionary<int, int>
+            {
+                { 4, 1 },
+                { 5, 3 },
+                { 6, 6 }
+            });
+
+            Dictionary<int, int> flagNumberCounterDict = new Dictionary<int, int>();
+            for (int i = 0; i < 300; i++)
+            {
+                scoreBall.Init();
+
+                if (flagNumberCounterDict.ContainsKey(scoreBall.CurrentFlagNumber))
+                    flagNumberCounterDict[scoreBall.CurrentFlagNumber]++;
+                else
+                    flagNumberCounterDict[scoreBall.CurrentFlagNumber] = 1;
+            }
+
+            Assert.IsTrue(flagNumberCounterDict[4] > 0);
+            Assert.IsTrue(flagNumberCounterDict[5] > 0);
+            Assert.IsTrue(flagNumberCounterDict[6] > 0);
+            Assert.IsTrue(flagNumberCounterDict[6] > flagNumberCounterDict[5]);
+            Assert.IsTrue(flagNumberCounterDict[5] > flagNumberCounterDict[4]);
+        }
+
+        [Test]
         //初始化時, 若取不到旗標編號權重設定則回應錯誤
+        public void init_with_no_flag_number_setting()
+        {
+            GivenStartCountDownValue(10);
+            GivenScoreBallFlagWeightSettingIsEmpty();
+
+            Assert.Throws<NullReferenceException>(() => scoreBall.Init());
+        }
+
+        [Test]
         //結算或倒數完畢後再度激活, 重新抽取旗標編號
+        public void reactivate_then_reselect_flag_number()
+        {
+            GivenStartCountDownValue(10);
+            GivenCurrentFeverStage(2);
+            GivenScoreBallFlagWeightSetting(2, new Dictionary<int, int>
+            {
+                { 4, 1 },
+            });
+
+            scoreBall.Init();
+
+            CurrentFlagNumberShouldBe(4);
+
+            scoreBall.SuccessSettle();
+
+            GivenCurrentFeverStage(3);
+            GivenScoreBallFlagWeightSetting(3, new Dictionary<int, int>
+            {
+                { 6, 1 },
+            });
+
+            scoreBall.Reactivate();
+
+            CurrentFlagNumberShouldBe(6);
+        }
 
         #endregion
     }

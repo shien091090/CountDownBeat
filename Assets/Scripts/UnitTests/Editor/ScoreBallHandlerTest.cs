@@ -18,6 +18,7 @@ namespace GameCore.UnitTests
         private IGameSetting gameSetting;
         private IViewManager viewManager;
         private IBeaterModel beaterModel;
+        private IFeverEnergyBarModel feverEnergyBayModel;
 
         private Action<BeatEvent> beatEventCallback;
         private Action<ScoreBall> spawnScoreBallEventCallback;
@@ -37,6 +38,7 @@ namespace GameCore.UnitTests
             InitViewManagerMock();
             InitAppProcessorMock();
             InitBeaterModelMock();
+            InitFeverEnergyBarModelMock();
 
             Container.Bind<ScoreBallHandler>().AsSingle();
             scoreBallHandler = Container.Resolve<ScoreBallHandler>();
@@ -142,6 +144,12 @@ namespace GameCore.UnitTests
 
             InFieldScoreBallAmountShouldBe(2);
             SpawnedScoreBallStateShouldBe(ScoreBallState.InCountDown);
+        }
+
+        private void InitFeverEnergyBarModelMock()
+        {
+            feverEnergyBayModel = Substitute.For<IFeverEnergyBarModel>();
+            Container.Bind<IFeverEnergyBarModel>().FromInstance(Substitute.For<IFeverEnergyBarModel>()).AsSingle();
         }
 
         private void InitBeaterModelMock()

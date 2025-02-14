@@ -125,7 +125,7 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //初始化時, Fever階段為第一階
+        //初始化時, Fever階段為第0階
         public void fever_stage_is_zero_when_init()
         {
             CurrentFeverStageShouldBe(0);
