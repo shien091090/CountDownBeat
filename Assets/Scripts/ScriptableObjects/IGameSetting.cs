@@ -7,8 +7,6 @@ namespace GameCore
     {
         int ScoreBallStartCountDownValue { get; }
         int SuccessSettleScore { get; }
-        int SpawnCatchNetFreq { get; }
-        int CatchNetLimit { get; }
         Vector2Int CatchNetNumberRange { get; }
         float HpMax { get; }
         IScoreBallTextColorSetting ScoreBallTextColorSetting { get; }
@@ -16,6 +14,7 @@ namespace GameCore
         int FeverEnergyIncrease { get; }
         int FeverEnergyDecrease { get; }
         int[] FeverEnergyBarSetting { get; }
+        Dictionary<int, int> CatchNetLimitByFeverStageSetting { get; }
         Dictionary<int, int> GetScoreBallFlagWeightSetting(int feverStage);
     }
 }

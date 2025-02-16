@@ -7,23 +7,24 @@ namespace GameCore
     [CreateAssetMenu]
     public class GameSettingScriptableObject : SerializedScriptableObject, IGameSetting
     {
-        [SerializeField] private ScoreBallTextColorSettingScriptableObject scoreBallTextColorSetting;
+        [Header("分數球")] [SerializeField] private ScoreBallTextColorSettingScriptableObject scoreBallTextColorSetting;
         [SerializeField] private int scoreBallStartCountDownValue;
-        [SerializeField] private int successSettleScore;
-        [SerializeField] private int spawnCatchNetFreq;
-        [SerializeField] private int catchNetLimit;
+        [SerializeField] private Dictionary<int, Dictionary<int, int>> scoreBallFlagWeightSettingDict;
+
+        [Header("捕獲網")] [SerializeField] private int successSettleScore;
         [SerializeField] private Vector2Int catchNetNumberRange;
-        [SerializeField] private float hpMax;
-        [SerializeField] private float accuracyPassThreshold;
-        [SerializeField] private int feverEnergyIncrease;
+        [SerializeField] private Dictionary<int, int> catchNetLimitByFeverStageSetting;
+
+        [Header("血條")] [SerializeField] private float hpMax;
+
+        [Header("拍點準度判定")] [SerializeField] private float accuracyPassThreshold;
+
+        [Header("Fever能量條")] [SerializeField] private int feverEnergyIncrease;
         [SerializeField] private int feverEnergyDecrease;
         [SerializeField] private int[] feverEnergyBarSetting;
-        [SerializeField] private Dictionary<int, Dictionary<int, int>> scoreBallFlagWeightSettingDict;
 
         public int ScoreBallStartCountDownValue => scoreBallStartCountDownValue;
         public int SuccessSettleScore => successSettleScore;
-        public int SpawnCatchNetFreq => spawnCatchNetFreq;
-        public int CatchNetLimit => catchNetLimit;
         public Vector2Int CatchNetNumberRange => catchNetNumberRange;
         public float HpMax => hpMax;
         public IScoreBallTextColorSetting ScoreBallTextColorSetting => scoreBallTextColorSetting;
@@ -31,12 +32,16 @@ namespace GameCore
         public int FeverEnergyIncrease => feverEnergyIncrease;
         public int FeverEnergyDecrease => feverEnergyDecrease;
         public int[] FeverEnergyBarSetting => feverEnergyBarSetting;
+        public Dictionary<int, int> CatchNetLimitByFeverStageSetting => catchNetLimitByFeverStageSetting;
 
         public Dictionary<int, int> GetScoreBallFlagWeightSetting(int feverStage)
         {
-            return scoreBallFlagWeightSettingDict.TryGetValue(feverStage, out Dictionary<int, int> result) ?
-                result :
-                new Dictionary<int, int>();
+            if (scoreBallFlagWeightSettingDict.TryGetValue(feverStage, out Dictionary<int, int> result))
+            {
+                return result ?? new Dictionary<int, int>();
+            }
+            else
+                return new Dictionary<int, int>();
         }
     }
 }

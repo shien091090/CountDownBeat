@@ -7,5 +7,7 @@ namespace GameCore
     {
         event Action OnRelease;
         event Action OnInit;
+        int CurrentInFieldScoreBallAmount { get; }
+        bool IsInFieldScoreBallContainsFlagNumber(int flagNumber);
     }
 }

@@ -34,8 +34,8 @@ namespace GameCore
             if (flagNumber != TargetFlagNumber)
                 return false;
 
-            catchNetHandler.SettleCatchNet(this);
             UpdateState(CatchNetState.SuccessSettle);
+            catchNetHandler.SettleCatchNet(this);
             return true;
         }
 

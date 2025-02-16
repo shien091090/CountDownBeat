@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SNShien.Common.MathTools;
 using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
 using Zenject;
@@ -14,15 +15,15 @@ namespace GameCore
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IGameSetting gameSetting;
         [Inject] private ICatchNetHandlerPresenter presenter;
+        [Inject] private IFeverEnergyBarModel feverEnergyBarModel;
 
-        private int beatCounter;
+        public int CurrentCatchNetLimit { get; private set; }
+
         private readonly List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
         private readonly DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
         private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_CATCH_NET_HANDLER);
         public event Action<ICatchNet> OnSpawnCatchNet;
-
         public int CurrentInFieldCatchNetAmount => inFieldCatchNetList.Count(x => x.CurrentState == CatchNetState.Working);
-
         public event Action OnInit;
         public event Action OnRelease;
         public event Action<ICatchNetPresenter> OnSettleCatchNet;
@@ -34,7 +35,7 @@ namespace GameCore
 
         public void Release()
         {
-            OnSpawnCatchNet = null;
+            ClearData();
             SetEventRegister(false);
 
             OnRelease?.Invoke();
@@ -42,6 +43,11 @@ namespace GameCore
 
         public void SettleCatchNet(ICatchNet catchNet)
         {
+            UpdateCurrentCatchNetLimit();
+
+            if (CurrentInFieldCatchNetAmount < CurrentCatchNetLimit)
+                SpawnCatchNet();
+
             ICatchNetPresenter catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
             OnSettleCatchNet?.Invoke(catchNetPresenter);
 
@@ -50,8 +56,8 @@ namespace GameCore
 
         private void Init()
         {
-            beatCounter = 0;
             SetEventRegister(true);
+            UpdateCurrentCatchNetLimit();
 
             presenter.BindModel(this);
 
@@ -72,6 +78,17 @@ namespace GameCore
             {
                 eventRegister.Register<BeatEvent>(OnBeatEvent);
             }
+        }
+
+        private void ClearData()
+        {
+            OnSpawnCatchNet = null;
+            inFieldCatchNetList.Clear();
+        }
+
+        private void UpdateCurrentCatchNetLimit()
+        {
+            CurrentCatchNetLimit = gameSetting.CatchNetLimitByFeverStageSetting?.GetValueOrDefault(feverEnergyBarModel.CurrentFeverStage, 0) ?? 0;
         }
 
         private void SpawnCatchNet()
@@ -97,30 +114,46 @@ namespace GameCore
             }
 
             catchNetPresenter.Init(spawnIndex, fadeInMode);
-            catchNet.Init(Random.Range(gameSetting.CatchNetNumberRange.x, gameSetting.CatchNetNumberRange.y + 1));
+            catchNet.Init(CreateTargetFlagNumber());
 
             OnSpawnCatchNet?.Invoke(catchNet);
         }
 
+        private int CreateTargetFlagNumber()
+        {
+            Dictionary<int, int> flagWeightSetting = gameSetting.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
+
+            if (flagWeightSetting.Count == 0)
+                throw new NullReferenceException("CatchNetFlagWeightSetting is empty");
+
+            return RandomAlgorithm.GetRandomNumberByWeight(flagWeightSetting);
+        }
+
         private void OnBeatEvent(BeatEvent eventInfo)
         {
-            if (gameSetting.SpawnCatchNetFreq == 0)
+            UpdateCurrentCatchNetLimit();
+
+            if (CurrentInFieldCatchNetAmount >= CurrentCatchNetLimit)
                 return;
 
-            if (CurrentInFieldCatchNetAmount >= gameSetting.CatchNetLimit)
-            {
-                beatCounter = 0;
-                return;
-            }
-
-            beatCounter++;
-
-            if (beatCounter >= gameSetting.SpawnCatchNetFreq)
-            {
-                beatCounter = 0;
-
-                SpawnCatchNet();
-            }
+            SpawnCatchNet();
+            // if (gameSetting.SpawnCatchNetFreq == 0)
+            //     return;
+            //
+            // if (CurrentInFieldCatchNetAmount >= gameSetting.CatchNetLimit)
+            // {
+            //     beatCounter = 0;
+            //     return;
+            // }
+            //
+            // beatCounter++;
+            //
+            // if (beatCounter >= gameSetting.SpawnCatchNetFreq)
+            // {
+            //     beatCounter = 0;
+            //
+            //     SpawnCatchNet();
+            // }
         }
     }
 }
