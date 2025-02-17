@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
+using NSubstitute.Core;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
 using UnityEngine;
@@ -57,6 +58,8 @@ namespace GameCore.UnitTests
         private void InitScoreBallHandlerMock()
         {
             scoreBallHandler = Substitute.For<IScoreBallHandler>();
+
+            GivenInFieldScoreBallFlagNumberListIsEmpty();
 
             Container.Bind<IScoreBallHandler>().FromInstance(scoreBallHandler).AsSingle();
         }
@@ -160,14 +163,14 @@ namespace GameCore.UnitTests
             feverEnergyBarModel.CurrentFeverStage.Returns(feverStage);
         }
 
-        private void GivenCurrentInFieldScoreBallAmount(int amount)
+        private void GivenInFieldScoreBallFlagNumberList(params int[] flagNums)
         {
-            scoreBallHandler.CurrentInFieldScoreBallAmount.Returns(amount);
+            scoreBallHandler.CurrentInFieldScoreBallFlagNumberList.Returns(flagNums.ToList());
         }
 
-        private void GivenInFieldScoreBallContainsFlagNumber(int flagNumber, bool isContains)
+        private void GivenInFieldScoreBallFlagNumberListIsEmpty()
         {
-            scoreBallHandler.IsInFieldScoreBallContainsFlagNumber(flagNumber).Returns(isContains);
+            scoreBallHandler.CurrentInFieldScoreBallFlagNumberList.Returns(new List<int>());
         }
 
         private void CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet)
@@ -247,13 +250,32 @@ namespace GameCore.UnitTests
             Assert.AreEqual(expectedLimit, catchNetHandler.CurrentCatchNetLimit);
         }
 
+        private void CreateALotCatchNetAndVerifyTargetFlagNumber(params int[] expectedFlagNums)
+        {
+            Dictionary<int, int> tempTargetFlagDict = new Dictionary<int, int>();
+            for (int i = 0; i < 100; i++)
+            {
+                CallBeatEventCallback();
+
+                CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
+                if (tempTargetFlagDict.ContainsKey(arg.TargetFlagNumber))
+                    tempTargetFlagDict[arg.TargetFlagNumber]++;
+                else
+                    tempTargetFlagDict[arg.TargetFlagNumber] = 1;
+            }
+
+            foreach (int expectedFlagNum in expectedFlagNums)
+            {
+                Assert.IsTrue(tempTargetFlagDict[expectedFlagNum] > 0);
+            }
+        }
+
         #region 發送事件
 
         [Test]
         //初始化時, 發送初始化事件
         public void send_init_event_when_init()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 }
@@ -277,7 +299,6 @@ namespace GameCore.UnitTests
         //成功捕獲時, 發送成功結算事件
         public void send_settle_catch_net_event_when_success_settle()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 }
@@ -300,7 +321,6 @@ namespace GameCore.UnitTests
         //收Beat事件生成捕獲網時, 發送生成捕獲網事件
         public void send_spawn_catch_net_event_when_beat_and_spawn()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 }
@@ -319,7 +339,6 @@ namespace GameCore.UnitTests
         //成功結算時立即生成下一個捕獲網時, 發送生成捕獲網事件
         public void send_spawn_catch_net_event_when_success_settle_and_spawn_next()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 }
@@ -344,7 +363,6 @@ namespace GameCore.UnitTests
         //捕獲網上限為1以上且場上捕獲網數量未達上限時, 下次Beat事件會生成捕獲網
         public void spawn_catch_net_when_current_amount_not_reach_limit_and_limit_is_one()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 },
@@ -392,7 +410,6 @@ namespace GameCore.UnitTests
         //捕獲網達上限數量時, 收到Beat事件也不會生成捕獲網
         public void not_spawn_catch_net_when_reach_limit()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 },
@@ -478,7 +495,6 @@ namespace GameCore.UnitTests
         //捕獲網原本已超出上限, 但下次Beat事件時會更新上限, 更新後若未達上限則會生成捕獲網
         public void spawn_catch_net_when_beat_and_current_amount_not_reach_limit_after_update_limit()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 },
@@ -504,7 +520,6 @@ namespace GameCore.UnitTests
         //捕獲網原本已超出上限, 但下次成功結算會更新上限, 更新後若未達上限則會生成捕獲網
         public void spawn_catch_net_when_success_settle_and_current_amount_not_reach_limit_after_update_limit()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 },
@@ -530,7 +545,6 @@ namespace GameCore.UnitTests
         //釋放之後, 收到Beat事件, 不會生成捕獲網
         public void do_not_spawn_catch_when_beat_after_release()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 2 }
@@ -551,7 +565,6 @@ namespace GameCore.UnitTests
         //釋放之後, 清除場上捕獲網
         public void clear_in_field_catch_net_when_release()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 2 }
@@ -572,7 +585,6 @@ namespace GameCore.UnitTests
         //生成捕獲網時若沒有隱藏中的捕獲網, 會產出新的捕獲網
         public void spawn_new_catch_net_when_no_hidden_catch_net()
         {
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 2 }
@@ -629,11 +641,9 @@ namespace GameCore.UnitTests
         #region 捕獲旗標&結算
 
         [Test]
-        //生成捕獲網時, 若場上沒有分數球, 則從當前Fever階段的旗標權重設定中隨機生成
+        //生成捕獲網, 場上沒有分數球, 則從當前Fever階段的旗標權重設定中隨機生成
         public void spawn_catch_net_and_set_random_flag_num_when_no_score_ball()
         {
-            GivenCurrentInFieldScoreBallAmount(0);
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 100 }
@@ -648,29 +658,112 @@ namespace GameCore.UnitTests
 
             catchNetHandler.ExecuteModelInit();
 
-            Dictionary<int, int> tempTargetFlagDict = new Dictionary<int, int>();
-            for (int i = 0; i < 100; i++)
-            {
-                CallBeatEventCallback();
-
-                CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-                if (tempTargetFlagDict.ContainsKey(arg.TargetFlagNumber))
-                    tempTargetFlagDict[arg.TargetFlagNumber]++;
-                else
-                    tempTargetFlagDict[arg.TargetFlagNumber] = 1;
-            }
-
-            Assert.IsTrue(tempTargetFlagDict[1] > 0);
-            Assert.IsTrue(tempTargetFlagDict[2] > 0);
-            Assert.IsTrue(tempTargetFlagDict[3] > 0);
+            CreateALotCatchNetAndVerifyTargetFlagNumber(1, 2, 3);
         }
 
         [Test]
-        //生成捕獲網時, 若場上有分數球, 且場上捕獲網也有包含所有分數球的旗標, 則從當前Fever階段的旗標權重設定中隨機生成
-        public void spawn_catch_net_and_set_random_flag_num_when_and_all_score_ball_flag_in_catch_net()
+        //生成捕獲網, 場上有一個分數球但沒有捕獲網, 則生成該分數球的旗標
+        public void spawn_catch_net_and_set_score_ball_flag_num_when_only_one_score_ball_in_field_and_no_catch_net()
         {
-            GivenCurrentInFieldScoreBallAmount(0);
-            GivenCurrentFeverStage(0);
+            GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
+            {
+                { 0, 2 }
+            });
+
+            catchNetHandler.ExecuteModelInit();
+
+            GivenInFieldScoreBallFlagNumberList(20);
+            CurrentInFieldCatchNetAmountShouldBe(0);
+
+            CallBeatEventCallback();
+
+            LastSpawnCatchNetTargetFlagShouldBe(20);
+            CurrentInFieldCatchNetAmountShouldBe(1);
+        }
+
+        [Test]
+        //生成捕獲網, 場上有多個分數球但沒有捕獲網, 則從所有分數球的旗標中隨機生成
+        public void spawn_catch_net_and_set_random_flag_num_from_in_field_score_ball_when_multiple_score_ball_in_field_and_no_catch_net()
+        {
+            GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
+            {
+                { 0, 100 }
+            });
+
+            GivenScoreBallFlagWeightSetting(0, new Dictionary<int, int>
+            {
+                { 1, 1 },
+                { 2, 1 },
+                { 3, 1 },
+            });
+
+            catchNetHandler.ExecuteModelInit();
+
+            CurrentInFieldCatchNetAmountShouldBe(0);
+
+            GivenInFieldScoreBallFlagNumberList(10, 11, 12, 13);
+            CreateALotCatchNetAndVerifyTargetFlagNumber(10, 11, 12, 13);
+        }
+
+        [Test]
+        //生成捕獲網, 場上有多個分數球和多個捕獲網, 且有捕獲網不包含其中有一個分數球的旗標, 則生成該遺漏的旗標
+        public void spawn_catch_net_and_set_missed_score_ball_flag_num_when_multiple_score_ball_and_catch_net_in_field()
+        {
+            GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
+            {
+                { 0, 101 }
+            });
+
+            catchNetHandler.ExecuteModelInit();
+
+            GivenScoreBallFlagWeightSetting(0, new Dictionary<int, int>
+            {
+                { 10, 1 },
+                { 11, 1 },
+                { 12, 1 },
+            });
+
+            CreateALotCatchNetAndVerifyTargetFlagNumber(10, 11, 12);
+            CurrentInFieldCatchNetAmountShouldBe(100);
+
+            GivenInFieldScoreBallFlagNumberList(13);
+            CallBeatEventCallback();
+
+            LastSpawnCatchNetTargetFlagShouldBe(13);
+            CurrentInFieldCatchNetAmountShouldBe(101);
+        }
+
+        [Test]
+        //生成捕獲網, 場上有多個分數球和多個捕獲網, 且有捕獲網不包含其中多個分數球的旗標, 則從遺漏的旗標中隨機生成
+        public void spawn_catch_net_and_set_random_missed_score_ball_flag_num_when_multiple_score_ball_and_catch_net_in_field()
+        {
+            GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
+            {
+                { 0, 200 }
+            });
+
+            catchNetHandler.ExecuteModelInit();
+
+            GivenScoreBallFlagWeightSetting(0, new Dictionary<int, int>
+            {
+                { 10, 1 },
+                { 11, 1 },
+                { 12, 1 },
+            });
+
+            CreateALotCatchNetAndVerifyTargetFlagNumber(10, 11, 12);
+            CurrentInFieldCatchNetAmountShouldBe(100);
+
+            GivenInFieldScoreBallFlagNumberList(10, 11, 12, 13, 14, 15);
+
+            CreateALotCatchNetAndVerifyTargetFlagNumber(13, 14, 15);
+            CurrentInFieldCatchNetAmountShouldBe(200);
+        }
+
+        [Test]
+        //生成捕獲網, 場上有多個分數球和多個捕獲網, 且場上捕獲網也有包含所有分數球的旗標, 則從當前Fever階段的旗標權重設定中隨機生成
+        public void spawn_catch_net_and_set_random_flag_num_when_all_score_ball_flag_in_catch_net()
+        {
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 100 }
@@ -699,10 +792,9 @@ namespace GameCore.UnitTests
             CallBeatEventCallback();
             LastSpawnCatchNetTargetFlagShouldBe(7);
 
-            GivenCurrentInFieldScoreBallAmount(3);
-            GivenInFieldScoreBallContainsFlagNumber(1, true);
-            GivenInFieldScoreBallContainsFlagNumber(3, true);
-            GivenInFieldScoreBallContainsFlagNumber(7, true);
+            GivenInFieldScoreBallFlagNumberList(1, 3, 7);
+
+            //目前場上有3個捕獲網和3個分數球, 並包含3種不同的Flag(1、3、7)
 
             GivenScoreBallFlagWeightSetting(0, new Dictionary<int, int>
             {
@@ -710,26 +802,9 @@ namespace GameCore.UnitTests
                 { 11, 1 },
                 { 12, 1 }
             });
-            Dictionary<int, int> tempTargetFlagDict = new Dictionary<int, int>();
-            for (int i = 0; i < 100; i++)
-            {
-                CallBeatEventCallback();
 
-                CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-                if (tempTargetFlagDict.ContainsKey(arg.TargetFlagNumber))
-                    tempTargetFlagDict[arg.TargetFlagNumber]++;
-                else
-                    tempTargetFlagDict[arg.TargetFlagNumber] = 1;
-            }
-
-            Assert.IsTrue(tempTargetFlagDict[10] > 0);
-            Assert.IsTrue(tempTargetFlagDict[11] > 0);
-            Assert.IsTrue(tempTargetFlagDict[12] > 0);
+            CreateALotCatchNetAndVerifyTargetFlagNumber(10, 11, 12);
         }
-
-        //生成捕獲網時, 若場上有分數球, 且場上捕獲網中不包含其中一個分數球的旗標, 則生成該遺漏的旗標
-        //生成捕獲網時, 若場上有分數球, 且場上捕獲網中不包含其中多個分數球的旗標, 則從遺漏的旗標中隨機生成
-        //生成捕獲網時, 若場上有分數球, 且場上沒有捕獲網, 則從所有分數球的旗標中隨機生成
 
         [Test]
         [TestCase(1)]
@@ -739,7 +814,6 @@ namespace GameCore.UnitTests
         public void verify_get_score_event_when_success_settle(int score)
         {
             GivenScoreWhenSuccessSettle(score);
-            GivenCurrentFeverStage(0);
             GivenCatchNetLimitByFeverStageSetting(new Dictionary<int, int>
             {
                 { 0, 1 }

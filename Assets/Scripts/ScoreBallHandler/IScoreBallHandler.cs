@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SNShien.Common.ProcessTools;
 
 namespace GameCore
@@ -8,6 +9,6 @@ namespace GameCore
         event Action OnRelease;
         event Action OnInit;
         int CurrentInFieldScoreBallAmount { get; }
-        bool IsInFieldScoreBallContainsFlagNumber(int flagNumber);
+        List<int> CurrentInFieldScoreBallFlagNumberList { get; }
     }
 }

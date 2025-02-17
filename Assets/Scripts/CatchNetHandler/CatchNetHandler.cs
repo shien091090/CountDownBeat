@@ -5,7 +5,6 @@ using SNShien.Common.MathTools;
 using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
 using Zenject;
-using Random = UnityEngine.Random;
 
 namespace GameCore
 {
@@ -16,14 +15,21 @@ namespace GameCore
         [Inject] private IGameSetting gameSetting;
         [Inject] private ICatchNetHandlerPresenter presenter;
         [Inject] private IFeverEnergyBarModel feverEnergyBarModel;
+        [Inject] private IScoreBallHandler scoreBallHandler;
 
         public int CurrentCatchNetLimit { get; private set; }
 
         private readonly List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
         private readonly DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
+        
         private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_CATCH_NET_HANDLER);
+        
         public event Action<ICatchNet> OnSpawnCatchNet;
         public int CurrentInFieldCatchNetAmount => inFieldCatchNetList.Count(x => x.CurrentState == CatchNetState.Working);
+
+        private List<int> CurrentInFieldCatchNetCatchFlagNumberList =>
+            inFieldCatchNetList.Where(x => x.CurrentState == CatchNetState.Working).Select(x => x.TargetFlagNumber).ToList();
+
         public event Action OnInit;
         public event Action OnRelease;
         public event Action<ICatchNetPresenter> OnSettleCatchNet;
@@ -121,6 +127,13 @@ namespace GameCore
 
         private int CreateTargetFlagNumber()
         {
+            List<int> currentFlagNumList = scoreBallHandler.CurrentInFieldScoreBallFlagNumberList;
+            foreach (int flagNum in currentFlagNumList)
+            {
+                if (CurrentInFieldCatchNetCatchFlagNumberList.Contains(flagNum) == false)
+                    return flagNum;
+            }
+
             Dictionary<int, int> flagWeightSetting = gameSetting.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
 
             if (flagWeightSetting.Count == 0)
@@ -137,23 +150,6 @@ namespace GameCore
                 return;
 
             SpawnCatchNet();
-            // if (gameSetting.SpawnCatchNetFreq == 0)
-            //     return;
-            //
-            // if (CurrentInFieldCatchNetAmount >= gameSetting.CatchNetLimit)
-            // {
-            //     beatCounter = 0;
-            //     return;
-            // }
-            //
-            // beatCounter++;
-            //
-            // if (beatCounter >= gameSetting.SpawnCatchNetFreq)
-            // {
-            //     beatCounter = 0;
-            //
-            //     SpawnCatchNet();
-            // }
         }
     }
 }

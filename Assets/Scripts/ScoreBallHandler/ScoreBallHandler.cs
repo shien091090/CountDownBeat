@@ -17,6 +17,7 @@ namespace GameCore
         [Inject] private IFeverEnergyBarModel feverEnergyBarModel;
 
         public int CurrentInFieldScoreBallAmount => inFieldScoreBallList?.Count(x => x.CurrentState != ScoreBallState.Hide && x.CurrentState != ScoreBallState.None) ?? 0;
+        public List<int> CurrentInFieldScoreBallFlagNumberList => inFieldScoreBallList?.Select(x => x.CurrentFlagNumber).ToList() ?? new List<int>();
 
         private DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
         private List<int> tempSpawnBeatIndexList;
@@ -24,11 +25,6 @@ namespace GameCore
         private int currentBeatIndex;
 
         public event Action<ScoreBall> OnSpawnScoreBall;
-
-        public bool IsInFieldScoreBallContainsFlagNumber(int flagNumber)
-        {
-            return inFieldScoreBallList.Exists(x => x.CurrentFlagNumber == flagNumber);
-        }
 
         public event Action OnRelease;
         public event Action OnInit;
