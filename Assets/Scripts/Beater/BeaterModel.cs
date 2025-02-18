@@ -1,9 +1,14 @@
+using System;
 using FMOD.Studio;
 using SNShien.Common.AudioTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
 using UnityEngine;
 using Zenject;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace GameCore
 {
@@ -63,15 +68,15 @@ namespace GameCore
             return new BeatAccuracyResult(accuracy, direction);
         }
 
+        public float GetNextBeatTiming()
+        {
+            return (totalBeatCounter + 1) * avgBeatInterval;
+        }
+
         private void InitPresenter()
         {
             presenter.BindModel(this);
             presenter.OpenView();
-        }
-
-        public float GetNextBeatTiming()
-        {
-            return (totalBeatCounter + 1) * avgBeatInterval;
         }
 
         private void ClearData()
@@ -120,7 +125,19 @@ namespace GameCore
         {
             totalBeatCounter++;
 
-            SendBeatEvent();
+#if UNITY_EDITOR
+            try
+            {
+                SendBeatEvent();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                EditorApplication.isPlaying = false;
+            }
+#else
+                SendBeatEvent();
+#endif
             UpdateBeatTimeInfo();
             presenter.SetHalfBeatTimeOffset(halfBeatTimeOffset);
             presenter.PlayBeatAnimation();
