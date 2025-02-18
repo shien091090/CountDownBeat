@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SNShien.Common.DataTools;
+using SNShien.Common.MathTools;
 using SNShien.Common.ProcessTools;
+using SNShien.Common.TesterTools;
 using Zenject;
 
 namespace GameCore
@@ -23,6 +26,8 @@ namespace GameCore
         private List<int> tempSpawnBeatIndexList;
         private List<ScoreBall> inFieldScoreBallList;
         private int currentBeatIndex;
+
+        private readonly Debugger debugger = new Debugger("ScoreBallHandler");
 
         public event Action<ScoreBall> OnSpawnScoreBall;
 
@@ -58,8 +63,12 @@ namespace GameCore
 
             inFieldScoreBallList = new List<ScoreBall>();
 
+            List<int> spawnBeatIndexList = appProcessor.CurrentStageSettingContent.SpawnBeatIndexList;
+            if (spawnBeatIndexList == null || spawnBeatIndexList.Count == 0)
+                throw new NullReferenceException("SpawnBeatIndexList is empty");
+
             tempSpawnBeatIndexList = new List<int>();
-            tempSpawnBeatIndexList.AddRange(appProcessor.CurrentStageSettingContent.SpawnBeatIndexList);
+            tempSpawnBeatIndexList.AddRange(spawnBeatIndexList);
         }
 
         private bool TryGetHiddenScoreBall(out ScoreBall hiddenScoreBall)
@@ -95,23 +104,33 @@ namespace GameCore
             {
                 dynamicMVPBinder.RebindView(hiddenScoreBall, scoreBallView);
 
-                hiddenScoreBall.Reactivate();
+                hiddenScoreBall.Reactivate(CreateFlagNumber());
                 OnSpawnScoreBall?.Invoke(hiddenScoreBall);
             }
             else
             {
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
-                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, gameSetting, feverEnergyBarModel);
+                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker);
 
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 
                 scoreBallView.Init();
                 scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting);
-                scoreBall.Init();
+                scoreBall.Init(gameSetting.ScoreBallStartCountDownValue, CreateFlagNumber());
 
                 inFieldScoreBallList.Add(scoreBall);
                 OnSpawnScoreBall?.Invoke(scoreBall);
             }
+        }
+
+        private int CreateFlagNumber()
+        {
+            Dictionary<int, int> weightSetting = gameSetting.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
+
+            if (weightSetting.Count == 0)
+                throw new NullReferenceException("ScoreBallFlagWeightSetting is empty");
+
+            return RandomAlgorithm.GetRandomNumberByWeight(weightSetting);
         }
 
         private void OnBeatEvent(BeatEvent eventInfo)

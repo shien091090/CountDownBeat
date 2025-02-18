@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using SNShien.Common.MathTools;
 using SNShien.Common.ProcessTools;
 
 namespace GameCore
@@ -11,22 +9,17 @@ namespace GameCore
 
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
-        private readonly IGameSetting gameSetting;
-        private readonly IFeverEnergyBarModel feverEnergyBarModel;
 
         private IScoreBallPresenter presenter;
         public int CurrentCountDownValue { get; private set; }
         public int StartCountDownValue { get; private set; }
         public ScoreBallState CurrentState { get; private set; }
-
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker, IGameSetting gameSetting, IFeverEnergyBarModel feverEnergyBarModel)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
         {
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
-            this.gameSetting = gameSetting;
-            this.feverEnergyBarModel = feverEnergyBarModel;
         }
 
         public event Action OnInit;
@@ -60,41 +53,29 @@ namespace GameCore
             presenter = (IScoreBallPresenter)mvpPresenter;
         }
 
-        public void Init()
+        public void Init(int startCountDownValue, int catchFlagNumber)
         {
-            if (gameSetting.ScoreBallStartCountDownValue <= 0)
+            if (startCountDownValue <= 0)
             {
                 StartCountDownValue = 0;
                 return;
             }
-            else
-                StartCountDownValue = gameSetting.ScoreBallStartCountDownValue;
 
-            InitData();
+            StartCountDownValue = startCountDownValue;
+            CurrentFlagNumber = catchFlagNumber;
+
+            UpdateCurrentCountDownValue(StartCountDownValue);
+            UpdateCurrentState(ScoreBallState.InCountDown);
 
             OnInit?.Invoke();
         }
 
-        private void InitData()
+        public void Reactivate(int newCatchFlagNumber)
         {
-            InitFlagNumber();
+            CurrentFlagNumber = newCatchFlagNumber;
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
-        }
-
-        private void InitFlagNumber()
-        {
-            Dictionary<int, int> weightSetting = gameSetting.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
-
-            if (weightSetting.Count == 0)
-                throw new NullReferenceException("ScoreBallFlagWeightSetting is empty");
-
-            CurrentFlagNumber = RandomAlgorithm.GetRandomNumberByWeight(weightSetting);
-        }
-
-        public void Reactivate()
-        {
-            InitData();
+            
             OnInit?.Invoke();
         }
 

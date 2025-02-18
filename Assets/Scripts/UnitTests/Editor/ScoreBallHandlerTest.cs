@@ -18,7 +18,7 @@ namespace GameCore.UnitTests
         private IGameSetting gameSetting;
         private IViewManager viewManager;
         private IBeaterModel beaterModel;
-        private IFeverEnergyBarModel feverEnergyBayModel;
+        private IFeverEnergyBarModel feverEnergyBarModel;
 
         private Action<BeatEvent> beatEventCallback;
         private Action<ScoreBall> spawnScoreBallEventCallback;
@@ -53,23 +53,179 @@ namespace GameCore.UnitTests
             scoreBallHandler.OnRelease += releaseEventCallback;
         }
 
-        [Test]
-        //初始化時, 發送初始化事件
-        public void send_init_event_when_execute_model_init()
+        private void InitFeverEnergyBarModelMock()
         {
-            scoreBallHandler.ExecuteModelInit();
+            feverEnergyBarModel = Substitute.For<IFeverEnergyBarModel>();
 
-            ShouldSendInitEvent(1);
+            GivenCurrentFeverStage(0);
+
+            Container.Bind<IFeverEnergyBarModel>().FromInstance(feverEnergyBarModel).AsSingle();
         }
 
-        [Test]
-        //釋放時, 發送釋放事件
-        public void send_release_event_when_execute_model_release()
+        private void InitBeaterModelMock()
         {
-            scoreBallHandler.ExecuteModelInit();
-            scoreBallHandler.Release();
+            beaterModel = Substitute.For<IBeaterModel>();
+            Container.Bind<IBeaterModel>().FromInstance(beaterModel).AsSingle();
+        }
 
-            ShouldSendReleaseEvent(1);
+        private void InitViewManagerMock()
+        {
+            viewManager = Substitute.For<IViewManager>();
+            Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
+        }
+
+        private void InitEventInvokerMock()
+        {
+            eventInvoker = Substitute.For<IEventInvoker>();
+            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
+        }
+
+        private void InitScoreBallHandlerPresenterMock()
+        {
+            scoreBallHandlerPresenter = Substitute.For<IScoreBallHandlerPresenter>();
+            Container.Bind<IScoreBallHandlerPresenter>().FromInstance(scoreBallHandlerPresenter).AsSingle();
+        }
+
+        private void InitAppProcessorMock()
+        {
+            appProcessor = Substitute.For<IAppProcessor>();
+
+            GivenSpawnScoreBallBeatSetting(new List<int> { 0 });
+
+            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
+        }
+
+        private void InitGameSettingMock()
+        {
+            gameSetting = Substitute.For<IGameSetting>();
+
+            GivenStartCountDownValueSetting(20);
+            GivenScoreBallFlagWeightSetting(0, new Dictionary<int, int>
+            {
+                { 1, 1 }
+            });
+
+            Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
+        }
+
+        private void InitSpawnScoreBallEventMock()
+        {
+            spawnScoreBallEventCallback = Substitute.For<Action<ScoreBall>>();
+            tempScoreBall = null;
+
+            spawnScoreBallEventCallback.When(x => x.Invoke(Arg.Any<ScoreBall>())).Do(callInfo =>
+            {
+                tempScoreBall = (ScoreBall)callInfo.Args()[0];
+            });
+        }
+
+        private void InitEventRegisterMock()
+        {
+            beatEventCallback = null;
+
+            eventRegister = Substitute.For<IEventRegister>();
+
+            eventRegister.When(x => x.Register(Arg.Any<Action<BeatEvent>>())).Do(x =>
+            {
+                Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
+                beatEventCallback += callback;
+            });
+
+            Container.Bind<IEventRegister>().FromInstance(eventRegister).AsSingle();
+        }
+
+        private void GivenCurrentFeverStage(int feverStage)
+        {
+            feverEnergyBarModel.CurrentFeverStage.Returns(feverStage);
+        }
+
+        private void GivenStartCountDownValueSetting(int startCountDownValue)
+        {
+            gameSetting.ScoreBallStartCountDownValue.Returns(startCountDownValue);
+        }
+
+        private void GivenSpawnScoreBallBeatSetting(List<int> spawnBeatIndexList)
+        {
+            StageSettingContent settingContent = new StageSettingContent();
+            settingContent.SetSpawnBeatIndexList(spawnBeatIndexList);
+
+            appProcessor.CurrentStageSettingContent.Returns(settingContent);
+        }
+
+        private void GivenScoreBallFlagWeightSettingIsEmpty()
+        {
+            gameSetting.GetScoreBallFlagWeightSetting(Arg.Any<int>()).Returns(new Dictionary<int, int>());
+        }
+
+        private void GivenScoreBallFlagWeightSetting(int currentFeverStage, Dictionary<int, int> flagWeightSetting)
+        {
+            gameSetting.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
+        }
+
+        private void CallBeatEventCallback()
+        {
+            beatEventCallback.Invoke(new BeatEvent(false));
+        }
+
+        private void ShouldSendInitEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                initEventCallback.DidNotReceive().Invoke();
+            else
+                initEventCallback.Received(expectedCallTimes).Invoke();
+        }
+
+        private void ShouldSendReleaseEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                releaseEventCallback.DidNotReceive().Invoke();
+            else
+                releaseEventCallback.Received(expectedCallTimes).Invoke();
+        }
+
+        private void SpawnedScoreBallStateShouldBe(ScoreBallState expectedState)
+        {
+            Assert.AreEqual(expectedState, tempScoreBall.CurrentState);
+        }
+
+        private void InFieldScoreBallAmountShouldBe(int expectedAmount)
+        {
+            Assert.AreEqual(expectedAmount, scoreBallHandler.CurrentInFieldScoreBallAmount);
+        }
+
+        private void ShouldSpawnScoreBall(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                spawnScoreBallEventCallback.DidNotReceive().Invoke(Arg.Any<ScoreBall>());
+            else
+                spawnScoreBallEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<ScoreBall>());
+        }
+
+        private void SpawnedScoreBallFlagNumberShouldBe(int expectedFlagNumber)
+        {
+            Assert.AreEqual(expectedFlagNumber, tempScoreBall.CurrentFlagNumber);
+        }
+
+        private List<int> CreateList(int length)
+        {
+            List<int> list = new List<int>();
+            for (int i = 0; i < length; i++)
+            {
+                list.Add(i);
+            }
+
+            return list;
+        }
+
+        #region 生成分數球
+
+        [Test]
+        //若生成分數球節拍設定為空, 則報錯
+        public void throw_exception_when_spawn_beat_setting_is_empty()
+        {
+            GivenSpawnScoreBallBeatSetting(new List<int>());
+
+            Assert.Throws<NullReferenceException>(scoreBallHandler.ExecuteModelInit);
         }
 
         [Test]
@@ -104,6 +260,21 @@ namespace GameCore.UnitTests
             CallBeatEventCallback(); //7*
 
             ShouldSpawnScoreBall(3);
+        }
+
+        [Test]
+        //Beat時, 若沒有進行到需要生成分數球的節拍, 則不做事
+        public void do_nothing_when_beat_and_not_reach_freq()
+        {
+            GivenSpawnScoreBallBeatSetting(new List<int> { 3 });
+
+            scoreBallHandler.ExecuteModelInit();
+
+            CallBeatEventCallback(); //0
+            CallBeatEventCallback(); //1
+            CallBeatEventCallback(); //2
+
+            ShouldSpawnScoreBall(0);
         }
 
         [Test]
@@ -146,133 +317,138 @@ namespace GameCore.UnitTests
             SpawnedScoreBallStateShouldBe(ScoreBallState.InCountDown);
         }
 
-        private void InitFeverEnergyBarModelMock()
+        #endregion
+
+        #region 發送事件
+
+        [Test]
+        //初始化時, 發送初始化事件
+        public void send_init_event_when_execute_model_init()
         {
-            feverEnergyBayModel = Substitute.For<IFeverEnergyBarModel>();
-            Container.Bind<IFeverEnergyBarModel>().FromInstance(Substitute.For<IFeverEnergyBarModel>()).AsSingle();
+            scoreBallHandler.ExecuteModelInit();
+
+            ShouldSendInitEvent(1);
         }
 
-        private void InitBeaterModelMock()
+        [Test]
+        //釋放時, 發送釋放事件
+        public void send_release_event_when_execute_model_release()
         {
-            beaterModel = Substitute.For<IBeaterModel>();
-            Container.Bind<IBeaterModel>().FromInstance(beaterModel).AsSingle();
+            scoreBallHandler.ExecuteModelInit();
+            scoreBallHandler.Release();
+
+            ShouldSendReleaseEvent(1);
         }
 
-        private void InitViewManagerMock()
+        [Test]
+        //生成分數球時, 發送生成分數球事件
+        public void send_spawn_score_ball_event_when_spawn_score_ball()
         {
-            viewManager = Substitute.For<IViewManager>();
-            Container.Bind<IViewManager>().FromInstance(viewManager).AsSingle();
+            scoreBallHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+
+            ShouldSpawnScoreBall(1);
         }
 
-        private void InitEventInvokerMock()
+        #endregion
+
+        #region 捕獲旗標
+
+        [Test]
+        //生成分數球, 依據當前Fever階段對應的旗標編號權重設定, 設定當前旗標編號
+        public void spawn_score_ball_and_set_flag_number_by_weight_setting()
         {
-            eventInvoker = Substitute.For<IEventInvoker>();
-            Container.Bind<IEventInvoker>().FromInstance(eventInvoker).AsSingle();
-        }
-
-        private void InitScoreBallHandlerPresenterMock()
-        {
-            scoreBallHandlerPresenter = Substitute.For<IScoreBallHandlerPresenter>();
-            Container.Bind<IScoreBallHandlerPresenter>().FromInstance(scoreBallHandlerPresenter).AsSingle();
-        }
-
-        private void InitAppProcessorMock()
-        {
-            appProcessor = Substitute.For<IAppProcessor>();
-
-            GivenSpawnScoreBallBeatSetting(new List<int>());
-
-            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
-        }
-
-        private void InitGameSettingMock()
-        {
-            gameSetting = Substitute.For<IGameSetting>();
-
-            GivenStartCountDownValueSetting(20);
-
-            Container.Bind<IGameSetting>().FromInstance(gameSetting).AsSingle();
-        }
-
-        private void InitSpawnScoreBallEventMock()
-        {
-            spawnScoreBallEventCallback = Substitute.For<Action<ScoreBall>>();
-            tempScoreBall = null;
-
-            spawnScoreBallEventCallback.When(x => x.Invoke(Arg.Any<ScoreBall>())).Do(callInfo =>
+            GivenCurrentFeverStage(2);
+            GivenScoreBallFlagWeightSetting(2, new Dictionary<int, int>
             {
-                tempScoreBall = (ScoreBall)callInfo.Args()[0];
-            });
-        }
-
-        private void InitEventRegisterMock()
-        {
-            beatEventCallback = null;
-
-            eventRegister = Substitute.For<IEventRegister>();
-
-            eventRegister.When(x => x.Register(Arg.Any<Action<BeatEvent>>())).Do(x =>
-            {
-                Action<BeatEvent> callback = (Action<BeatEvent>)x.Args()[0];
-                beatEventCallback += callback;
+                { 4, 1 }
             });
 
-            Container.Bind<IEventRegister>().FromInstance(eventRegister).AsSingle();
+            scoreBallHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+
+            SpawnedScoreBallFlagNumberShouldBe(4);
         }
 
-        private void GivenStartCountDownValueSetting(int startCountDownValue)
+        [Test]
+        //生成分數球, 依據當前Fever階段對應的旗標編號權重設定, 若有多個權重設定則按照權重隨機抽取旗標編號
+        public void spawn_score_ball_and_set_random_flag_number_by_multiple_weight_setting()
         {
-            gameSetting.ScoreBallStartCountDownValue.Returns(startCountDownValue);
+            GivenSpawnScoreBallBeatSetting(CreateList(300));
+            GivenCurrentFeverStage(2);
+            GivenScoreBallFlagWeightSetting(2, new Dictionary<int, int>
+            {
+                { 4, 1 },
+                { 5, 3 },
+                { 6, 6 }
+            });
+
+            scoreBallHandler.ExecuteModelInit();
+
+            Dictionary<int, int> flagNumberCounterDict = new Dictionary<int, int>();
+            for (int i = 0; i < 300; i++)
+            {
+                CallBeatEventCallback();
+
+                if (flagNumberCounterDict.ContainsKey(tempScoreBall.CurrentFlagNumber))
+                    flagNumberCounterDict[tempScoreBall.CurrentFlagNumber]++;
+                else
+                    flagNumberCounterDict[tempScoreBall.CurrentFlagNumber] = 1;
+            }
+
+            Assert.IsTrue(flagNumberCounterDict[4] > 0);
+            Assert.IsTrue(flagNumberCounterDict[5] > 0);
+            Assert.IsTrue(flagNumberCounterDict[6] > 0);
+            Assert.IsTrue(flagNumberCounterDict[6] > flagNumberCounterDict[5]);
+            Assert.IsTrue(flagNumberCounterDict[5] > flagNumberCounterDict[4]);
         }
 
-        private void GivenSpawnScoreBallBeatSetting(List<int> spawnBeatIndexList)
+        [Test]
+        //生成分數球, 若取不到旗標編號權重設定則回應錯誤
+        public void throw_exception_when_spawn_score_ball_and_no_have_weight_setting()
         {
-            StageSettingContent settingContent = new StageSettingContent();
-            settingContent.SetSpawnBeatIndexList(spawnBeatIndexList);
+            GivenScoreBallFlagWeightSettingIsEmpty();
 
-            appProcessor.CurrentStageSettingContent.Returns(settingContent);
+            scoreBallHandler.ExecuteModelInit();
+
+            Assert.Throws<NullReferenceException>(CallBeatEventCallback);
         }
 
-        private void CallBeatEventCallback()
+        [Test]
+        //結算或倒數完畢後再度激活, 重新抽取旗標編號
+        public void reactivate_then_reselect_flag_number()
         {
-            beatEventCallback.Invoke(new BeatEvent(false));
+            GivenSpawnScoreBallBeatSetting(new List<int> { 0, 1 });
+            GivenCurrentFeverStage(2);
+            GivenScoreBallFlagWeightSetting(2, new Dictionary<int, int>
+            {
+                { 4, 1 },
+            });
+
+            scoreBallHandler.ExecuteModelInit();
+
+            CallBeatEventCallback();
+
+            int originalScoreBallHashCode = tempScoreBall.GetHashCode();
+            SpawnedScoreBallFlagNumberShouldBe(4);
+            InFieldScoreBallAmountShouldBe(1);
+
+            tempScoreBall.SuccessSettle();
+
+            GivenScoreBallFlagWeightSetting(2, new Dictionary<int, int>
+            {
+                { 3, 1 },
+            });
+            CallBeatEventCallback();
+
+            int newScoreBallHashCode = tempScoreBall.GetHashCode();
+            SpawnedScoreBallFlagNumberShouldBe(3);
+            InFieldScoreBallAmountShouldBe(1);
+            Assert.IsTrue(originalScoreBallHashCode == newScoreBallHashCode);
         }
 
-        private void ShouldSendInitEvent(int expectedCallTimes)
-        {
-            if (expectedCallTimes == 0)
-                initEventCallback.DidNotReceive().Invoke();
-            else
-                initEventCallback.Received(expectedCallTimes).Invoke();
-        }
-
-        private void ShouldSendReleaseEvent(int expectedCallTimes)
-        {
-            if (expectedCallTimes == 0)
-                releaseEventCallback.DidNotReceive().Invoke();
-            else
-                releaseEventCallback.Received(expectedCallTimes).Invoke();
-        }
-
-        private void SpawnedScoreBallStateShouldBe(ScoreBallState expectedState)
-        {
-            Assert.AreEqual(expectedState, tempScoreBall.CurrentState);
-        }
-
-        private void InFieldScoreBallAmountShouldBe(int expectedAmount)
-        {
-            Assert.AreEqual(expectedAmount, scoreBallHandler.CurrentInFieldScoreBallAmount);
-        }
-
-        private void ShouldSpawnScoreBall(int expectedCallTimes)
-        {
-            if (expectedCallTimes == 0)
-                spawnScoreBallEventCallback.DidNotReceive().Invoke(Arg.Any<ScoreBall>());
-            else
-                spawnScoreBallEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<ScoreBall>());
-        }
-
-        //Beat時, 若沒有進行到需要生成分數球的節拍, 則不做事
-        //若生成分數球節拍設定為空, 則報錯
+        #endregion
     }
 }
