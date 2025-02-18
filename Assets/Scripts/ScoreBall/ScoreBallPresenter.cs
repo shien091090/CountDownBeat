@@ -14,6 +14,7 @@ namespace GameCore
         private IScoreBall model;
         private IScoreBallView view;
         private IScoreBallTextColorSetting scoreBallTextColorSetting;
+        private IScoreBallFrameColorByFlagSetting scoreBallFrameColorByFlagSetting;
         private IBeaterModel beaterModel;
         private ScoreBallRecordTrajectoryState recordTrajectoryState;
 
@@ -76,10 +77,11 @@ namespace GameCore
             ResetRecordTrajectoryState();
         }
 
-        public void Init(IBeaterModel beaterModel, IScoreBallTextColorSetting scoreBallTextColorSetting)
+        public void Init(IBeaterModel beaterModel, IScoreBallTextColorSetting scoreBallTextColorSetting, IScoreBallFrameColorByFlagSetting scoreBallFrameColorSetting)
         {
             this.beaterModel = beaterModel;
             this.scoreBallTextColorSetting = scoreBallTextColorSetting;
+            this.scoreBallFrameColorByFlagSetting = scoreBallFrameColorSetting;
         }
 
         private Color GetScoreBallTextColor(int countDownValue)
@@ -95,6 +97,7 @@ namespace GameCore
             model.OnScoreBallBeat -= PlayBeatEffect;
             model.OnScoreBallBeat -= OnScoreBallBeat;
             model.OnScoreBallHalfBeat -= OnScoreBallHalfBeat;
+            model.OnUpdateCatchFlagNumber -= OnUpdateCatchFlagNumber;
 
             if (isListen)
             {
@@ -104,6 +107,7 @@ namespace GameCore
                 model.OnScoreBallBeat += PlayBeatEffect;
                 model.OnScoreBallBeat += OnScoreBallBeat;
                 model.OnScoreBallHalfBeat += OnScoreBallHalfBeat;
+                model.OnUpdateCatchFlagNumber += OnUpdateCatchFlagNumber;
             }
         }
 
@@ -164,16 +168,8 @@ namespace GameCore
 
             switch (state)
             {
-                case ScoreBallState.InCountDown:
-                    view.SetInCountDownColor();
-                    break;
-
                 case ScoreBallState.Hide:
                     view.Close();
-                    break;
-
-                case ScoreBallState.Freeze:
-                    view.SetFreezeColor();
                     break;
             }
         }
@@ -187,6 +183,11 @@ namespace GameCore
         {
             view.CreateBeatEffectPrefab();
             view.PlayAnimation(ANIM_KEY_BEAT);
+        }
+
+        private void OnUpdateCatchFlagNumber(int flagNumber)
+        {
+            view.SetFrameColor(scoreBallFrameColorByFlagSetting.ConvertToColor(flagNumber));
         }
 
         private void OnScoreBallHalfBeat()

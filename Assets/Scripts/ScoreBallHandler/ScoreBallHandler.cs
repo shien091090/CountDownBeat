@@ -115,7 +115,7 @@ namespace GameCore
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 
                 scoreBallView.Init();
-                scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting);
+                scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting, gameSetting.ScoreBallFrameColorByFlagSetting);
                 scoreBall.Init(gameSetting.ScoreBallStartCountDownValue, CreateFlagNumber());
 
                 inFieldScoreBallList.Add(scoreBall);

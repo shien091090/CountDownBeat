@@ -10,6 +10,7 @@ namespace GameCore
         Vector2Int CatchNetNumberRange { get; }
         float HpMax { get; }
         IScoreBallTextColorSetting ScoreBallTextColorSetting { get; }
+        IScoreBallFrameColorByFlagSetting ScoreBallFrameColorByFlagSetting { get; }
         float AccuracyPassThreshold { get; }
         int FeverEnergyIncrease { get; }
         int FeverEnergyDecrease { get; }

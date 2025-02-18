@@ -22,6 +22,7 @@ namespace GameCore
             this.eventInvoker = eventInvoker;
         }
 
+        public event Action<int> OnUpdateCatchFlagNumber;
         public event Action OnInit;
         public event Action<ScoreBallState> OnUpdateState;
         public event Action<int> OnUpdateCountDownValue;
@@ -62,20 +63,23 @@ namespace GameCore
             }
 
             StartCountDownValue = startCountDownValue;
-            CurrentFlagNumber = catchFlagNumber;
 
-            UpdateCurrentCountDownValue(StartCountDownValue);
-            UpdateCurrentState(ScoreBallState.InCountDown);
+            InitData(catchFlagNumber);
 
             OnInit?.Invoke();
         }
 
-        public void Reactivate(int newCatchFlagNumber)
+        private void InitData(int catchFlagNumber)
         {
-            CurrentFlagNumber = newCatchFlagNumber;
+            UpdateCatchFlagNumber(catchFlagNumber);
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
-            
+        }
+
+        public void Reactivate(int newCatchFlagNumber)
+        {
+            InitData(newCatchFlagNumber);
+
             OnInit?.Invoke();
         }
 
@@ -109,6 +113,12 @@ namespace GameCore
             if ((beforeState == ScoreBallState.InCountDown || beforeState == ScoreBallState.Freeze) &&
                 afterState == ScoreBallState.Hide)
                 SetEventRegister(false);
+        }
+
+        private void UpdateCatchFlagNumber(int catchFlagNumber)
+        {
+            CurrentFlagNumber = catchFlagNumber;
+            OnUpdateCatchFlagNumber?.Invoke(CurrentFlagNumber);
         }
 
         private void UpdateCurrentState(ScoreBallState newState)

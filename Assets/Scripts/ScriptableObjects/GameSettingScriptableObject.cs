@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace GameCore
 {
-    [CreateAssetMenu]
     public class GameSettingScriptableObject : SerializedScriptableObject, IGameSetting
     {
         [Header("分數球")] [SerializeField] private ScoreBallTextColorSettingScriptableObject scoreBallTextColorSetting;
+        [SerializeField] private ScoreBallFrameColorByFlagScriptableObject scoreBallFrameColorByFlagSetting;
         [SerializeField] private int scoreBallStartCountDownValue;
         [SerializeField] private Dictionary<int, Dictionary<int, int>> scoreBallFlagWeightSettingDict;
 
@@ -28,6 +28,7 @@ namespace GameCore
         public Vector2Int CatchNetNumberRange => catchNetNumberRange;
         public float HpMax => hpMax;
         public IScoreBallTextColorSetting ScoreBallTextColorSetting => scoreBallTextColorSetting;
+        public IScoreBallFrameColorByFlagSetting ScoreBallFrameColorByFlagSetting => scoreBallFrameColorByFlagSetting;
         public float AccuracyPassThreshold => accuracyPassThreshold;
         public int FeverEnergyIncrease => feverEnergyIncrease;
         public int FeverEnergyDecrease => feverEnergyDecrease;

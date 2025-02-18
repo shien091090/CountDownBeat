@@ -11,23 +11,12 @@ namespace GameCore
 
         private ICatchNet model;
         private ICatchNetView view;
+        private IScoreBallFrameColorByFlagSetting scoreBallFrameColorByFlagSetting;
         private bool catchEnable;
 
         public CatchNetPresenter()
         {
             ClearData();
-        }
-
-        public void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)
-        {
-            SpawnPosIndex = spawnPosIndex;
-            catchEnable = false;
-
-            SetCatchFlagNumberPosType(fadeInMode);
-            PlaySpawnAnimation(fadeInMode, () =>
-            {
-                catchEnable = true;
-            });
         }
 
         public void BindView(IMVPView mvpView)
@@ -76,21 +65,30 @@ namespace GameCore
         {
         }
 
+        public void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode, IScoreBallFrameColorByFlagSetting scoreBallFrameColorByFlagSetting)
+        {
+            this.scoreBallFrameColorByFlagSetting = scoreBallFrameColorByFlagSetting;
+            SpawnPosIndex = spawnPosIndex;
+            catchEnable = false;
+
+            PlaySpawnAnimation(fadeInMode, () =>
+            {
+                catchEnable = true;
+            });
+        }
+
         private void SetEventRegister(bool isListen)
         {
             model.OnUpdateState -= UpdateState;
             model.OnCatchNetBeat -= PlayBeatEffect;
+            model.OnUpdateCatchFlagNumber -= RefreshCatchFlagNumber;
 
             if (isListen)
             {
                 model.OnUpdateState += UpdateState;
                 model.OnCatchNetBeat += PlayBeatEffect;
+                model.OnUpdateCatchFlagNumber += RefreshCatchFlagNumber;
             }
-        }
-
-        private void SetCatchFlagNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
-        {
-            view.SetCatchFlagNumberPosType(fadeInMode);
         }
 
         private void ClearData()
@@ -103,19 +101,15 @@ namespace GameCore
         {
             switch (currentState)
             {
-                case CatchNetState.Working:
-                    RefreshCatchFlagNumber();
-                    break;
-
                 case CatchNetState.SuccessSettle:
                     Hide();
                     break;
             }
         }
 
-        private void RefreshCatchFlagNumber()
+        private void RefreshCatchFlagNumber(int flagNumber)
         {
-            view.SetCatchFlagNumber(model.TargetFlagNumber.ToString("N0"));
+            view.SetFlagColor(scoreBallFrameColorByFlagSetting.ConvertToColor(flagNumber));
         }
 
         private void PlayBeatEffect()

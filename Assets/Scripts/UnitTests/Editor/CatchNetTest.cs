@@ -2,7 +2,6 @@ using System;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
-using UnityEngine;
 
 namespace GameCore.UnitTests
 {
@@ -16,6 +15,7 @@ namespace GameCore.UnitTests
         private Action<BeatEvent> beatEventCallback;
         private Action<CatchNetState> updateStateEventCallback;
         private Action catchNetBeatEventCallback;
+        private Action<int> updateCatchFlagNumberEventCallback;
 
         [SetUp]
         public void Setup()
@@ -33,21 +33,24 @@ namespace GameCore.UnitTests
 
             catchNetBeatEventCallback = Substitute.For<Action>();
             catchNet.OnCatchNetBeat += catchNetBeatEventCallback;
+
+            updateCatchFlagNumberEventCallback = Substitute.For<Action<int>>();
+            catchNet.OnUpdateCatchFlagNumber += updateCatchFlagNumberEventCallback;
         }
 
         [Test]
         //初始化時設定捕獲數字, 並切換狀態為"Working"
-        public void init_and_switch_state()
+        public void init_catch_flag_number_and_switch_state()
         {
             catchNet.Init(10);
 
-            TargetFlagNumberShouldBe(10);
+            CatchFlagNumberShouldBe(10);
             CurrentStateShouldBe(CatchNetState.Working);
         }
 
         [Test]
-        //當狀態為"Working"時觸發捕獲判斷, 若數字不在範圍內則不做事
-        public void do_nothing_when_trigger_catch_and_number_not_in_match_range()
+        //當狀態為"Working"時觸發捕獲判斷, 若旗標不符合則不做事
+        public void do_nothing_when_trigger_catch_and_flag_number_not_match()
         {
             catchNet.Init(10);
 
@@ -59,7 +62,7 @@ namespace GameCore.UnitTests
 
         [Test]
         //當狀態不為"Working"時觸發捕獲判斷, 不做事
-        public void do_nothing_when_trigger_catch_and_not_working()
+        public void do_nothing_when_trigger_catch_but_not_working()
         {
             TryTriggerCatchAndShouldSuccess(5, false);
 
@@ -68,8 +71,8 @@ namespace GameCore.UnitTests
         }
 
         [Test]
-        //觸發捕獲判斷, 若目標編號一致則切換狀態為"SuccessSettle", 並發送得分事件
-        public void trigger_catch_and_flag_number_match()
+        //觸發捕獲判斷, 若目標旗標一致則切換狀態為"SuccessSettle", 並發送得分事件
+        public void trigger_catch_and_flag_number_match_then_send_event()
         {
             catchNet.Init(10);
             TryTriggerCatchAndShouldSuccess(10, true);
@@ -90,6 +93,16 @@ namespace GameCore.UnitTests
 
             ShouldSendCatchNetBeatEvent(1);
             CurrentStateShouldBe(CatchNetState.Working);
+        }
+
+        [Test]
+        //初始化時設定捕獲旗標, 發送更新捕獲旗標事件
+        public void send_update_catch_flag_number_event_when_init()
+        {
+            catchNet.Init(10);
+
+            CatchFlagNumberShouldBe(10);
+            ShouldSendUpdateCatchFlagNumberEvent(1);
         }
 
         [Test]
@@ -177,8 +190,15 @@ namespace GameCore.UnitTests
             if (expectedCallTimes == 0)
                 updateStateEventCallback.DidNotReceive().Invoke(Arg.Any<CatchNetState>());
             else
-
                 updateStateEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<CatchNetState>());
+        }
+
+        private void ShouldSendUpdateCatchFlagNumberEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                updateCatchFlagNumberEventCallback.DidNotReceive().Invoke(Arg.Any<int>());
+            else
+                updateCatchFlagNumberEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<int>());
         }
 
         private void TryTriggerCatchAndShouldSuccess(int flagNumber, bool expectedIsSuccess)
@@ -200,9 +220,9 @@ namespace GameCore.UnitTests
             Assert.AreEqual(expectedState, catchNet.CurrentState);
         }
 
-        private void TargetFlagNumberShouldBe(int expectedFlagNumber)
+        private void CatchFlagNumberShouldBe(int expectedFlagNumber)
         {
-            Assert.AreEqual(expectedFlagNumber, catchNet.TargetFlagNumber);
+            Assert.AreEqual(expectedFlagNumber, catchNet.CatchFlagNumber);
         }
     }
 }

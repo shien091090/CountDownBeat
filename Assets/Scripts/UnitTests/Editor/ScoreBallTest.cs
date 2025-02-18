@@ -19,6 +19,7 @@ namespace GameCore.UnitTests
         private Action<ScoreBallState> updateStateEventCallback;
         private Action initEventCallback;
         private Action<int> updateCountDownValueEventCallback;
+        private Action<int> updateFlagNumberEventCallback;
 
         [SetUp]
         public void Setup()
@@ -41,6 +42,9 @@ namespace GameCore.UnitTests
 
             updateCountDownValueEventCallback = Substitute.For<Action<int>>();
             scoreBall.OnUpdateCountDownValue += updateCountDownValueEventCallback;
+
+            updateFlagNumberEventCallback = Substitute.For<Action<int>>();
+            scoreBall.OnUpdateCatchFlagNumber += updateFlagNumberEventCallback;
         }
 
         private void InitEventHandlerMock()
@@ -125,6 +129,14 @@ namespace GameCore.UnitTests
                 updateCountDownValueEventCallback.DidNotReceive().Invoke(Arg.Any<int>());
             else
                 updateCountDownValueEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<int>());
+        }
+
+        private void ShouldSendUpdateFlagNumberEvent(int expectedCallTimes)
+        {
+            if (expectedCallTimes == 0)
+                updateFlagNumberEventCallback.DidNotReceive().Invoke(Arg.Any<int>());
+            else
+                updateFlagNumberEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<int>());
         }
 
         #region 狀態變化
@@ -232,6 +244,15 @@ namespace GameCore.UnitTests
         }
 
         [Test]
+        //初始化時, 發送旗標更新事件
+        public void send_update_catch_flag_number_event_when_init()
+        {
+            scoreBall.Init(20, 4);
+
+            ShouldSendUpdateFlagNumberEvent(1);
+        }
+
+        [Test]
         //更新倒數數字時, 發送倒數數字更新事件
         public void send_update_count_down_value_event_when_update_count_down_value()
         {
@@ -267,6 +288,23 @@ namespace GameCore.UnitTests
             scoreBall.Reactivate(1);
 
             ShouldSendInitEvent(2);
+        }
+
+        [Test]
+        //分數球重新激活時, 發送旗標更新事件
+        public void send_update_flag_number_event_when_reactivate()
+        {
+            scoreBall.Init(20, 1);
+
+            ShouldSendUpdateFlagNumberEvent(1);
+
+            scoreBall.SuccessSettle();
+
+            ShouldSendUpdateFlagNumberEvent(1);
+
+            scoreBall.Reactivate(2);
+
+            ShouldSendUpdateFlagNumberEvent(2);
         }
 
         [Test]

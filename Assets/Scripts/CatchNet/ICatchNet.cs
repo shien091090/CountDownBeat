@@ -6,7 +6,8 @@ namespace GameCore
     {
         event Action<CatchNetState> OnUpdateState;
         event Action OnCatchNetBeat;
-        int TargetFlagNumber { get; }
+        event Action<int> OnUpdateCatchFlagNumber;
+        int CatchFlagNumber { get; }
         bool TryTriggerCatch(int flagNumber);
     }
 }

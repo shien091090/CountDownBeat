@@ -21,14 +21,14 @@ namespace GameCore
 
         private readonly List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
         private readonly DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
-        
+
         private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_CATCH_NET_HANDLER);
-        
+
         public event Action<ICatchNet> OnSpawnCatchNet;
         public int CurrentInFieldCatchNetAmount => inFieldCatchNetList.Count(x => x.CurrentState == CatchNetState.Working);
 
         private List<int> CurrentInFieldCatchNetCatchFlagNumberList =>
-            inFieldCatchNetList.Where(x => x.CurrentState == CatchNetState.Working).Select(x => x.TargetFlagNumber).ToList();
+            inFieldCatchNetList.Where(x => x.CurrentState == CatchNetState.Working).Select(x => x.CatchFlagNumber).ToList();
 
         public event Action OnInit;
         public event Action OnRelease;
@@ -119,7 +119,7 @@ namespace GameCore
                 catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
             }
 
-            catchNetPresenter.Init(spawnIndex, fadeInMode);
+            catchNetPresenter.Init(spawnIndex, fadeInMode, gameSetting.ScoreBallFrameColorByFlagSetting);
             catchNet.Init(CreateTargetFlagNumber());
 
             OnSpawnCatchNet?.Invoke(catchNet);

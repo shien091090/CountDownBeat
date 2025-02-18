@@ -7,6 +7,6 @@ namespace GameCore
     {
         int SpawnPosIndex { get; }
         Vector3 Position { get; }
-        void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode);
+        void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode, IScoreBallFrameColorByFlagSetting scoreBallFrameColorByFlagSetting);
     }
 }

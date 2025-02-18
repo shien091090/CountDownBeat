@@ -176,7 +176,7 @@ namespace GameCore.UnitTests
         private void CallLastSpawnCatchNetSuccessSettle(out CatchNet lastCatchNet)
         {
             CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-            arg.TryTriggerCatch(arg.TargetFlagNumber);
+            arg.TryTriggerCatch(arg.CatchFlagNumber);
 
             lastCatchNet = arg;
         }
@@ -229,7 +229,7 @@ namespace GameCore.UnitTests
         private void LastSpawnCatchNetTargetFlagShouldBe(int expectedFlagNum)
         {
             CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-            Assert.AreEqual(expectedFlagNum, arg.TargetFlagNumber);
+            Assert.AreEqual(expectedFlagNum, arg.CatchFlagNumber);
         }
 
         private void CurrentInFieldCatchNetAmountShouldBe(int expectedAmount)
@@ -258,10 +258,10 @@ namespace GameCore.UnitTests
                 CallBeatEventCallback();
 
                 CatchNet arg = (CatchNet)spawnCatchNetEventCallback.ReceivedCalls().Last().GetArguments()[0];
-                if (tempTargetFlagDict.ContainsKey(arg.TargetFlagNumber))
-                    tempTargetFlagDict[arg.TargetFlagNumber]++;
+                if (tempTargetFlagDict.ContainsKey(arg.CatchFlagNumber))
+                    tempTargetFlagDict[arg.CatchFlagNumber]++;
                 else
-                    tempTargetFlagDict[arg.TargetFlagNumber] = 1;
+                    tempTargetFlagDict[arg.CatchFlagNumber] = 1;
             }
 
             foreach (int expectedFlagNum in expectedFlagNums)

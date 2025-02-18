@@ -20,8 +20,6 @@ namespace GameCore
         [Inject] private IEventInvoker eventInvoker;
 
         [SerializeField] private ObjectPoolManager objectPool;
-        [SerializeField] private Color inCountDownColor;
-        [SerializeField] private Color freezeColor;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
 
@@ -40,14 +38,9 @@ namespace GameCore
             tmp_countDownNum.text = text;
         }
 
-        public void SetInCountDownColor()
+        public void SetFrameColor(Color color)
         {
-            img_back.color = inCountDownColor;
-        }
-
-        public void SetFreezeColor()
-        {
-            img_back.color = freezeColor;
+            img_back.color = color;
         }
 
         public void RecordTrajectoryNode()
@@ -99,12 +92,16 @@ namespace GameCore
         {
             operableUI.Init();
             RegisterEvent();
-            SetInCountDownColor();
         }
 
         private void Update()
         {
             operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
+        }
+
+        public void CrossResetWall()
+        {
+            presenter.CrossResetWall();
         }
 
         private void Awake()
@@ -116,11 +113,6 @@ namespace GameCore
             operableUI = gameObject.GetComponent<OperableUI>();
             computableCollider = GetComponent<ComputableCollider>();
             trajectoryAngleCalculator = GetComponent<TrajectoryAngleCalculator>();
-        }
-
-        public void CrossResetWall()
-        {
-            presenter.CrossResetWall();
         }
 
         private void RegisterEvent()

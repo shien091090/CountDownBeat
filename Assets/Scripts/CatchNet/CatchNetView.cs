@@ -4,6 +4,7 @@ using DG.Tweening;
 using SNShien.Common.AdapterTools;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace GameCore
 {
@@ -15,7 +16,7 @@ namespace GameCore
         [SerializeField] private float spawnAnimationDuration;
         [SerializeField] private Ease spawnAnimationEaseType;
         [SerializeField] private RectTransform go_root;
-        [SerializeField] private TextMeshProUGUI tmp_catchNumber;
+        [SerializeField] private Image img_flag;
         [SerializeField] private CatchNetNumberPosSetting[] catchNumberPosSettings;
 
         public Vector3 Position => gameObject.transform.position;
@@ -25,16 +26,9 @@ namespace GameCore
         private Tween spawnCatchNetTween;
         private Animator animator;
 
-        public void SetCatchFlagNumber(string catchNumberText)
+        public void SetFlagColor(Color flagColor)
         {
-            tmp_catchNumber.text = catchNumberText;
-        }
-
-        public void SetCatchFlagNumberPosType(CatchNetSpawnFadeInMode fadeInMode)
-        {
-            CatchNetNumberPosSetting setting = catchNumberPosSettings.FirstOrDefault(x => x.FadeInMode == fadeInMode);
-            if (setting != null)
-                tmp_catchNumber.transform.localPosition = setting.LocalPosition;
+            img_flag.color = flagColor;
         }
 
         public void Close()

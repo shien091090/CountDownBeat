@@ -1,12 +1,11 @@
 using System;
 using SNShien.Common.ProcessTools;
-using UnityEngine;
 
 namespace GameCore
 {
     public class CatchNet : ICatchNet
     {
-        public int TargetFlagNumber { get; private set; }
+        public int CatchFlagNumber { get; private set; }
 
         private readonly IEventRegister eventRegister;
 
@@ -23,6 +22,7 @@ namespace GameCore
             CurrentState = CatchNetState.None;
         }
 
+        public event Action<int> OnUpdateCatchFlagNumber;
         public event Action<CatchNetState> OnUpdateState;
         public event Action OnCatchNetBeat;
 
@@ -31,7 +31,7 @@ namespace GameCore
             if (CurrentState != CatchNetState.Working)
                 return false;
 
-            if (flagNumber != TargetFlagNumber)
+            if (flagNumber != CatchFlagNumber)
                 return false;
 
             UpdateState(CatchNetState.SuccessSettle);
@@ -45,10 +45,9 @@ namespace GameCore
             presenter.BindModel(this);
         }
 
-        public void Init(int targetFlagNumber)
+        public void Init(int catchFlagNumber)
         {
-            TargetFlagNumber = targetFlagNumber;
-
+            UpdateCatchFlagNumber(catchFlagNumber);
             UpdateState(CatchNetState.Working);
         }
 
@@ -60,6 +59,12 @@ namespace GameCore
             {
                 eventRegister.Register<BeatEvent>(OnBeat);
             }
+        }
+
+        private void UpdateCatchFlagNumber(int targetFlagNumber)
+        {
+            CatchFlagNumber = targetFlagNumber;
+            OnUpdateCatchFlagNumber?.Invoke(CatchFlagNumber);
         }
 
         private void UpdateState(CatchNetState newState)

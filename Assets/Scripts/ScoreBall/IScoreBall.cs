@@ -9,6 +9,7 @@ namespace GameCore
         event Action<int> OnUpdateCountDownValue;
         event Action OnScoreBallBeat;
         event Action OnScoreBallHalfBeat;
+        event Action<int> OnUpdateCatchFlagNumber;
         int CurrentFlagNumber { get; }
         void SetFreezeState(bool isFreeze);
         void ResetToBeginning();

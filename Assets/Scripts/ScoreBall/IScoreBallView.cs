@@ -7,9 +7,8 @@ namespace GameCore
         int CurrentFlagNumber { get; }
         void Init();
         void SetCountDownNumberText(string text);
-        void SetInCountDownColor();
-        void SetFreezeColor();
         void SetTextColor(Color color);
+        void SetFrameColor(Color color);
         void RecordTrajectoryNode();
         void ClearTrajectoryNode();
         void Close();
