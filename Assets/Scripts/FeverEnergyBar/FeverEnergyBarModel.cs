@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
@@ -12,21 +13,23 @@ namespace GameCore
         [Inject] private IGameSetting gameSetting;
         [Inject] private IEventRegister eventRegister;
         [Inject] private IFeverEnergyBarPresenter presenter;
-        
+
         public int CurrentFeverStage { get; private set; }
 
         private int beatPenaltyCounter;
-
         private readonly Debugger debugger = new Debugger("FeverEnergyBarModel");
+        public int EnergyValue { get; private set; }
 
-        public float EnergyValue { get; private set; }
+        public event Action<UpdateFeverEnergyBarEvent> OnUpdateFeverEnergyValue;
+        public event Action<int> OnUpdateFeverStage;
 
         public void ExecuteModelInit()
         {
             ClearData();
-            UpdateFeverStage();
-            SetEventRegister(true);
             InitPresenter();
+            UpdateEnergyValue(0, true);
+            UpdateFeverStage(true);
+            SetEventRegister(true);
         }
 
         public void Release()
@@ -79,8 +82,10 @@ namespace GameCore
 
         private void AddEnergyValue(int addValue)
         {
-            EnergyValue += addValue;
-            EnergyValue = Mathf.Clamp(EnergyValue, 0, GetEnergyBarMaxValue());
+            int newEnergyValue = EnergyValue + addValue;
+            newEnergyValue = Mathf.Clamp(newEnergyValue, 0, GetEnergyBarMaxValue());
+
+            UpdateEnergyValue(newEnergyValue);
             UpdateFeverStage();
 
             debugger.ShowLog($"EnergyValue: {EnergyValue}, CurrentFeverStage: {CurrentFeverStage}", true);
@@ -93,8 +98,20 @@ namespace GameCore
             beatPenaltyCounter = 0;
         }
 
-        private void UpdateFeverStage()
+        private void UpdateEnergyValue(int newValue, bool isForceSendEvent = false)
         {
+            int beforeEnergyValue = EnergyValue;
+
+            EnergyValue = newValue;
+
+            if (beforeEnergyValue != EnergyValue || isForceSendEvent)
+                OnUpdateFeverEnergyValue?.Invoke(new UpdateFeverEnergyBarEvent(beforeEnergyValue, EnergyValue));
+        }
+
+        private void UpdateFeverStage(bool isForceSendEvent = false)
+        {
+            int beforeFeverStage = CurrentFeverStage;
+
             int[] energyBarSetting = gameSetting.FeverEnergyBarSetting;
             int totalValue = 0;
 
@@ -106,7 +123,15 @@ namespace GameCore
                     CurrentFeverStage = i;
                     break;
                 }
+                else
+                {
+                    if (i == energyBarSetting.Length - 1)
+                        CurrentFeverStage = i;
+                }
             }
+
+            if (beforeFeverStage != CurrentFeverStage || isForceSendEvent)
+                OnUpdateFeverStage?.Invoke(CurrentFeverStage);
         }
 
         private void OnHalfBeatEvent(HalfBeatEvent eventInfo)

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
@@ -17,6 +18,8 @@ namespace GameCore.UnitTests
         private IFeverEnergyBarPresenter feverEnergyBarPresenter;
 
         private Action<HalfBeatEvent> halfBeatEventCallback;
+        private Action<UpdateFeverEnergyBarEvent> updateFeverEnergyBarEventCallback;
+        private Action<int> updateFeverStageEventCallback;
 
         [SetUp]
         public override void Setup()
@@ -30,6 +33,13 @@ namespace GameCore.UnitTests
 
             Container.Bind<FeverEnergyBarModel>().AsSingle();
             feverEnergyBarModel = Container.Resolve<FeverEnergyBarModel>();
+
+            updateFeverEnergyBarEventCallback = Substitute.For<Action<UpdateFeverEnergyBarEvent>>();
+            feverEnergyBarModel.OnUpdateFeverEnergyValue += updateFeverEnergyBarEventCallback;
+
+            updateFeverStageEventCallback = Substitute.For<Action<int>>();
+            feverEnergyBarModel.OnUpdateFeverStage += updateFeverStageEventCallback;
+
             feverEnergyBarModel.ExecuteModelInit();
         }
 
@@ -110,9 +120,42 @@ namespace GameCore.UnitTests
             Assert.AreEqual(expectedFeverStage, feverEnergyBarModel.CurrentFeverStage);
         }
 
-        private void EnergyValueShouldBe(object expectedEnergyValue)
+        private void EnergyValueShouldBe(int expectedEnergyValue)
         {
             Assert.AreEqual(expectedEnergyValue, feverEnergyBarModel.EnergyValue);
+        }
+
+        private void LastUpdateFeverStageEventShouldBe(int expectedFeverStage)
+        {
+            int newFeverStage = (int)updateFeverStageEventCallback.ReceivedCalls().Last().GetArguments()[0];
+            Assert.AreEqual(expectedFeverStage, newFeverStage);
+        }
+
+        private void LastUpdateFeverEnergyBarEventShouldBe(int expectedBeforeEnergyValue, int expectedAfterEnergyValue)
+        {
+            UpdateFeverEnergyBarEvent eventInfo = (UpdateFeverEnergyBarEvent)updateFeverEnergyBarEventCallback.ReceivedCalls().Last().GetArguments()[0];
+            Assert.AreEqual(expectedBeforeEnergyValue, eventInfo.BeforeEnergyValue);
+            Assert.AreEqual(expectedAfterEnergyValue, eventInfo.AfterEnergyValue);
+        }
+
+        private void ShouldNotSendUpdateFeverEnergyBarEvent()
+        {
+            updateFeverEnergyBarEventCallback.DidNotReceive().Invoke(Arg.Any<UpdateFeverEnergyBarEvent>());
+        }
+
+        private void ShouldNotSendUpdateFeverStageEvent()
+        {
+            updateFeverStageEventCallback.DidNotReceive().Invoke(Arg.Any<int>());
+        }
+
+        private void ShouldSendUpdateFeverStageEvent(int expectedCallTimes)
+        {
+            updateFeverStageEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<int>());
+        }
+
+        private void ShouldSendUpdateFeverEnergyBarEvent(int expectedCallTimes)
+        {
+            updateFeverEnergyBarEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<UpdateFeverEnergyBarEvent>());
         }
 
         #region 初始化
@@ -297,7 +340,7 @@ namespace GameCore.UnitTests
             CallHalfBeatEvent();
             EnergyValueShouldBe(100);
         }
-        
+
         [Test]
         //連續Miss(兩次半拍扣能量條), 若有錯誤打擊則下次經過半拍仍會扣能量條
         public void energy_bar_decrease_when_hit_wrong_beat_after_two_miss()
@@ -379,6 +422,118 @@ namespace GameCore.UnitTests
 
             EnergyValueShouldBe(5);
             CurrentFeverStageShouldBe(0);
+        }
+
+        #endregion
+
+        #region 事件發送
+
+        [Test]
+        //初始化時, 會發送能量條更新事件
+        public void send_energy_bar_update_event_when_init()
+        {
+            LastUpdateFeverEnergyBarEventShouldBe(0, 0);
+        }
+
+        [Test]
+        //初始化時, 會發送Fever階段更新事件
+        public void send_fever_stage_update_event_when_init()
+        {
+            LastUpdateFeverStageEventShouldBe(0);
+        }
+
+        [Test]
+        //能量條增減時, 會發送能量條更新事件
+        public void send_energy_bar_update_event_when_energy_value_change()
+        {
+            GivenFeverEnergyIncrease(10);
+            GivenFeverEnergyDecrease(5);
+            GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
+
+            feverEnergyBarModel.Hit();
+            LastUpdateFeverEnergyBarEventShouldBe(0, 10);
+
+            feverEnergyBarModel.Hit();
+            LastUpdateFeverEnergyBarEventShouldBe(10, 20);
+        }
+
+        [Test]
+        [TestCase(6, 1)]
+        [TestCase(15, 1)]
+        [TestCase(16, 2)]
+        [TestCase(30, 2)]
+        [TestCase(50, 2)]
+        //Fever階段升階時, 會發送Fever階段更新事件
+        public void send_fever_stage_update_event_when_increase_fever_stage(int feverEnergyIncrease, int expectedFeverStage)
+        {
+            GivenFeverEnergyIncrease(feverEnergyIncrease);
+            GivenFeverEnergyDecrease(5);
+            GivenFeverEnergyBarSetting(5, 10, 15);
+            GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
+
+            feverEnergyBarModel.Hit();
+
+            LastUpdateFeverStageEventShouldBe(expectedFeverStage);
+        }
+
+        [Test]
+        [TestCase(20, 2)]
+        [TestCase(21, 2)]
+        [TestCase(35, 1)]
+        [TestCase(45, 0)]
+        [TestCase(50, 0)]
+        [TestCase(100, 0)]
+        //Fever階段降階時, 會發送Fever階段更新事件
+        public void send_fever_stage_update_event_when_decrease_fever_stage(int feverEnergyDecrease, int expectedFeverStage)
+        {
+            GivenFeverEnergyIncrease(50);
+            GivenFeverEnergyDecrease(feverEnergyDecrease);
+            GivenFeverEnergyBarSetting(5, 10, 15, 20);
+            GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
+
+            feverEnergyBarModel.Hit();
+
+            CurrentFeverStageShouldBe(3);
+
+            CallHalfBeatEvent();
+            CallHalfBeatEvent();
+
+            LastUpdateFeverStageEventShouldBe(expectedFeverStage);
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(0.8f)]
+        [TestCase(0.1f)]
+        //打擊拍點但能量條未增減時, 不會發送能量條更新事件
+        public void not_send_energy_bar_update_event_when_hit_beat_but_energy_value_not_change(float hitAccuracyValue)
+        {
+            ShouldSendUpdateFeverEnergyBarEvent(1);
+
+            GivenFeverEnergyIncrease(0);
+            GivenFeverEnergyDecrease(5);
+            GivenAccuracyPassThreshold(0.3f);
+            GivenBeatAccuracyResult(BeatTimingDirection.Early, hitAccuracyValue);
+
+            feverEnergyBarModel.Hit();
+
+            ShouldSendUpdateFeverEnergyBarEvent(1);
+        }
+
+        [Test]
+        //打擊拍點但Fever階段未更新時, 不會發送Fever階段更新事件
+        public void not_send_fever_stage_update_event_when_hit_beat_but_fever_stage_not_change()
+        {
+            ShouldSendUpdateFeverStageEvent(1);
+
+            GivenFeverEnergyIncrease(1);
+            GivenFeverEnergyDecrease(5);
+            GivenFeverEnergyBarSetting(5, 10, 15);
+            GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
+
+            feverEnergyBarModel.Hit();
+
+            ShouldSendUpdateFeverStageEvent(1);
         }
 
         #endregion
