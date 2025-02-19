@@ -448,6 +448,7 @@ namespace GameCore.UnitTests
         {
             GivenFeverEnergyIncrease(10);
             GivenFeverEnergyDecrease(5);
+            GivenAccuracyPassThreshold(0.5f);
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 1);
 
             feverEnergyBarModel.Hit();
@@ -455,6 +456,10 @@ namespace GameCore.UnitTests
 
             feverEnergyBarModel.Hit();
             LastUpdateFeverEnergyBarEventShouldBe(10, 20);
+            
+            GivenBeatAccuracyResult(BeatTimingDirection.Early, 0.3f);
+            feverEnergyBarModel.Hit();
+            LastUpdateFeverEnergyBarEventShouldBe(20, 15);
         }
 
         [Test]

@@ -13,10 +13,14 @@ namespace GameCore
         public void BindModel(IFeverEnergyBarModel model)
         {
             this.model = model;
+
+            SetEventRegister(true);
         }
 
         public void UnbindModel()
         {
+            SetEventRegister(false);
+
             model = null;
         }
 
@@ -38,6 +42,33 @@ namespace GameCore
         public void Hit()
         {
             model.Hit();
+        }
+
+        private void SetEventRegister(bool isListen)
+        {
+            model.OnUpdateFeverEnergyValue -= OnUpdateFeverEnergyValue;
+            model.OnUpdateFeverStage -= OnUpdateFeverStage;
+
+            if (isListen)
+            {
+                model.OnUpdateFeverEnergyValue += OnUpdateFeverEnergyValue;
+                model.OnUpdateFeverStage += OnUpdateFeverStage;
+            }
+        }
+
+        private void OnUpdateFeverStage(int newFeverStage)
+        {
+            view.SetFeverStage(newFeverStage);
+        }
+
+        private void OnUpdateFeverEnergyValue(UpdateFeverEnergyBarEvent eventInfo)
+        {
+            view.SetCurrentFeverEnergy(eventInfo.AfterEnergyValue);
+
+            if (eventInfo.AfterEnergyValue > eventInfo.BeforeEnergyValue)
+                view.PlayFeverEnergyIncreaseEffect();
+            else
+                view.PlayFeverEnergyDecreaseEffect();
         }
     }
 }
