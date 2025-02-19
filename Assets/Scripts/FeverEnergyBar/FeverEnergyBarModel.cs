@@ -20,6 +20,7 @@ namespace GameCore
         private readonly Debugger debugger = new Debugger("FeverEnergyBarModel");
         public int EnergyValue { get; private set; }
 
+        public event Action<BeatAccuracyResult> OnHit;
         public event Action<UpdateFeverEnergyBarEvent> OnUpdateFeverEnergyValue;
         public event Action<int> OnUpdateFeverStage;
 
@@ -56,6 +57,7 @@ namespace GameCore
             }
 
             AddEnergyValue(changeValue);
+            OnHit?.Invoke(beatAccuracyResult);
         }
 
         private void InitPresenter()

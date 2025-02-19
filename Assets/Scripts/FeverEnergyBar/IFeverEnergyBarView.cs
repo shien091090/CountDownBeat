@@ -6,5 +6,6 @@ namespace GameCore
         void SetCurrentFeverEnergy(int currentFeverEnergy);
         void PlayFeverEnergyIncreaseEffect();
         void PlayFeverEnergyDecreaseEffect();
+        void PlayShowAccuracyHintEffect(float accuracyValue);
     }
 }

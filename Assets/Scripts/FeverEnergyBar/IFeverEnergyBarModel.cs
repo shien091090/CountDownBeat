@@ -7,6 +7,7 @@ namespace GameCore
     {
         event Action<UpdateFeverEnergyBarEvent> OnUpdateFeverEnergyValue;
         event Action<int> OnUpdateFeverStage;
+        event Action<BeatAccuracyResult> OnHit;
         int CurrentFeverStage { get; }
         void Hit();
     }

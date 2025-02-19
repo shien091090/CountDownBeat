@@ -12,6 +12,7 @@ namespace GameCore
     {
         [SerializeField] private TextMeshProUGUI tmp_feverStage;
         [SerializeField] private TextMeshProUGUI tmp_currentFeverEnergy;
+        [SerializeField] private TextMeshProUGUI tmp_accuracyHint;
         [SerializeField] private Color increaseColor;
         [SerializeField] private Color decreaseColor;
 
@@ -40,6 +41,11 @@ namespace GameCore
             StartCoroutine(Cor_PlayFeverEnergyTextEffect(decreaseColor));
         }
 
+        public void PlayShowAccuracyHintEffect(float accuracyValue)
+        {
+            StartCoroutine(Cor_PlayShowAccuracyHintEffect(accuracyValue));
+        }
+
         public override void UpdateView()
         {
         }
@@ -63,6 +69,16 @@ namespace GameCore
         {
             if (inputGetter.IsClickDown())
                 presenter.Hit();
+        }
+
+        private IEnumerator Cor_PlayShowAccuracyHintEffect(float accuracyValue)
+        {
+            tmp_accuracyHint.gameObject.SetActive(true);
+            tmp_accuracyHint.text = accuracyValue.ToString("0.0");
+            
+            yield return new WaitForSeconds(0.3f);
+            
+            tmp_accuracyHint.gameObject.SetActive(false);
         }
 
         private IEnumerator Cor_PlayFeverEnergyTextEffect(Color textColor)

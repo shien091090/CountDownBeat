@@ -48,12 +48,19 @@ namespace GameCore
         {
             model.OnUpdateFeverEnergyValue -= OnUpdateFeverEnergyValue;
             model.OnUpdateFeverStage -= OnUpdateFeverStage;
+            model.OnHit -= OnHit;
 
             if (isListen)
             {
                 model.OnUpdateFeverEnergyValue += OnUpdateFeverEnergyValue;
                 model.OnUpdateFeverStage += OnUpdateFeverStage;
+                model.OnHit += OnHit;
             }
+        }
+
+        private void OnHit(BeatAccuracyResult beatAccuracyResult)
+        {
+            view.PlayShowAccuracyHintEffect(beatAccuracyResult.AccuracyValue);
         }
 
         private void OnUpdateFeverStage(int newFeverStage)
