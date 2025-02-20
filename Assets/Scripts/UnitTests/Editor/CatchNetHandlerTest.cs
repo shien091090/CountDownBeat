@@ -5,7 +5,6 @@ using NSubstitute;
 using NSubstitute.Core;
 using NUnit.Framework;
 using SNShien.Common.ProcessTools;
-using UnityEngine;
 using Zenject;
 
 namespace GameCore.UnitTests
@@ -20,6 +19,8 @@ namespace GameCore.UnitTests
         private ICatchNetView catchNetView;
         private IFeverEnergyBarModel feverEnergyBarModel;
         private IScoreBallHandler scoreBallHandler;
+        private IAppProcessor appProcessor;
+        private IStageSettingContent stageSettingContent;
 
         private Action<BeatEvent> beatEventCallback;
         private Action<ICatchNet> spawnCatchNetEventCallback;
@@ -33,6 +34,7 @@ namespace GameCore.UnitTests
         {
             base.Setup();
 
+            InitAppProcessorMock();
             InitGameSettingMock();
             InitCatchNetPresenterMock();
             InitEventHandlerMock();
@@ -53,6 +55,16 @@ namespace GameCore.UnitTests
 
             settleCatchNetEventCallback = Substitute.For<Action<ICatchNetPresenter>>();
             catchNetHandler.OnSettleCatchNet += settleCatchNetEventCallback;
+        }
+
+        private void InitAppProcessorMock()
+        {
+            appProcessor = Substitute.For<IAppProcessor>();
+            stageSettingContent = Substitute.For<IStageSettingContent>();
+
+            appProcessor.CurrentStageSettingContent.Returns(stageSettingContent);
+
+            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
         }
 
         private void InitScoreBallHandlerMock()
@@ -130,12 +142,12 @@ namespace GameCore.UnitTests
 
         private void GivenCatchNetLimitByFeverStageSetting(Dictionary<int, int> limitByFeverStageSetting)
         {
-            gameSetting.CatchNetLimitByFeverStageSetting.Returns(limitByFeverStageSetting);
+            stageSettingContent.CatchNetLimitByFeverStageSetting.Returns(limitByFeverStageSetting);
         }
 
         private void GivenScoreBallFlagWeightSetting(int currentFeverStage, Dictionary<int, int> flagWeightSetting)
         {
-            gameSetting.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
+            stageSettingContent.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
         }
 
         private void GivenTryOccupyPosSuccess(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)
@@ -150,12 +162,7 @@ namespace GameCore.UnitTests
 
         private void GivenScoreWhenSuccessSettle(int score)
         {
-            gameSetting.SuccessSettleScore.Returns(score);
-        }
-
-        private void GivenCatchNetNumberRange(int min, int max)
-        {
-            gameSetting.CatchNetNumberRange.Returns(new Vector2Int(min, max));
+            stageSettingContent.SuccessSettleScore.Returns(score);
         }
 
         private void GivenCurrentFeverStage(int feverStage)

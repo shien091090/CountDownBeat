@@ -13,14 +13,15 @@ namespace GameCore
         [Inject] private IGameSetting gameSetting;
         [Inject] private IEventRegister eventRegister;
         [Inject] private IFeverEnergyBarPresenter presenter;
+        [Inject] private IAppProcessor appProcessor;
 
         public int CurrentFeverStage { get; private set; }
 
         private int beatPenaltyCounter;
         private readonly Debugger debugger = new Debugger("FeverEnergyBarModel");
-        public int EnergyValue { get; private set; }
 
         public event Action<BeatAccuracyResult> OnHit;
+        public int EnergyValue { get; private set; }
         public event Action<UpdateFeverEnergyBarEvent> OnUpdateFeverEnergyValue;
         public event Action<int> OnUpdateFeverStage;
 
@@ -48,12 +49,12 @@ namespace GameCore
             bool isCorrectHit = gameSetting.AccuracyPassThreshold >= 1 - beatAccuracyResult.AccuracyValue;
             if (isCorrectHit)
             {
-                changeValue = gameSetting.FeverEnergyIncrease;
+                changeValue = appProcessor.CurrentStageSettingContent.FeverEnergyIncrease;
                 beatPenaltyCounter = 0;
             }
             else
             {
-                changeValue = -gameSetting.FeverEnergyDecrease;
+                changeValue = -appProcessor.CurrentStageSettingContent.FeverEnergyDecrease;
             }
 
             AddEnergyValue(changeValue);
@@ -68,7 +69,7 @@ namespace GameCore
 
         private int GetEnergyBarMaxValue()
         {
-            int[] energyBarSetting = gameSetting.FeverEnergyBarSetting;
+            int[] energyBarSetting = appProcessor.CurrentStageSettingContent.FeverEnergyBarSetting;
             return energyBarSetting == null || energyBarSetting.Length == 0 ?
                 0 :
                 energyBarSetting.Sum();
@@ -114,7 +115,7 @@ namespace GameCore
         {
             int beforeFeverStage = CurrentFeverStage;
 
-            int[] energyBarSetting = gameSetting.FeverEnergyBarSetting;
+            int[] energyBarSetting = appProcessor.CurrentStageSettingContent.FeverEnergyBarSetting;
             int totalValue = 0;
 
             for (int i = 0; i < energyBarSetting.Length; i++)
@@ -141,7 +142,7 @@ namespace GameCore
             beatPenaltyCounter++;
 
             if (beatPenaltyCounter >= 2)
-                AddEnergyValue(-gameSetting.FeverEnergyDecrease);
+                AddEnergyValue(-appProcessor.CurrentStageSettingContent.FeverEnergyDecrease);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace GameCore.UnitTests
         private IGameSetting gameSetting;
         private IEventRegister eventRegister;
         private IFeverEnergyBarPresenter feverEnergyBarPresenter;
+        private IAppProcessor appProcessor;
+        private IStageSettingContent stageSettingContent;
 
         private Action<HalfBeatEvent> halfBeatEventCallback;
         private Action<UpdateFeverEnergyBarEvent> updateFeverEnergyBarEventCallback;
@@ -26,6 +28,7 @@ namespace GameCore.UnitTests
         {
             base.Setup();
 
+            InitAppProcessorMock();
             InitBeaterModelMock();
             InitGameSettingMock();
             InitEventRegisterMock();
@@ -41,6 +44,16 @@ namespace GameCore.UnitTests
             feverEnergyBarModel.OnUpdateFeverStage += updateFeverStageEventCallback;
 
             feverEnergyBarModel.ExecuteModelInit();
+        }
+
+        private void InitAppProcessorMock()
+        {
+            appProcessor = Substitute.For<IAppProcessor>();
+            stageSettingContent = Substitute.For<IStageSettingContent>();
+
+            appProcessor.CurrentStageSettingContent.Returns(stageSettingContent);
+
+            Container.Bind<IAppProcessor>().FromInstance(appProcessor).AsSingle();
         }
 
         private void InitFeverEnergyBarPresenterMock()
@@ -87,17 +100,17 @@ namespace GameCore.UnitTests
 
         private void GivenFeverEnergyBarSetting(params int[] energyBarSettingArray)
         {
-            gameSetting.FeverEnergyBarSetting.Returns(energyBarSettingArray);
+            stageSettingContent.FeverEnergyBarSetting.Returns(energyBarSettingArray);
         }
 
         private void GivenFeverEnergyDecrease(int feverEnergyDecrease)
         {
-            gameSetting.FeverEnergyDecrease.Returns(feverEnergyDecrease);
+            stageSettingContent.FeverEnergyDecrease.Returns(feverEnergyDecrease);
         }
 
         private void GivenFeverEnergyIncrease(int feverEnergyIncrease)
         {
-            gameSetting.FeverEnergyIncrease.Returns(feverEnergyIncrease);
+            stageSettingContent.FeverEnergyIncrease.Returns(feverEnergyIncrease);
         }
 
         private void GivenBeatAccuracyResult(BeatTimingDirection beatTimingDirection, float accuracyValue)
@@ -456,7 +469,7 @@ namespace GameCore.UnitTests
 
             feverEnergyBarModel.Hit();
             LastUpdateFeverEnergyBarEventShouldBe(10, 20);
-            
+
             GivenBeatAccuracyResult(BeatTimingDirection.Early, 0.3f);
             feverEnergyBarModel.Hit();
             LastUpdateFeverEnergyBarEventShouldBe(20, 15);

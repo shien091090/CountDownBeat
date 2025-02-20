@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SNShien.Common.DataTools;
 using SNShien.Common.MathTools;
 using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
@@ -116,7 +115,7 @@ namespace GameCore
 
                 scoreBallView.Init();
                 scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting, gameSetting.ScoreBallFrameColorByFlagSetting);
-                scoreBall.Init(gameSetting.ScoreBallStartCountDownValue, CreateFlagNumber());
+                scoreBall.Init(appProcessor.CurrentStageSettingContent.ScoreBallStartCountDownValue, CreateFlagNumber());
 
                 inFieldScoreBallList.Add(scoreBall);
                 OnSpawnScoreBall?.Invoke(scoreBall);
@@ -125,7 +124,7 @@ namespace GameCore
 
         private int CreateFlagNumber()
         {
-            Dictionary<int, int> weightSetting = gameSetting.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
+            Dictionary<int, int> weightSetting = appProcessor.CurrentStageSettingContent.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
 
             if (weightSetting.Count == 0)
                 throw new NullReferenceException("ScoreBallFlagWeightSetting is empty");

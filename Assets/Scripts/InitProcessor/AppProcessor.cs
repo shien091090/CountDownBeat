@@ -17,7 +17,7 @@ namespace GameCore
         [Inject] private IEventInvoker eventInvoker;
         [Inject] private IViewManager viewManager;
 
-        public StageSettingContent CurrentStageSettingContent { get; private set; }
+        public IStageSettingContent CurrentStageSettingContent { get; private set; }
 
         private readonly Debugger debugger = new Debugger(DEBUGGER_KEY);
         private bool isInit;

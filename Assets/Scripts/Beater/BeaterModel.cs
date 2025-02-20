@@ -112,7 +112,7 @@ namespace GameCore
             eventInvoker.SendEvent(new BeatEvent(isCountDownBeat));
         }
 
-        private void StartStage(StageSettingContent stageSetting)
+        private void StartStage(IStageSettingContent stageSetting)
         {
             audioManager
                 .PlayWithCallback(stageSetting.AudioKey)

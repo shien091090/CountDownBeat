@@ -19,6 +19,7 @@ namespace GameCore.UnitTests
         private IViewManager viewManager;
         private IBeaterModel beaterModel;
         private IFeverEnergyBarModel feverEnergyBarModel;
+        private IStageSettingContent stageSettingContent;
 
         private Action<BeatEvent> beatEventCallback;
         private Action<ScoreBall> spawnScoreBallEventCallback;
@@ -31,12 +32,12 @@ namespace GameCore.UnitTests
         {
             base.Setup();
 
+            InitAppProcessorMock();
             InitEventRegisterMock();
             InitGameSettingMock();
             InitScoreBallHandlerPresenterMock();
             InitEventInvokerMock();
             InitViewManagerMock();
-            InitAppProcessorMock();
             InitBeaterModelMock();
             InitFeverEnergyBarModelMock();
 
@@ -89,6 +90,9 @@ namespace GameCore.UnitTests
         private void InitAppProcessorMock()
         {
             appProcessor = Substitute.For<IAppProcessor>();
+            stageSettingContent = Substitute.For<IStageSettingContent>();
+
+            appProcessor.CurrentStageSettingContent.Returns(stageSettingContent);
 
             GivenSpawnScoreBallBeatSetting(new List<int> { 0 });
 
@@ -141,25 +145,22 @@ namespace GameCore.UnitTests
 
         private void GivenStartCountDownValueSetting(int startCountDownValue)
         {
-            gameSetting.ScoreBallStartCountDownValue.Returns(startCountDownValue);
+            stageSettingContent.ScoreBallStartCountDownValue.Returns(startCountDownValue);
         }
 
         private void GivenSpawnScoreBallBeatSetting(List<int> spawnBeatIndexList)
         {
-            StageSettingContent settingContent = new StageSettingContent();
-            settingContent.SetSpawnBeatIndexList(spawnBeatIndexList);
-
-            appProcessor.CurrentStageSettingContent.Returns(settingContent);
+            stageSettingContent.SpawnBeatIndexList.Returns(spawnBeatIndexList);
         }
 
         private void GivenScoreBallFlagWeightSettingIsEmpty()
         {
-            gameSetting.GetScoreBallFlagWeightSetting(Arg.Any<int>()).Returns(new Dictionary<int, int>());
+            stageSettingContent.GetScoreBallFlagWeightSetting(Arg.Any<int>()).Returns(new Dictionary<int, int>());
         }
 
         private void GivenScoreBallFlagWeightSetting(int currentFeverStage, Dictionary<int, int> flagWeightSetting)
         {
-            gameSetting.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
+            stageSettingContent.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
         }
 
         private void CallBeatEventCallback()

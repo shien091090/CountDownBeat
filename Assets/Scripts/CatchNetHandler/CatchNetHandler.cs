@@ -16,6 +16,7 @@ namespace GameCore
         [Inject] private ICatchNetHandlerPresenter presenter;
         [Inject] private IFeverEnergyBarModel feverEnergyBarModel;
         [Inject] private IScoreBallHandler scoreBallHandler;
+        [Inject] private IAppProcessor appProcessor;
 
         public int CurrentCatchNetLimit { get; private set; }
 
@@ -51,13 +52,13 @@ namespace GameCore
         {
             UpdateCurrentCatchNetLimit();
 
-            if (CurrentInFieldCatchNetAmount < CurrentCatchNetLimit)
+            if (CurrentInFieldCatchNetAmount <= CurrentCatchNetLimit)
                 SpawnCatchNet();
 
             ICatchNetPresenter catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
             OnSettleCatchNet?.Invoke(catchNetPresenter);
 
-            eventInvoker.SendEvent(new GetScoreEvent(gameSetting.SuccessSettleScore));
+            eventInvoker.SendEvent(new GetScoreEvent(appProcessor.CurrentStageSettingContent.SuccessSettleScore));
         }
 
         private void Init()
@@ -94,7 +95,7 @@ namespace GameCore
 
         private void UpdateCurrentCatchNetLimit()
         {
-            CurrentCatchNetLimit = gameSetting.CatchNetLimitByFeverStageSetting?.GetValueOrDefault(feverEnergyBarModel.CurrentFeverStage, 0) ?? 0;
+            CurrentCatchNetLimit = appProcessor.CurrentStageSettingContent.CatchNetLimitByFeverStageSetting?.GetValueOrDefault(feverEnergyBarModel.CurrentFeverStage, 0) ?? 0;
         }
 
         private void SpawnCatchNet()
@@ -134,7 +135,7 @@ namespace GameCore
                     return flagNum;
             }
 
-            Dictionary<int, int> flagWeightSetting = gameSetting.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
+            Dictionary<int, int> flagWeightSetting = appProcessor.CurrentStageSettingContent.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
 
             if (flagWeightSetting.Count == 0)
                 throw new NullReferenceException("CatchNetFlagWeightSetting is empty");

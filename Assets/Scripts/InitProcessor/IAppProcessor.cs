@@ -2,7 +2,7 @@
 {
     public interface IAppProcessor
     {
-        StageSettingContent CurrentStageSettingContent { get; }
+        IStageSettingContent CurrentStageSettingContent { get; }
         void ExecuteEnterStage(string audioKey);
         void EnterSelectionMenu();
     }
