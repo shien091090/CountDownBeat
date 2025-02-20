@@ -13,33 +13,85 @@ namespace GameCore
     {
         private const string DEBUGGER_KEY = "SingleStageSettingWindow";
 
-        [VerticalGroup("Split/Left")] [ShowInInspector] [ReadOnly] private StageSettingScriptableObject stageSetting;
+        [VerticalGroup("Split/Left")]
+        [ShowInInspector]
+        [ReadOnly]
+        private StageSettingScriptableObject stageSetting;
 
-        [BoxGroup("Split/Left/自動聯動設定", CenterLabel = true)] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")]
+        [BoxGroup("Split/Left/曲目設定", CenterLabel = true)]
+        [TitleGroup("Split/Left/曲目設定/自動連動設定")]
+        [LabelWidth(140)]
+        [ReadOnly]
         public string timeLength;
 
-        [BoxGroup("Split/Left/自動聯動設定")] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] [GUIColor("#6FF06D")]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/自動連動設定")]
+        [LabelWidth(140)]
+        [GUIColor("#6FF06D")]
+        [ReadOnly]
         public int beatAmount;
 
-        [BoxGroup("Split/Left/自動聯動設定")] [LabelWidth(140)] [ReadOnly] [VerticalGroup("Split/Left")] [GUIColor("#6FF06D")]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/自動連動設定")]
+        [LabelWidth(140)]
+        [GUIColor("#6FF06D")]
+        [ReadOnly]
         public int spawnScoreBallAmount;
 
-        [HorizontalGroup("Split", Width = 350)] [LabelWidth(140)] [BoxGroup("Split/Left/手動設定", CenterLabel = true)] [OnValueChanged("OnSetEventReference")] [Required]
+        [HorizontalGroup("Split", Width = 350)]
+        [BoxGroup("Split/Left/曲目設定", CenterLabel = true)]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [LabelWidth(140)]
+        [OnValueChanged("OnSetEventReference")]
+        [Required]
         public EventReference fmodEventReference;
 
-        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [Required] [OnValueChanged("OnSetAudioKey")]
+        [TitleGroup("Split/Left/曲目設定-手動設定/Test")]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [LabelWidth(140)]
+        [OnValueChanged("OnSetAudioKey")]
+        [Required]
         public string audioKey;
 
-        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [MinValue(1)] [OnValueChanged("OnSetBpm")]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [LabelWidth(140)]
+        [MinValue(1)]
+        [OnValueChanged("OnSetBpm")]
         public int bpm;
 
-        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [MinValue(1)] [OnValueChanged("OnSetCountDownBeatFreq")]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [LabelWidth(140)]
+        [MinValue(1)]
+        [OnValueChanged("OnSetCountDownBeatFreq")]
         public int countDownBeatFreq;
 
-        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [OnValueChanged("OnSetHpDecreasePerSecond")]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [LabelWidth(140)]
+        [OnValueChanged("OnSetHpDecreasePerSecond")]
         public float hpDecreasePerSecond;
 
-        [BoxGroup("Split/Left/手動設定")] [LabelWidth(140)] [OnValueChanged("OnSetHpIncreasePerCatch")]
+        [BoxGroup("Split/Left/分數球設定", CenterLabel = true)]
+        [LabelWidth(140)]
+        [MinValue(1)]
+        public float startCountDownValue;
+
+        [BoxGroup("Split/Left/分數球設定")]
+        [LabelWidth(140)]
+        [MinValue(0)]
+        public float successSettleScore;
+
+        [BoxGroup("Split/Left/分數球設定")]
+        [LabelWidth(140)]
+        public List<ScoreBallFlagWeightByFeverStageSetting> scoreBallFlagWeightSetting;
+
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [LabelWidth(140)]
+        [OnValueChanged("OnSetHpIncreasePerCatch")]
         public float hpIncreasePerCatch;
 
         [HorizontalGroup("Split", Width = 140)]
@@ -93,14 +145,16 @@ namespace GameCore
             ParseSpawnScoreBallAmount();
         }
 
-        [VerticalGroup("Split/Left")]
-        [Button("自動生成", ButtonSizes.Large, Icon = SdfIconType.PlusCircleFill)]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
         [EnableIf("@beatAmount > 0")]
+        [Button("自動生成", ButtonSizes.Large, Icon = SdfIconType.PlusCircleFill)]
         public void AutoCreateSpawnBeatSetting()
         {
             debugger.ShowLog("AutoCreateSpawnBeatSetting");
             spawnBeatSettingData = new bool[1, beatAmount];
         }
+
 
         private string ConvertTimeLength(int length)
         {
