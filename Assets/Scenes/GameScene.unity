@@ -277,6 +277,7 @@ MonoBehaviour:
   - {fileID: 7850605610804480675, guid: b93071ecd5c5ecb4e8ca4c54fdc4b8a7, type: 3}
   - {fileID: 7850605610804480675, guid: 6060c33d1e3eb7b4c922ac3a49708b90, type: 3}
   - {fileID: 7850605610804480675, guid: cc7a67ade8ff1054bbb81f10e943870c, type: 3}
+  - {fileID: 7850605610804480675, guid: ee5eb7392df5ec242922eddb05a79665, type: 3}
   isAutoResponsiveBySafeArea: 1
   deviceScreenSizeReferenceSetting: {fileID: 11400000, guid: 00c8e7839c5090a48bf66e647223c0c7, type: 2}
   deviceType: Samsung Galaxy S10+
