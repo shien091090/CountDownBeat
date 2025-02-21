@@ -46,7 +46,6 @@ namespace GameCore
         [Required]
         public EventReference fmodEventReference;
 
-        [TitleGroup("Split/Left/曲目設定-手動設定/Test")]
         [BoxGroup("Split/Left/曲目設定")]
         [TitleGroup("Split/Left/曲目設定/手動設定")]
         [LabelWidth(140)]
@@ -74,6 +73,12 @@ namespace GameCore
         [OnValueChanged("OnSetHpDecreasePerSecond")]
         public float hpDecreasePerSecond;
 
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [LabelWidth(140)]
+        [OnValueChanged("OnSetHpIncreasePerCatch")]
+        public float hpIncreasePerCatch;
+
         [BoxGroup("Split/Left/分數球設定", CenterLabel = true)]
         [LabelWidth(140)]
         [MinValue(1)]
@@ -86,13 +91,28 @@ namespace GameCore
 
         [BoxGroup("Split/Left/分數球設定")]
         [LabelWidth(140)]
+        [RequiredListLength(1, null)]
         public List<ScoreBallFlagWeightByFeverStageSetting> scoreBallFlagWeightSetting;
-
-        [BoxGroup("Split/Left/曲目設定")]
-        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        
+        [BoxGroup("Split/Left/捕獲網設定")]
         [LabelWidth(140)]
-        [OnValueChanged("OnSetHpIncreasePerCatch")]
-        public float hpIncreasePerCatch;
+        [RequiredListLength(1)]
+         public List<CatchNetLimitByFeverStageSetting> catchNetLimitSetting;
+         
+        [BoxGroup("Split/Left/Fever能量條設定")]
+        [LabelWidth(140)]
+        [RequiredListLength(1)]
+        public int[] feverEnergyBarPhaseSettings;
+        
+        [BoxGroup("Split/Left/Fever能量條設定")]
+        [LabelWidth(140)]
+        [MinValue(0)]
+        public int feverEnergyIncrease;
+        
+        [BoxGroup("Split/Left/Fever能量條設定")]
+        [LabelWidth(140)]
+        [MinValue(0)]
+        public int feverEnergyDecrease;
 
         [HorizontalGroup("Split", Width = 140)]
         [VerticalGroup("Split/Right")]
