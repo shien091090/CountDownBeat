@@ -142,12 +142,30 @@ namespace GameCore.UnitTests
 
         private void GivenCatchNetLimitByFeverStageSetting(Dictionary<int, int> limitByFeverStageSetting)
         {
-            stageSettingContent.CatchNetLimitByFeverStageSetting.Returns(limitByFeverStageSetting);
+            List<CatchNetLimitByFeverStageSetting> settings = new List<CatchNetLimitByFeverStageSetting>();
+            if (limitByFeverStageSetting != null)
+            {
+                foreach ((int feverStage, int limit) in limitByFeverStageSetting)
+                {
+                    settings.Add(new CatchNetLimitByFeverStageSetting(feverStage, limit));
+                }
+            }
+
+            stageSettingContent.CatchNetLimitByFeverStageSettings.Returns(settings);
         }
 
         private void GivenScoreBallFlagWeightSetting(int currentFeverStage, Dictionary<int, int> flagWeightSetting)
         {
-            stageSettingContent.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
+            List<ScoreBallFlagWeightDefine> settings = new List<ScoreBallFlagWeightDefine>();
+            if (flagWeightSetting != null)
+            {
+                foreach ((int flagNumber, int weight) in flagWeightSetting)
+                {
+                    settings.Add(new ScoreBallFlagWeightDefine(flagNumber, weight));
+                }
+            }
+
+            stageSettingContent.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(settings);
         }
 
         private void GivenTryOccupyPosSuccess(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)

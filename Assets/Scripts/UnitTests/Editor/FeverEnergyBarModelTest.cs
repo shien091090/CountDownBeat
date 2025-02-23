@@ -100,7 +100,7 @@ namespace GameCore.UnitTests
 
         private void GivenFeverEnergyBarSetting(params int[] energyBarSettingArray)
         {
-            stageSettingContent.FeverEnergyBarSetting.Returns(energyBarSettingArray);
+            stageSettingContent.FeverEnergyPhaseSettings.Returns(energyBarSettingArray);
         }
 
         private void GivenFeverEnergyDecrease(int feverEnergyDecrease)

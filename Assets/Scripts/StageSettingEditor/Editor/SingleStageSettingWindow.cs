@@ -42,15 +42,15 @@ namespace GameCore
         [BoxGroup("Split/Left/曲目設定", CenterLabel = true)]
         [TitleGroup("Split/Left/曲目設定/手動設定")]
         [LabelWidth(140)]
-        [OnValueChanged("OnSetEventReference")]
         [Required]
+        [OnValueChanged("OnSetEventReference")]
         public EventReference fmodEventReference;
 
         [BoxGroup("Split/Left/曲目設定")]
         [TitleGroup("Split/Left/曲目設定/手動設定")]
         [LabelWidth(140)]
-        [OnValueChanged("OnSetAudioKey")]
         [Required]
+        [OnValueChanged("OnSetAudioKey")]
         public string audioKey;
 
         [BoxGroup("Split/Left/曲目設定")]
@@ -79,40 +79,64 @@ namespace GameCore
         [OnValueChanged("OnSetHpIncreasePerCatch")]
         public float hpIncreasePerCatch;
 
-        [BoxGroup("Split/Left/分數球設定", CenterLabel = true)]
+        [BoxGroup("Split/Left/曲目設定")]
+        [TitleGroup("Split/Left/曲目設定/手動設定")]
+        [EnableIf("@beatAmount > 0")]
+        [Button("自動生成", ButtonSizes.Large, Icon = SdfIconType.PlusCircleFill)]
+        public void AutoCreateSpawnBeatSetting()
+        {
+            debugger.ShowLog("AutoCreateSpawnBeatSetting");
+            spawnBeatSettingData = new bool[1, beatAmount];
+        }
+
+        [BoxGroup("Split/Left/難度設定", CenterLabel = true)]
+        [TitleGroup("Split/Left/難度設定/分數球設定")]
         [LabelWidth(140)]
         [MinValue(1)]
-        public float startCountDownValue;
+        [OnValueChanged("OnSetStartCountDownValue")]
+        public int startCountDownValue;
 
-        [BoxGroup("Split/Left/分數球設定")]
+        [BoxGroup("Split/Left/難度設定")]
+        [TitleGroup("Split/Left/難度設定/分數球設定")]
         [LabelWidth(140)]
         [MinValue(0)]
-        public float successSettleScore;
+        [OnValueChanged("OnSetSuccessSettleScore")]
+        public int successSettleScore;
 
-        [BoxGroup("Split/Left/分數球設定")]
+        [BoxGroup("Split/Left/難度設定")]
+        [TitleGroup("Split/Left/難度設定/Fever能量條設定")]
         [LabelWidth(140)]
         [RequiredListLength(1, null)]
-        public List<ScoreBallFlagWeightByFeverStageSetting> scoreBallFlagWeightSetting;
-        
-        [BoxGroup("Split/Left/捕獲網設定")]
-        [LabelWidth(140)]
-        [RequiredListLength(1)]
-         public List<CatchNetLimitByFeverStageSetting> catchNetLimitSetting;
-         
-        [BoxGroup("Split/Left/Fever能量條設定")]
-        [LabelWidth(140)]
-        [RequiredListLength(1)]
-        public int[] feverEnergyBarPhaseSettings;
-        
-        [BoxGroup("Split/Left/Fever能量條設定")]
+        [OnValueChanged("OnSetFeverEnergyBarPhaseSetting")]
+        public int[] feverEnergyPhaseSettings;
+
+        [BoxGroup("Split/Left/難度設定")]
+        [TitleGroup("Split/Left/難度設定/Fever能量條設定")]
         [LabelWidth(140)]
         [MinValue(0)]
+        [OnValueChanged("OnSetFeverEnergyIncrease")]
         public int feverEnergyIncrease;
-        
-        [BoxGroup("Split/Left/Fever能量條設定")]
+
+        [BoxGroup("Split/Left/難度設定")]
+        [TitleGroup("Split/Left/難度設定/Fever能量條設定")]
         [LabelWidth(140)]
         [MinValue(0)]
+        [OnValueChanged("OnSetFeverEnergyDecrease")]
         public int feverEnergyDecrease;
+
+        [BoxGroup("Split/Left/難度設定")]
+        [TitleGroup("Split/Left/難度設定/Fever能量條設定")]
+        [LabelWidth(140)]
+        [RequiredListLength(1, null)]
+        [OnValueChanged("OnSetScoreBallFlagWeightSetting")]
+        public List<ScoreBallFlagWeightByFeverStageSetting> scoreBallFlagWeightSettings;
+
+        [BoxGroup("Split/Left/難度設定")]
+        [TitleGroup("Split/Left/難度設定/Fever能量條設定")]
+        [LabelWidth(140)]
+        [RequiredListLength(1, null)]
+        [OnValueChanged("OnSetCatchNetLimitSetting")]
+         public List<CatchNetLimitByFeverStageSetting> catchNetLimitSetting;
 
         [HorizontalGroup("Split", Width = 140)]
         [VerticalGroup("Split/Right")]
@@ -122,7 +146,9 @@ namespace GameCore
         public bool[,] spawnBeatSettingData;
 
         private readonly StageSettingContent settingContent;
+
         private readonly Debugger debugger;
+
         private EditorEventRef editorEventRef;
 
         private static bool DrawColoredEnumElement(Rect rect, bool value)
@@ -151,6 +177,15 @@ namespace GameCore
 
         private void InitData(StageSettingContent settingContent)
         {
+            InitFieldByScriptableObject(settingContent);
+            CheckRefreshBySetEventReference();
+            AutoCreateSpawnBeatSetting();
+            ParseSpawnBeatSetting(settingContent.SpawnBeatIndexList);
+            ParseSpawnScoreBallAmount();
+        }
+
+        private void InitFieldByScriptableObject(StageSettingContent settingContent)
+        {
             fmodEventReference = settingContent.FmodEventReference;
             editorEventRef = EventManager.EventFromGUID(fmodEventReference.Guid);
             audioKey = settingContent.AudioKey;
@@ -158,23 +193,14 @@ namespace GameCore
             countDownBeatFreq = settingContent.CountDownBeatFreq;
             hpDecreasePerSecond = settingContent.HpDecreasePerSecond;
             hpIncreasePerCatch = settingContent.HpIncreasePerCatch;
-
-            CheckRefreshBySetEventReference();
-            AutoCreateSpawnBeatSetting();
-            ParseSpawnBeatSetting(settingContent.SpawnBeatIndexList);
-            ParseSpawnScoreBallAmount();
+            startCountDownValue = settingContent.ScoreBallStartCountDownValue;
+            successSettleScore = settingContent.SuccessSettleScore;
+            scoreBallFlagWeightSettings = settingContent.ScoreBallFlagWeightSettings;
+            catchNetLimitSetting = settingContent.CatchNetLimitByFeverStageSettings;
+            feverEnergyPhaseSettings = settingContent.FeverEnergyPhaseSettings;
+            feverEnergyIncrease = settingContent.FeverEnergyIncrease;
+            feverEnergyDecrease = settingContent.FeverEnergyDecrease;
         }
-
-        [BoxGroup("Split/Left/曲目設定")]
-        [TitleGroup("Split/Left/曲目設定/手動設定")]
-        [EnableIf("@beatAmount > 0")]
-        [Button("自動生成", ButtonSizes.Large, Icon = SdfIconType.PlusCircleFill)]
-        public void AutoCreateSpawnBeatSetting()
-        {
-            debugger.ShowLog("AutoCreateSpawnBeatSetting");
-            spawnBeatSettingData = new bool[1, beatAmount];
-        }
-
 
         private string ConvertTimeLength(int length)
         {
@@ -247,6 +273,48 @@ namespace GameCore
                 return;
 
             beatAmount = ConvertBeatAmount(editorEventRef.Length, bpm);
+        }
+
+        private void OnSetFeverEnergyDecrease()
+        {
+            settingContent.SetFeverEnergyDecrease(feverEnergyDecrease);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetFeverEnergyIncrease()
+        {
+            settingContent.SetFeverEnergyIncrease(feverEnergyIncrease);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetFeverEnergyBarPhaseSetting()
+        {
+            settingContent.SetFeverEnergyBarPhaseSetting(feverEnergyPhaseSettings);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetCatchNetLimitSetting()
+        {
+            settingContent.SetCatchNetLimitSetting(catchNetLimitSetting);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetScoreBallFlagWeightSetting()
+        {
+            settingContent.SetScoreBallFlagWeightSetting(scoreBallFlagWeightSettings);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetSuccessSettleScore()
+        {
+            settingContent.SetSuccessSettleScore(successSettleScore);
+            EditorUtility.SetDirty(stageSetting);
+        }
+
+        private void OnSetStartCountDownValue()
+        {
+            settingContent.SetScoreBallStartCountDownValue(startCountDownValue);   
+            EditorUtility.SetDirty(stageSetting);
         }
 
         private void OnSetCountDownBeatFreq()

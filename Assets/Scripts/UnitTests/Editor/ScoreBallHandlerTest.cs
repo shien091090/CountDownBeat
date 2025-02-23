@@ -155,12 +155,21 @@ namespace GameCore.UnitTests
 
         private void GivenScoreBallFlagWeightSettingIsEmpty()
         {
-            stageSettingContent.GetScoreBallFlagWeightSetting(Arg.Any<int>()).Returns(new Dictionary<int, int>());
+            stageSettingContent.GetScoreBallFlagWeightSetting(Arg.Any<int>()).Returns(new List<ScoreBallFlagWeightDefine>());
         }
 
         private void GivenScoreBallFlagWeightSetting(int currentFeverStage, Dictionary<int, int> flagWeightSetting)
         {
-            stageSettingContent.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(flagWeightSetting);
+            List<ScoreBallFlagWeightDefine> settings = new List<ScoreBallFlagWeightDefine>();
+            if (flagWeightSetting != null)
+            {
+                foreach ((int flagNumber, int weight) in flagWeightSetting)
+                {
+                    settings.Add(new ScoreBallFlagWeightDefine(flagNumber, weight));
+                }
+            }
+
+            stageSettingContent.GetScoreBallFlagWeightSetting(currentFeverStage).Returns(settings);
         }
 
         private void CallBeatEventCallback()

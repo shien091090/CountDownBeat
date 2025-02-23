@@ -19,9 +19,9 @@ namespace GameCore
 
         private int beatPenaltyCounter;
         private readonly Debugger debugger = new Debugger("FeverEnergyBarModel");
+        public int EnergyValue { get; private set; }
 
         public event Action<BeatAccuracyResult> OnHit;
-        public int EnergyValue { get; private set; }
         public event Action<UpdateFeverEnergyBarEvent> OnUpdateFeverEnergyValue;
         public event Action<int> OnUpdateFeverStage;
 
@@ -69,7 +69,7 @@ namespace GameCore
 
         private int GetEnergyBarMaxValue()
         {
-            int[] energyBarSetting = appProcessor.CurrentStageSettingContent.FeverEnergyBarSetting;
+            int[] energyBarSetting = appProcessor.CurrentStageSettingContent.FeverEnergyPhaseSettings;
             return energyBarSetting == null || energyBarSetting.Length == 0 ?
                 0 :
                 energyBarSetting.Sum();
@@ -115,7 +115,7 @@ namespace GameCore
         {
             int beforeFeverStage = CurrentFeverStage;
 
-            int[] energyBarSetting = appProcessor.CurrentStageSettingContent.FeverEnergyBarSetting;
+            int[] energyBarSetting = appProcessor.CurrentStageSettingContent.FeverEnergyPhaseSettings;
             int totalValue = 0;
 
             for (int i = 0; i < energyBarSetting.Length; i++)

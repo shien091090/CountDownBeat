@@ -6,8 +6,8 @@ namespace GameCore
     {
         int ScoreBallStartCountDownValue { get; }
         int SuccessSettleScore { get; }
-        Dictionary<int, int> CatchNetLimitByFeverStageSetting { get; }
-        int[] FeverEnergyBarSetting { get; }
+        List<CatchNetLimitByFeverStageSetting> CatchNetLimitByFeverStageSettings { get; }
+        int[] FeverEnergyPhaseSettings { get; }
         int FeverEnergyIncrease { get; }
         int FeverEnergyDecrease { get; }
         List<int> SpawnBeatIndexList { get; }
@@ -15,7 +15,7 @@ namespace GameCore
         string AudioKey { get; }
         float HpDecreasePerSecond { get; }
         float HpIncreasePerCatch { get; }
-        Dictionary<int, int> GetScoreBallFlagWeightSetting(int feverStage);
+        List<ScoreBallFlagWeightDefine> GetScoreBallFlagWeightSetting(int feverStage);
         void SetHpDecreasePerSecond(float decreaseValue);
         void SetHpIncreasePerCatch(float increaseValue);
     }

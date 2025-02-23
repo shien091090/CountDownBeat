@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FMODUnity;
 using UnityEngine;
 
@@ -16,17 +17,16 @@ namespace GameCore
         [SerializeField] private float hpIncreasePerCatch;
         [SerializeField] private List<int> spawnBeatIndexList;
         [SerializeField] private int scoreBallStartCountDownValue;
-        [SerializeField] private Dictionary<int, Dictionary<int, int>> scoreBallFlagWeightSettingDict;
+        [SerializeField] private List<ScoreBallFlagWeightByFeverStageSetting> scoreBallFlagWeightSettings;
+        [SerializeField] private List<CatchNetLimitByFeverStageSetting> catchNetLimitByFeverStageSettings;
         [SerializeField] private int successSettleScore;
-        [SerializeField] private Dictionary<int, int> catchNetLimitByFeverStageSetting;
-        [SerializeField] private int[] feverEnergyBarSetting;
+        [SerializeField] private int[] feverEnergyPhaseSettings;
         [SerializeField] private int feverEnergyIncrease;
         [SerializeField] private int feverEnergyDecrease;
 
         public int ScoreBallStartCountDownValue => scoreBallStartCountDownValue;
         public int SuccessSettleScore => successSettleScore;
-        public Dictionary<int, int> CatchNetLimitByFeverStageSetting => catchNetLimitByFeverStageSetting;
-        public int[] FeverEnergyBarSetting => feverEnergyBarSetting;
+        public List<CatchNetLimitByFeverStageSetting> CatchNetLimitByFeverStageSettings => catchNetLimitByFeverStageSettings;
         public int FeverEnergyIncrease => feverEnergyIncrease;
         public int FeverEnergyDecrease => feverEnergyDecrease;
         public List<int> SpawnBeatIndexList => spawnBeatIndexList;
@@ -34,18 +34,19 @@ namespace GameCore
         public string AudioKey => audioKey;
         public float HpDecreasePerSecond => hpDecreasePerSecond;
         public float HpIncreasePerCatch => hpIncreasePerCatch;
+        public int[] FeverEnergyPhaseSettings => feverEnergyPhaseSettings;
+        public List<ScoreBallFlagWeightByFeverStageSetting> ScoreBallFlagWeightSettings => scoreBallFlagWeightSettings;
         public string StageTitle => stageTitle;
         public EventReference FmodEventReference => fmodEventReference;
         public int Bpm => bpm;
 
-        public Dictionary<int, int> GetScoreBallFlagWeightSetting(int feverStage)
+        public List<ScoreBallFlagWeightDefine> GetScoreBallFlagWeightSetting(int feverStage)
         {
-            if (scoreBallFlagWeightSettingDict.TryGetValue(feverStage, out Dictionary<int, int> result))
-            {
-                return result ?? new Dictionary<int, int>();
-            }
+            ScoreBallFlagWeightByFeverStageSetting match = scoreBallFlagWeightSettings.FirstOrDefault(x => x.FeverStage == feverStage);
+            if (match == null)
+                return new List<ScoreBallFlagWeightDefine>();
             else
-                return new Dictionary<int, int>();
+                return match.FlagWeightSettings;
         }
 
         public void SetHpDecreasePerSecond(float decreaseValue)
@@ -82,6 +83,41 @@ namespace GameCore
         public void SetCountDownBeatFreq(int freq)
         {
             countDownBeatFreq = freq;
+        }
+
+        public void SetScoreBallStartCountDownValue(int startCountDownValue)
+        {
+            scoreBallStartCountDownValue = startCountDownValue;
+        }
+
+        public void SetSuccessSettleScore(int successSettleScore)
+        {
+            this.successSettleScore = successSettleScore;
+        }
+
+        public void SetScoreBallFlagWeightSetting(List<ScoreBallFlagWeightByFeverStageSetting> flagWeightSetting)
+        {
+            scoreBallFlagWeightSettings = flagWeightSetting;
+        }
+
+        public void SetCatchNetLimitSetting(List<CatchNetLimitByFeverStageSetting> catchNetLimitSetting)
+        {
+            catchNetLimitByFeverStageSettings = catchNetLimitSetting;
+        }
+
+        public void SetFeverEnergyBarPhaseSetting(int[] feverEnergyPhaseSettings)
+        {
+            this.feverEnergyPhaseSettings = feverEnergyPhaseSettings;
+        }
+
+        public void SetFeverEnergyIncrease(int feverEnergyIncrease)
+        {
+            this.feverEnergyIncrease = feverEnergyIncrease;
+        }
+
+        public void SetFeverEnergyDecrease(int feverEnergyDecrease)
+        {
+            this.feverEnergyDecrease = feverEnergyDecrease;
         }
     }
 }

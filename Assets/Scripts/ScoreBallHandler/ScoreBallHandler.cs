@@ -124,12 +124,14 @@ namespace GameCore
 
         private int CreateFlagNumber()
         {
-            Dictionary<int, int> weightSetting = appProcessor.CurrentStageSettingContent.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
+            List<ScoreBallFlagWeightDefine> flagWeightSetting =
+                appProcessor.CurrentStageSettingContent.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
 
-            if (weightSetting.Count == 0)
+            if (flagWeightSetting.Count == 0)
                 throw new NullReferenceException("ScoreBallFlagWeightSetting is empty");
 
-            return RandomAlgorithm.GetRandomNumberByWeight(weightSetting);
+            Dictionary<int, int> flagWeightSettingDict = flagWeightSetting.ToDictionary(x => x.FlagNumber, x => x.Weight);
+            return RandomAlgorithm.GetRandomNumberByWeight(flagWeightSettingDict);
         }
 
         private void OnBeatEvent(BeatEvent eventInfo)

@@ -95,7 +95,9 @@ namespace GameCore
 
         private void UpdateCurrentCatchNetLimit()
         {
-            CurrentCatchNetLimit = appProcessor.CurrentStageSettingContent.CatchNetLimitByFeverStageSetting?.GetValueOrDefault(feverEnergyBarModel.CurrentFeverStage, 0) ?? 0;
+            List<CatchNetLimitByFeverStageSetting> settings = appProcessor.CurrentStageSettingContent.CatchNetLimitByFeverStageSettings;
+            CatchNetLimitByFeverStageSetting match = settings.FirstOrDefault(x => x.FeverStage == feverEnergyBarModel.CurrentFeverStage);
+            CurrentCatchNetLimit = match?.Limit ?? 0;
         }
 
         private void SpawnCatchNet()
@@ -135,12 +137,13 @@ namespace GameCore
                     return flagNum;
             }
 
-            Dictionary<int, int> flagWeightSetting = appProcessor.CurrentStageSettingContent.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
+            List<ScoreBallFlagWeightDefine> flagWeightSetting =
+                appProcessor.CurrentStageSettingContent.GetScoreBallFlagWeightSetting(feverEnergyBarModel.CurrentFeverStage);
 
             if (flagWeightSetting.Count == 0)
                 throw new NullReferenceException("CatchNetFlagWeightSetting is empty");
 
-            return RandomAlgorithm.GetRandomNumberByWeight(flagWeightSetting);
+            return RandomAlgorithm.GetRandomNumberByWeight(flagWeightSetting.ToDictionary(x => x.FlagNumber, x => x.Weight));
         }
 
         private void OnBeatEvent(BeatEvent eventInfo)
