@@ -6,7 +6,7 @@ using Zenject;
 namespace GameCore
 {
     [RequireComponent(typeof(ComputableColliderCrossDetector))]
-    public class ResetWallView : MonoBehaviour
+    public class DirectionFlagWallView : MonoBehaviour
     {
         [Inject] private IEventRegister eventRegister;
 
@@ -16,12 +16,12 @@ namespace GameCore
         private void SetEventRegister(bool isListen)
         {
             crossDetector.OnTriggerCross -= OnTriggerCross;
-            eventRegister.Unregister<ScoreBallOperateEvent>(OnOperateScoreBall);
+            eventRegister?.Unregister<ScoreBallOperateEvent>(OnOperateScoreBall);
 
             if (isListen)
             {
                 crossDetector.OnTriggerCross += OnTriggerCross;
-                eventRegister.Register<ScoreBallOperateEvent>(OnOperateScoreBall);
+                eventRegister?.Register<ScoreBallOperateEvent>(OnOperateScoreBall);
             }
         }
 
@@ -43,7 +43,7 @@ namespace GameCore
         {
             ScoreBallView scoreBallView = target.GetComponent<ScoreBallView>();
             if (scoreBallView != null)
-                scoreBallView.CrossResetWall();
+                scoreBallView.CrossDirectionFlagWall();
         }
 
         private void OnEnable()

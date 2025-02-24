@@ -54,7 +54,7 @@ namespace GameCore
             CheckRecordTrajectoryNode();
         }
 
-        public void CrossResetWall()
+        public void CrossDirectionFlagWall()
         {
             model.ResetToBeginning();
         }

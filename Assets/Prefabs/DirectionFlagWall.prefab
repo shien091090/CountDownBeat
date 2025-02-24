@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 6787001212748865999}
   - component: {fileID: 827718613540959840}
   m_Layer: 5
-  m_Name: ResetWall
+  m_Name: DirectionFlagWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
 using SNShien.Common.ProcessTools;
@@ -99,9 +100,9 @@ namespace GameCore
             operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
         }
 
-        public void CrossResetWall()
+        public void CrossDirectionFlagWall()
         {
-            presenter.CrossResetWall();
+            presenter.CrossDirectionFlagWall();
         }
 
         private void Awake()
