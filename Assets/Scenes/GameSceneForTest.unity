@@ -139,14 +139,85 @@ PrefabInstance:
       propertyPath: currentTrackingTarget
       value: 
       objectReference: {fileID: 2124925157604084871}
-    - target: {fileID: 6167900169279901987, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: isShowHighlightHintForTest
-      value: 1
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: showDebugHint
-      value: 1
+      propertyPath: serializationData.SerializationNodes.Array.size
+      value: 22
       objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[0]
+      value: '"path":"crossSuccessHintDict","value":{"$id":0,"$type":"System.Collections.Generic.Dictionary`2[[System.String,
+        mscorlib],[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib","comparer":{"$id":1,"$type":"System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib"},"$rlength":4,"$rcontent":[{"$k":"DownToUp","$v":$eref:0},{"$k":"LeftToRight","$v":$eref:1},{"$k":"UpToDown","$v":$eref:2},{"$k":"RightToLeft","$v":$eref:3}]}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[1]
+      value: '"path":"crossSuccessHintDict.{\"DownToUp\"}","value":$eref:0'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[2]
+      value: '"path":"crossSuccessHintDict.{\"LeftToRight\"}","value":$eref:1'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[3]
+      value: '"path":"crossSuccessHintDict.{\"RightToLeft\"}","value":$eref:3'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[4]
+      value: '"path":"crossSuccessHintDict.{\"UpToDown\"}","value":$eref:2'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.ReferencedUnityObjects.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[1].enterAngleBase
+      value: -180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[1].exitAngleRange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[1].enterAngleRange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.SerializationNodes.Array.data[0].Data
+      value: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.GameObject,
+        UnityEngine.CoreModule]], mscorlib
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.SerializationNodes.Array.data[0].Entry
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 302348015}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 1112190948}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[2]
+      value: 
+      objectReference: {fileID: 1821057330}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[3]
+      value: 
+      objectReference: {fileID: 1074267085}
     - target: {fileID: 7917381154423387411, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -173,11 +244,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7917381154423387411, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 7917381154423387411, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 300
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 7917381154423387411, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -235,6 +306,11 @@ PrefabInstance:
 --- !u!224 &302348012 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7917381154423387411, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+  m_PrefabInstance: {fileID: 302348011}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &302348015 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5819055571601380676, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
   m_PrefabInstance: {fileID: 302348011}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &752471837
@@ -350,6 +426,16 @@ PrefabInstance:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7850605610804480675, guid: 33213b6f51e15c14d91e170a160c8e17, type: 3}
   m_PrefabInstance: {fileID: 752471837}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1074267085 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2315760670820452830, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+  m_PrefabInstance: {fileID: 302348011}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1112190948 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8449356504429755012, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+  m_PrefabInstance: {fileID: 302348011}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1287694071
 GameObject:
@@ -517,6 +603,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1821057330 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 497374522566447799, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+  m_PrefabInstance: {fileID: 302348011}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1902988849
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,31 +964,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &650692496248241156
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6734054320149013452}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e80945bea0fe49128948da0e563bcea6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  isAutoResponsiveBySafeArea: 1
-  safeAreaRectRoot: {fileID: 0}
-  objectPoolManager: {fileID: 0}
-  randomPositionInRect: {fileID: 0}
 --- !u!95 &734643373759344157
 Animator:
   serializedVersion: 5
@@ -1265,7 +1331,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1476570584471532323}
-  - component: {fileID: 650692496248241156}
   m_Layer: 5
   m_Name: DirectionFlagWallHandler
   m_TagString: Untagged
