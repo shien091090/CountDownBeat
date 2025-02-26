@@ -22,14 +22,14 @@ namespace GameCore
         {
             CatchNetSpawnPos posInfo = RandomSpawnPosInfoList[spawnPosIndex];
             CatchNetView view =
-                objectPoolManager.SpawnGameObjectAndSetPosition<CatchNetView>(GameConst.PREFAB_NAME_CATCH_NET, posInfo.WorldPosition, TransformType.World);
+                objectPoolManager.SpawnGameObjectAndSetPosition<CatchNetView>(PrefabNameConst.CATCH_NET, posInfo.WorldPosition, TransformType.World);
 
             return view;
         }
 
         public void PlayCatchSuccessEffect(Vector3 position)
         {
-            objectPoolManager.SpawnGameObjectAndSetPosition(GameConst.PREFAB_NAME_CATCH_SUCCESS_EFFECT, position, TransformType.World);
+            objectPoolManager.SpawnGameObjectAndSetPosition(PrefabNameConst.CATCH_SUCCESS_EFFECT, position, TransformType.World);
         }
 
         public override void UpdateView()

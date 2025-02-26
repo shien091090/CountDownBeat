@@ -163,11 +163,11 @@ namespace GameCore.UnitTests
         //初始化時, 撥放當前關卡音樂
         public void play_current_stage_audio_when_init()
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1);
 
             beaterModel.ExecuteModelInit();
 
-            ShouldPlayWithCallBack(GameConst.AUDIO_NAME_BGM_1, 0);
+            ShouldPlayWithCallBack(AudioNameConst.AUDIO_NAME_BGM_1, 0);
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace GameCore.UnitTests
         //當收到音樂節拍事件時，若沒有達到分數球倒數拍點, 驗證BeatEvent事件中的參數
         public void send_beat_event_when_receive_bgm_beat_callback_and_not_count_down_beat()
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
             beaterModel.ExecuteModelInit();
 
@@ -201,7 +201,7 @@ namespace GameCore.UnitTests
         //當收到音樂節拍事件時, 若達到分數球倒數拍點, 驗證BeatEvent事件中的參數
         public void send_beat_event_when_receive_bgm_beat_callback_and_is_count_down_beat()
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 1);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 1);
 
             beaterModel.ExecuteModelInit();
 
@@ -222,7 +222,7 @@ namespace GameCore.UnitTests
         //收到兩個音樂節拍事件時, 會開始計算半拍時間並通知Presenter半拍時間差
         public void calculate_half_beat_time_offset_when_receive_two_bgm_beat_callback(float firstBeatTime, float secondBeatTime, float expectedHalfBeatTimeOffset)
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
             beaterModel.ExecuteModelInit();
 
@@ -239,7 +239,7 @@ namespace GameCore.UnitTests
         //持續收到音樂節拍事件時, 會動態調整半拍時間差並通知Presenter
         public void dynamic_adjust_half_beat_time_offset_when_receive_bgm_beat_callback()
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
             beaterModel.ExecuteModelInit();
 
@@ -268,7 +268,7 @@ namespace GameCore.UnitTests
         //以兩個半拍為範圍偵測拍點準度, 偵測點在下一個節拍前
         public void detect_beat_accuracy_and_detect_point_before_next_beat(float currentTime, float expectedAccuracy)
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
             beaterModel.ExecuteModelInit();
 
@@ -289,7 +289,7 @@ namespace GameCore.UnitTests
         //以兩個半拍為範圍偵測拍點準度, 偵測點在目前節拍後
         public void detect_beat_accuracy_and_detect_point_after_current_beat(float currentTime, float expectedAccuracy)
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
             beaterModel.ExecuteModelInit();
 
@@ -309,7 +309,7 @@ namespace GameCore.UnitTests
         //尚未收到音樂節拍事件時, 偵測拍點準度回傳Invalid
         public void detect_beat_accuracy_but_not_receive_beat_callback()
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
             beaterModel.ExecuteModelInit();
 
@@ -325,7 +325,7 @@ namespace GameCore.UnitTests
         public void update_half_beat_time_offset_and_detect_beat_accuracy_when_receive_beat_callback(float currentTime, BeatTimingDirection expectedBeatTimingDirection,
             float expectedAccuracy)
         {
-            GivenStageSettingContent(GameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
+            GivenStageSettingContent(AudioNameConst.AUDIO_NAME_BGM_1, countDownBeatFreq: 2);
 
             beaterModel.ExecuteModelInit();
 

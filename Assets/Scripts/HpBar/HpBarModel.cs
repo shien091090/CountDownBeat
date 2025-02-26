@@ -17,7 +17,7 @@ namespace GameCore
 
         public float MaxHp { get; private set; }
 
-        private readonly Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_HP_BAR_MODEL);
+        private readonly Debugger debugger = new Debugger(DebuggerKeyConst.HP_BAR_MODEL);
 
         public float CurrentHp { get; private set; }
         public event Action OnRelease;

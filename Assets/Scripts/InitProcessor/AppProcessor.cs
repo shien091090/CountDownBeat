@@ -26,7 +26,7 @@ namespace GameCore
         {
             CurrentStageSettingContent = stageSetting.GetStageSettingContent(audioKey) ?? throw new NullReferenceException();
             SetGameEventRegister(true);
-            eventInvoker.SendEvent(new SwitchSceneEvent(GameConst.SCENE_REPOSITION_ACTION_ENTER_GAME));
+            eventInvoker.SendEvent(new SwitchSceneEvent(SceneRepositionActionConst.ENTER_GAME));
         }
 
         public void EnterSelectionMenu()
@@ -66,7 +66,7 @@ namespace GameCore
             SetGameEventRegister(false);
 
             debugger.ShowLog("back to selection menu", true);
-            eventInvoker.SendEvent(new SwitchSceneEvent(GameConst.SCENE_REPOSITION_ACTION_BACK_TO_SELECTION_MENU));
+            eventInvoker.SendEvent(new SwitchSceneEvent(SceneRepositionActionConst.BACK_TO_SELECTION_MENU));
         }
     }
 }

@@ -23,7 +23,7 @@ namespace GameCore
         private readonly List<CatchNet> inFieldCatchNetList = new List<CatchNet>();
         private readonly DynamicMVPBinder dynamicMVPBinder = new DynamicMVPBinder();
 
-        private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_CATCH_NET_HANDLER);
+        private Debugger debugger = new Debugger(DebuggerKeyConst.CATCH_NET_HANDLER);
 
         public event Action<ICatchNet> OnSpawnCatchNet;
         public int CurrentInFieldCatchNetAmount => inFieldCatchNetList.Count(x => x.CurrentState == CatchNetState.Working);

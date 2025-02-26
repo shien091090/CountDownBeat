@@ -10,7 +10,7 @@ namespace GameCore
 
         public float CurrentTimer { get; private set; }
 
-        private readonly Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_BEATER_PRESENTER);
+        private readonly Debugger debugger = new Debugger(DebuggerKeyConst.BEATER_PRESENTER);
 
         private IBeaterModel model;
         private IBeaterView view;

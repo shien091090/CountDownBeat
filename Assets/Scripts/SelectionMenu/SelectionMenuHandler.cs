@@ -26,7 +26,7 @@ namespace GameCore
             switch (stageIndex)
             {
                 case 0:
-                    audioKey = GameConst.AUDIO_NAME_BGM_1;
+                    audioKey = AudioNameConst.AUDIO_NAME_BGM_1;
                     break;
             }
 

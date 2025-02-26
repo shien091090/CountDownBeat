@@ -26,7 +26,7 @@ namespace GameCore
 
         public int CurrentFlagNumber => presenter.CurrentFlagNumber;
 
-        private Debugger debugger = new Debugger(GameConst.DEBUGGER_KEY_SCORE_BALL_VIEW);
+        private Debugger debugger = new Debugger(DebuggerKeyConst.SCORE_BALL_VIEW);
         private IScoreBallPresenter presenter;
         private OperableUI operableUI;
         private Collider2DAdapterComponent colliderComponent;

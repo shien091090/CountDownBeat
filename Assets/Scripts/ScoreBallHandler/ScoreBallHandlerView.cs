@@ -13,7 +13,7 @@ namespace GameCore
         public IScoreBallView Spawn()
         {
             IScoreBallView scoreBallView = objectPoolManager.SpawnGameObjectAndSetPosition<ScoreBallView>(
-                GameConst.PREFAB_NAME_SCORE_BALL,
+                PrefabNameConst.SCORE_BALL,
                 randomPositionInRect.GetRandomPosition(),
                 TransformType.Local);
             
