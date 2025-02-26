@@ -5,7 +5,7 @@ namespace GameCore
         int CurrentFlagNumber { get; }
         void DragOver();
         void StartDrag();
-        void CrossDirectionFlagWall();
+        void CrossDirectionFlagWall(string crossDirectionKey);
         void TriggerCatch();
     }
 }

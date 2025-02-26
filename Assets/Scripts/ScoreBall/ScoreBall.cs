@@ -1,5 +1,6 @@
 using System;
 using SNShien.Common.ProcessTools;
+using SNShien.Common.TesterTools;
 
 namespace GameCore
 {
@@ -9,17 +10,21 @@ namespace GameCore
 
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
+        private readonly IScoreBallFlagChangeSetting flagChangeSetting;
+        private readonly Debugger debugger = new Debugger("ScoreBall");
 
         private IScoreBallPresenter presenter;
+
         public int CurrentCountDownValue { get; private set; }
         public int StartCountDownValue { get; private set; }
         public ScoreBallState CurrentState { get; private set; }
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker, IScoreBallFlagChangeSetting flagChangeSetting)
         {
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
+            this.flagChangeSetting = flagChangeSetting;
         }
 
         public event Action<int> OnUpdateCatchFlagNumber;
@@ -39,6 +44,13 @@ namespace GameCore
         public void SuccessSettle()
         {
             Hide();
+        }
+
+        public void ChangeFlagTo(int newFlagNumber)
+        {
+            FlagChangeResult result = flagChangeSetting.GetChangeFlagNumberInfo(CurrentFlagNumber, newFlagNumber);
+            if (result.IsChangeSuccess)
+                UpdateCurrentFlagNumber(result.FinalFlagNum);
         }
 
         public void ResetToBeginning()
@@ -71,7 +83,7 @@ namespace GameCore
 
         private void InitData(int catchFlagNumber)
         {
-            UpdateCatchFlagNumber(catchFlagNumber);
+            UpdateCurrentFlagNumber(catchFlagNumber);
             UpdateCurrentCountDownValue(StartCountDownValue);
             UpdateCurrentState(ScoreBallState.InCountDown);
         }
@@ -115,9 +127,9 @@ namespace GameCore
                 SetEventRegister(false);
         }
 
-        private void UpdateCatchFlagNumber(int catchFlagNumber)
+        private void UpdateCurrentFlagNumber(int flagNumber)
         {
-            CurrentFlagNumber = catchFlagNumber;
+            CurrentFlagNumber = flagNumber;
             OnUpdateCatchFlagNumber?.Invoke(CurrentFlagNumber);
         }
 

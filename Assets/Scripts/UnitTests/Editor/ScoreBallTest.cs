@@ -13,6 +13,7 @@ namespace GameCore.UnitTests
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
         private IScoreBallPresenter presenter;
+        private IScoreBallFlagChangeSetting flagChangeSetting;
 
         private Action<BeatEvent> beatEventCallback;
         private Action scoreBallBeatEventCallback;
@@ -25,8 +26,9 @@ namespace GameCore.UnitTests
         public void Setup()
         {
             InitEventHandlerMock();
+            flagChangeSetting = Substitute.For<IScoreBallFlagChangeSetting>();
 
-            scoreBall = new ScoreBall(eventRegister, eventInvoker);
+            scoreBall = new ScoreBall(eventRegister, eventInvoker, flagChangeSetting);
 
             presenter = Substitute.For<IScoreBallPresenter>();
             scoreBall.BindPresenter(presenter);
@@ -523,5 +525,50 @@ namespace GameCore.UnitTests
         }
 
         #endregion
+
+        #region 更換旗標
+
+        [Test]
+        //更換旗標時, 若旗標更換設定判斷為通過則更換旗標
+        public void change_flag_number_when_check_setting_pass()
+        {
+            GivenGetChangeFlagNumberInfo(5, 10, 11);
+
+            scoreBall.Init(10, 5);
+            scoreBall.ChangeFlagTo(10);
+
+            CurrentFlagNumberShouldBe(11);
+        }
+
+        [Test]
+        //更換旗標時, 若旗標更換設定判斷為不通過則不更換旗標
+        public void do_not_change_flag_number_when_check_setting_fail()
+        {
+            GivenGetChangeFlagNumberInfoReturnFail();
+
+            scoreBall.Init(10, 5);
+            scoreBall.ChangeFlagTo(10);
+
+            CurrentFlagNumberShouldBe(5);
+        }
+
+        //若不存在旗標更換設定, 則更換時直接跳過
+
+        #endregion
+
+        private void CurrentFlagNumberShouldBe(int expectedFlagNumber)
+        {
+            Assert.AreEqual(expectedFlagNumber, scoreBall.CurrentFlagNumber);
+        }
+
+        private void GivenGetChangeFlagNumberInfoReturnFail()
+        {
+            flagChangeSetting.GetChangeFlagNumberInfo(Arg.Any<int>(), Arg.Any<int>()).Returns(FlagChangeResult.CreateFailInstance());
+        }
+
+        private void GivenGetChangeFlagNumberInfo(int oldFlagNum, int newFlagNum, int expectedFinalFlagNum)
+        {
+            flagChangeSetting.GetChangeFlagNumberInfo(oldFlagNum, newFlagNum).Returns(FlagChangeResult.CreateSuccessInstance(expectedFinalFlagNum));
+        }
     }
 }

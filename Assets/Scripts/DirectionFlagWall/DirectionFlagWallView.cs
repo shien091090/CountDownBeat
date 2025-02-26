@@ -39,11 +39,11 @@ namespace GameCore
                 computableCollider.RemoveTrackingTarget();
         }
 
-        private void OnTriggerCross(GameObject target)
+        private void OnTriggerCross(GameObject target, ComputableColliderCrossDetector.CrossDetectorCondition crossInfo)
         {
             ScoreBallView scoreBallView = target.GetComponent<ScoreBallView>();
             if (scoreBallView != null)
-                scoreBallView.CrossDirectionFlagWall();
+                scoreBallView.CrossDirectionFlagWall(crossInfo.Key);
         }
 
         private void OnEnable()

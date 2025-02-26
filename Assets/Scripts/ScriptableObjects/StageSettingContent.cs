@@ -17,6 +17,7 @@ namespace GameCore
         [SerializeField] private float hpIncreasePerCatch;
         [SerializeField] private List<int> spawnBeatIndexList;
         [SerializeField] private int scoreBallStartCountDownValue;
+        [SerializeField] private IScoreBallFlagChangeSetting flagChangeSetting;
         [SerializeField] private List<ScoreBallFlagWeightByFeverStageSetting> scoreBallFlagWeightSettings;
         [SerializeField] private List<CatchNetLimitByFeverStageSetting> catchNetLimitByFeverStageSettings;
         [SerializeField] private int successSettleScore;
@@ -34,6 +35,7 @@ namespace GameCore
         public string AudioKey => audioKey;
         public float HpDecreasePerSecond => hpDecreasePerSecond;
         public float HpIncreasePerCatch => hpIncreasePerCatch;
+        public IScoreBallFlagChangeSetting FlagChangeSetting => flagChangeSetting;
         public int[] FeverEnergyPhaseSettings => feverEnergyPhaseSettings;
         public List<ScoreBallFlagWeightByFeverStageSetting> ScoreBallFlagWeightSettings => scoreBallFlagWeightSettings;
         public string StageTitle => stageTitle;

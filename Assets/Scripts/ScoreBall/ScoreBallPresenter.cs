@@ -54,9 +54,25 @@ namespace GameCore
             CheckRecordTrajectoryNode();
         }
 
-        public void CrossDirectionFlagWall()
+        public void CrossDirectionFlagWall(string crossDirectionKey)
         {
-            model.ResetToBeginning();
+            int newFlagNumber = 0;
+            switch (crossDirectionKey)
+            {
+                case CrossWallDirectionConst.DOWN_TO_UP:
+                    break;
+
+                case CrossWallDirectionConst.LEFT_TO_RIGHT:
+                    break;
+
+                case CrossWallDirectionConst.UP_TO_DOWN:
+                    break;
+
+                case CrossWallDirectionConst.RIGHT_TO_LEFT:
+                    break;
+            }
+            
+            model.ChangeFlagTo(newFlagNumber);
         }
 
         public void TriggerCatch()

@@ -100,9 +100,9 @@ namespace GameCore
             operableUI.UpdatePerFrame(deltaTimeGetter.deltaTime);
         }
 
-        public void CrossDirectionFlagWall()
+        public void CrossDirectionFlagWall(string crossDirectionKey)
         {
-            presenter.CrossDirectionFlagWall();
+            presenter.CrossDirectionFlagWall(crossDirectionKey);
         }
 
         private void Awake()
