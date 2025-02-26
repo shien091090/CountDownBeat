@@ -142,47 +142,69 @@ PrefabInstance:
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: serializationData.SerializationNodes.Array.size
-      value: 22
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: serializationData.PrefabModifications.Array.size
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[0].exitAngleBase
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[2].exitAngleBase
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[3].exitAngleBase
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: serializationData.PrefabModifications.Array.data[0]
-      value: '"path":"crossSuccessHintDict","value":{"$id":0,"$type":"System.Collections.Generic.Dictionary`2[[System.String,
-        mscorlib],[UnityEngine.GameObject, UnityEngine.CoreModule]], mscorlib","comparer":{"$id":1,"$type":"System.Collections.Generic.GenericEqualityComparer`1[[System.String,
-        mscorlib]], mscorlib"},"$rlength":4,"$rcontent":[{"$k":"DownToUp","$v":$eref:0},{"$k":"LeftToRight","$v":$eref:1},{"$k":"UpToDown","$v":$eref:2},{"$k":"RightToLeft","$v":$eref:3}]}'
-      objectReference: {fileID: 0}
-    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: serializationData.PrefabModifications.Array.data[1]
       value: '"path":"crossSuccessHintDict.{\"DownToUp\"}","value":$eref:0'
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: serializationData.PrefabModifications.Array.data[2]
+      propertyPath: serializationData.PrefabModifications.Array.data[1]
       value: '"path":"crossSuccessHintDict.{\"LeftToRight\"}","value":$eref:1'
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: serializationData.PrefabModifications.Array.data[2]
+      value: '"path":"crossSuccessHintDict.{\"RightToLeft\"}","value":$eref:2'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: serializationData.PrefabModifications.Array.data[3]
-      value: '"path":"crossSuccessHintDict.{\"RightToLeft\"}","value":$eref:3'
+      value: '"path":"crossSuccessHintDict.{\"UpToDown\"}","value":$eref:3'
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: serializationData.PrefabModifications.Array.data[4]
-      value: '"path":"crossSuccessHintDict.{\"UpToDown\"}","value":$eref:2'
+      propertyPath: crossDetectorConditions.Array.data[0].enterAngleBase
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: serializationData.ReferencedUnityObjects.Array.size
-      value: 0
+      propertyPath: crossDetectorConditions.Array.data[0].exitAngleRange
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: crossDetectorConditions.Array.data[1].enterAngleBase
-      value: -180
+      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: crossDetectorConditions.Array.data[1].exitAngleRange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[2].enterAngleBase
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[2].exitAngleRange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[3].exitAngleRange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
+      propertyPath: crossDetectorConditions.Array.data[0].enterAngleRange
       value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
@@ -190,13 +212,12 @@ PrefabInstance:
       value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: serializationData.SerializationNodes.Array.data[0].Data
-      value: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.GameObject,
-        UnityEngine.CoreModule]], mscorlib
+      propertyPath: crossDetectorConditions.Array.data[2].enterAngleRange
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
-      propertyPath: serializationData.SerializationNodes.Array.data[0].Entry
-      value: 7
+      propertyPath: crossDetectorConditions.Array.data[3].enterAngleRange
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.size
@@ -213,11 +234,11 @@ PrefabInstance:
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[2]
       value: 
-      objectReference: {fileID: 1821057330}
+      objectReference: {fileID: 1074267085}
     - target: {fileID: 6787001212748865999, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: serializationData.PrefabModificationsReferencedUnityObjects.Array.data[3]
       value: 
-      objectReference: {fileID: 1074267085}
+      objectReference: {fileID: 1821057330}
     - target: {fileID: 7917381154423387411, guid: f0d3143df880dda42b66010e9cc91daf, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
