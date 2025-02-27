@@ -50,7 +50,7 @@ namespace GameCore
         {
             FlagChangeResult result = flagChangeSetting.GetChangeFlagNumberInfo(CurrentFlagNumber, newFlagNumber);
             if (result.IsChangeSuccess)
-                UpdateCurrentFlagNumber(result.FinalFlagNum);
+                UpdateCurrentFlagNumber(result.ResultFlagNum);
         }
 
         public void ResetToBeginning()

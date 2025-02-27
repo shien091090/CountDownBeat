@@ -74,9 +74,9 @@ namespace GameCore.UnitTests
             flagChangeSetting.GetChangeFlagNumberInfo(Arg.Any<int>(), Arg.Any<int>()).Returns(FlagChangeResult.CreateFailInstance());
         }
 
-        private void GivenChangeFlagNumberInfo(int oldFlagNum, int newFlagNum, int expectedFinalFlagNum)
+        private void GivenChangeFlagNumberInfo(int oldFlagNum, int newFlagNum, int expectedResultFlagNum)
         {
-            flagChangeSetting.GetChangeFlagNumberInfo(oldFlagNum, newFlagNum).Returns(FlagChangeResult.CreateSuccessInstance(expectedFinalFlagNum));
+            flagChangeSetting.GetChangeFlagNumberInfo(oldFlagNum, newFlagNum).Returns(FlagChangeResult.CreateSuccessInstance(expectedResultFlagNum));
         }
 
         private void CallBeatEventCallback(bool isCountDownBeat = true)

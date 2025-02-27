@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -6,16 +5,11 @@ namespace GameCore
 {
     public class ScoreBallFlagChangeScriptableObject : SerializedScriptableObject, IScoreBallFlagChangeSetting
     {
-        [SerializeField] private List<FlagChangeDefine> settingList;
+        [SerializeField] private ScoreBallFlagChangeSetting setting;
 
         public FlagChangeResult GetChangeFlagNumberInfo(int oldFlagNum, int newFlagNum)
         {
-            return FlagChangeResult.CreateSuccessInstance(newFlagNum);
-        }
-
-        public void SetDefineList(List<FlagChangeDefine> defineList)
-        {
-            this.settingList = defineList;
+            return setting.GetChangeFlagNumberInfo(oldFlagNum, newFlagNum);
         }
     }
 }

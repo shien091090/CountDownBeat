@@ -3,21 +3,23 @@ using UnityEngine;
 namespace GameCore
 {
     [System.Serializable]
-    public class FlagChangeDefine
+    public class FlagChangeResultDefine
     {
-        [SerializeField] private int flagNum;
         [SerializeField] private int newFlagNum;
         [SerializeField] private int resultFlagNum;
 
-        public int ResultFlagNum => resultFlagNum;
         public int NewFlagNum => newFlagNum;
-        public int FlagNum => flagNum;
+        public int ResultFlagNum => resultFlagNum;
 
-        public FlagChangeDefine(int flagNum, int newFlagNum, int resultFlagNum)
+        public FlagChangeResultDefine(int newFlagNum, int resultFlagNum)
         {
-            this.flagNum = flagNum;
             this.newFlagNum = newFlagNum;
             this.resultFlagNum = resultFlagNum;
+        }
+
+        public void SetResultFlagNum(int newResultFlagNum)
+        {
+            resultFlagNum = newResultFlagNum;
         }
     }
 }
