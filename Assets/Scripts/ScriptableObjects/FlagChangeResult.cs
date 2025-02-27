@@ -2,8 +2,8 @@ namespace GameCore
 {
     public class FlagChangeResult
     {
-        public int FinalFlagNum { get; set; }
-        public bool IsChangeSuccess { get; set; }
+        public int FinalFlagNum { get; }
+        public bool IsChangeSuccess { get; }
 
         public static FlagChangeResult CreateSuccessInstance(int finalFlagNum)
         {
@@ -12,13 +12,13 @@ namespace GameCore
 
         public static FlagChangeResult CreateFailInstance()
         {
-            return new FlagChangeResult(changeSuccess: false);
+            return new FlagChangeResult(isChangeSuccess: false);
         }
 
-        private FlagChangeResult(int finalFlagNum = -1, bool changeSuccess = false)
+        private FlagChangeResult(int finalFlagNum = -1, bool isChangeSuccess = false)
         {
             FinalFlagNum = finalFlagNum;
-            IsChangeSuccess = true;
+            IsChangeSuccess = isChangeSuccess;
         }
     }
 }

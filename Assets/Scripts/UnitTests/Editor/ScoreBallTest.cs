@@ -69,6 +69,16 @@ namespace GameCore.UnitTests
             });
         }
 
+        private void GivenChangeFlagNumberInfoIsFailed()
+        {
+            flagChangeSetting.GetChangeFlagNumberInfo(Arg.Any<int>(), Arg.Any<int>()).Returns(FlagChangeResult.CreateFailInstance());
+        }
+
+        private void GivenChangeFlagNumberInfo(int oldFlagNum, int newFlagNum, int expectedFinalFlagNum)
+        {
+            flagChangeSetting.GetChangeFlagNumberInfo(oldFlagNum, newFlagNum).Returns(FlagChangeResult.CreateSuccessInstance(expectedFinalFlagNum));
+        }
+
         private void CallBeatEventCallback(bool isCountDownBeat = true)
         {
             beatEventCallback?.Invoke(new BeatEvent(isCountDownBeat));
@@ -139,6 +149,11 @@ namespace GameCore.UnitTests
                 updateFlagNumberEventCallback.DidNotReceive().Invoke(Arg.Any<int>());
             else
                 updateFlagNumberEventCallback.Received(expectedCallTimes).Invoke(Arg.Any<int>());
+        }
+
+        private void CurrentFlagNumberShouldBe(int expectedFlagNumber)
+        {
+            Assert.AreEqual(expectedFlagNumber, scoreBall.CurrentFlagNumber);
         }
 
         #region 狀態變化
@@ -532,7 +547,7 @@ namespace GameCore.UnitTests
         //更換旗標時, 若旗標更換設定判斷為通過則更換旗標
         public void change_flag_number_when_check_setting_pass()
         {
-            GivenGetChangeFlagNumberInfo(5, 10, 11);
+            GivenChangeFlagNumberInfo(5, 10, 11);
 
             scoreBall.Init(10, 5);
             scoreBall.ChangeFlagTo(10);
@@ -544,7 +559,7 @@ namespace GameCore.UnitTests
         //更換旗標時, 若旗標更換設定判斷為不通過則不更換旗標
         public void do_not_change_flag_number_when_check_setting_fail()
         {
-            GivenGetChangeFlagNumberInfoReturnFail();
+            GivenChangeFlagNumberInfoIsFailed();
 
             scoreBall.Init(10, 5);
             scoreBall.ChangeFlagTo(10);
@@ -552,23 +567,6 @@ namespace GameCore.UnitTests
             CurrentFlagNumberShouldBe(5);
         }
 
-        //若不存在旗標更換設定, 則更換時直接跳過
-
         #endregion
-
-        private void CurrentFlagNumberShouldBe(int expectedFlagNumber)
-        {
-            Assert.AreEqual(expectedFlagNumber, scoreBall.CurrentFlagNumber);
-        }
-
-        private void GivenGetChangeFlagNumberInfoReturnFail()
-        {
-            flagChangeSetting.GetChangeFlagNumberInfo(Arg.Any<int>(), Arg.Any<int>()).Returns(FlagChangeResult.CreateFailInstance());
-        }
-
-        private void GivenGetChangeFlagNumberInfo(int oldFlagNum, int newFlagNum, int expectedFinalFlagNum)
-        {
-            flagChangeSetting.GetChangeFlagNumberInfo(oldFlagNum, newFlagNum).Returns(FlagChangeResult.CreateSuccessInstance(expectedFinalFlagNum));
-        }
     }
 }
