@@ -93,8 +93,8 @@ namespace GameCore
         [TitleGroup("Split/Left/捕獲旗標設定/設定檔")]
         [LabelWidth(140)]
         [Required]
-        [OnValueChanged("OnSetCatchFlagMergeSetting")]
-        public CatchFlagMergeScriptableObject catchFlagMergeSetting;
+        [OnValueChanged("OnSetCatchFlagSetting")]
+        public CatchFlagScriptableObject catchFlagSetting;
 
         [BoxGroup("Split/Left/難度設定", CenterLabel = true)]
         [TitleGroup("Split/Left/難度設定/分數球設定")]
@@ -200,7 +200,7 @@ namespace GameCore
             countDownBeatFreq = settingContent.CountDownBeatFreq;
             hpDecreasePerSecond = settingContent.HpDecreasePerSecond;
             hpIncreasePerCatch = settingContent.HpIncreasePerCatch;
-            catchFlagMergeSetting = settingContent.CatchFlagMergeSetting;
+            catchFlagSetting = settingContent.CatchFlagSetting;
             startCountDownValue = settingContent.ScoreBallStartCountDownValue;
             successSettleScore = settingContent.SuccessSettleScore;
             scoreBallFlagWeightSettings = settingContent.ScoreBallFlagWeightSettings;
@@ -283,9 +283,9 @@ namespace GameCore
             beatAmount = ConvertBeatAmount(editorEventRef.Length, bpm);
         }
 
-        private void OnSetCatchFlagMergeSetting()
+        private void OnSetCatchFlagSetting()
         {
-            settingContent.SetCatchFlagMergeSetting(catchFlagMergeSetting);
+            settingContent.SetCatchFlagMergeSetting(catchFlagSetting);
             EditorUtility.SetDirty(stageSetting);
         }
 
