@@ -35,6 +35,7 @@ MonoBehaviour:
     - modelName: CatchNetHandler
     - modelName: HpBarModel
     - modelName: FeverEnergyBarModel
+    - modelName: DirectionFlagWallHandler
   - sceneName: SelectionMenuScene
     modelDefineList:
     - modelName: SelectionMenuHandler

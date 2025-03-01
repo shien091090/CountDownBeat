@@ -13,6 +13,7 @@ namespace GameCore
         public const string SCORE_BALL = "ScoreBall";
         public const string CATCH_NET = "CatchNet";
         public const string CATCH_SUCCESS_EFFECT = "CatchSuccessEffect";
+        public const string DIRECTION_FLAG_WALL = "DirectionFlagWall";
     }
 
     public class SceneRepositionActionConst

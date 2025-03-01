@@ -12,6 +12,7 @@ namespace GameCore
             Container.Bind<IHpBarPresenter>().To<HpBarPresenter>().AsSingle();
             Container.Bind<IBeaterPresenter>().To<BeaterPresenter>().AsSingle();
             Container.Bind<IFeverEnergyBarPresenter>().To<FeverEnergyBarPresenter>().AsSingle();
+            Container.Bind<IDirectionFlagWallHandlerPresenter>().To<DirectionFlagWallHandlerPresenter>().AsSingle();
 
             BindModel<IScoreBallHandler, ScoreBallHandler>();
             BindModel<IBeaterModel, BeaterModel>();
@@ -19,6 +20,7 @@ namespace GameCore
             BindModel<IScoreBoardModel, ScoreBoardModel>();
             BindModel<IHpBarModel, HpBarModel>();
             BindModel<IFeverEnergyBarModel, FeverEnergyBarModel>();
+            BindModel<IDirectionFlagWallHandler, DirectionFlagWallHandler>();
         }
     }
 }
