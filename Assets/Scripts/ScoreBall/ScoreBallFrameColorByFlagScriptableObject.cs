@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace GameCore
 {
-    [CreateAssetMenu]
     public class ScoreBallFrameColorByFlagScriptableObject : SerializedScriptableObject, IScoreBallFrameColorByFlagSetting
     {
         [SerializeField] private List<ScoreBallFrameColorDefine> frameColorDefines;
