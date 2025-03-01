@@ -15,6 +15,7 @@ namespace GameCore
         [SerializeField] private string audioKey;
         [SerializeField] private float hpDecreasePerSecond;
         [SerializeField] private float hpIncreasePerCatch;
+        [SerializeField] private CatchFlagMergeScriptableObject catchFlagMergeSetting;
         [SerializeField] private List<int> spawnBeatIndexList;
         [SerializeField] private int scoreBallStartCountDownValue;
         [SerializeField] private ICatchFlagMergeSetting flagMergeSetting;
@@ -37,6 +38,7 @@ namespace GameCore
         public float HpIncreasePerCatch => hpIncreasePerCatch;
         public ICatchFlagMergeSetting FlagMergeSetting => flagMergeSetting;
         public int[] FeverEnergyPhaseSettings => feverEnergyPhaseSettings;
+        public CatchFlagMergeScriptableObject CatchFlagMergeSetting => catchFlagMergeSetting;
         public List<ScoreBallFlagWeightByFeverStageSetting> ScoreBallFlagWeightSettings => scoreBallFlagWeightSettings;
         public string StageTitle => stageTitle;
         public EventReference FmodEventReference => fmodEventReference;
@@ -120,6 +122,11 @@ namespace GameCore
         public void SetFeverEnergyDecrease(int feverEnergyDecrease)
         {
             this.feverEnergyDecrease = feverEnergyDecrease;
+        }
+
+        public void SetCatchFlagMergeSetting(CatchFlagMergeScriptableObject catchFlagMergeSetting)
+        {
+            this.catchFlagMergeSetting = catchFlagMergeSetting;
         }
     }
 }

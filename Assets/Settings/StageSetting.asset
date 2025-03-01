@@ -35,6 +35,7 @@ MonoBehaviour:
     audioKey: bgm1
     hpDecreasePerSecond: 2
     hpIncreasePerCatch: 5
+    catchFlagMergeSetting: {fileID: 11400000, guid: 2567d648cfbb44447b80bb0d2da8cdf9, type: 2}
     spawnBeatIndexList: 000000000a000000140000001e00000028000000320000007d0000007e0000007f00000080000000
     scoreBallStartCountDownValue: 20
     scoreBallFlagWeightSettings:

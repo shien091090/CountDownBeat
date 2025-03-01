@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace GameCore
@@ -7,12 +8,14 @@ namespace GameCore
     [System.Serializable]
     public class CatchFlagDefine
     {
+        [SerializeField] private string flagName;
         [SerializeField] private bool anyFlag;
-        [SerializeField] private int flagNum;
+        [SerializeField] [HideIf("$anyFlag")] private int flagNum;
         [SerializeField] private List<CatchFlagMergeDefine> mergeDefines;
 
         public int FlagNum => flagNum;
         public bool AnyFlag => anyFlag;
+        public string FlagName => flagName;
 
         public static CatchFlagDefine CreateSpecificFlagInstance(int flagNum)
         {
