@@ -109,7 +109,7 @@ namespace GameCore
             else
             {
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
-                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, appProcessor.CurrentStageSettingContent.FlagChangeSetting);
+                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, appProcessor.CurrentStageSettingContent.FlagMergeSetting);
 
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 

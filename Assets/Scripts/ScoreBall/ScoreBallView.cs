@@ -102,7 +102,8 @@ namespace GameCore
 
         public void CrossDirectionFlagWall(string crossDirectionKey)
         {
-            presenter.CrossDirectionFlagWall(crossDirectionKey);
+            if (Enum.TryParse(crossDirectionKey, out TriggerFlagMergingType type))
+                presenter.CrossDirectionFlagWall(type);
         }
 
         private void Awake()

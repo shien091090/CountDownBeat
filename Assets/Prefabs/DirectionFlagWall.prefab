@@ -701,22 +701,22 @@ MonoBehaviour:
       Entry: 8
       Data: 
   crossDetectorConditions:
-  - key: DownToUp
+  - key: DirectionWall_DownToUp
     enterAngleBase: 0
     enterAngleRange: 0
     exitAngleBase: 0
     exitAngleRange: 0
-  - key: LeftToRight
+  - key: DirectionWall_LeftToRight
     enterAngleBase: 0
     enterAngleRange: 0
     exitAngleBase: 0
     exitAngleRange: 0
-  - key: UpToDown
+  - key: DirectionWall_UpToDown
     enterAngleBase: 0
     enterAngleRange: 0
     exitAngleBase: 0
     exitAngleRange: 0
-  - key: RightToLeft
+  - key: DirectionWall_RightToLeft
     enterAngleBase: 0
     enterAngleRange: 0
     exitAngleBase: 0

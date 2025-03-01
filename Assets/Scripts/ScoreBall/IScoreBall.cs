@@ -14,6 +14,6 @@ namespace GameCore
         void SetFreezeState(bool isFreeze);
         void ResetToBeginning();
         void SuccessSettle();
-        void ChangeFlagTo(int newFlagNumber);
+        void MergeFlagWith(TriggerFlagMergingType triggerFlagMergingType);
     }
 }

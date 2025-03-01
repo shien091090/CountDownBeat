@@ -29,9 +29,9 @@ namespace GameCore
 
     public class CrossWallDirectionConst
     {
-        public const string DOWN_TO_UP = "DownToUp";
-        public const string LEFT_TO_RIGHT = "LeftToRight";
-        public const string UP_TO_DOWN = "UpToDown";
-        public const string RIGHT_TO_LEFT = "RightToLeft";
+        public const string DOWN_TO_UP = "DirectionWall_DownToUp";
+        public const string LEFT_TO_RIGHT = "DirectionWall_LeftToRight";
+        public const string UP_TO_DOWN = "DirectionWall_UpToDown";
+        public const string RIGHT_TO_LEFT = "DirectionWall_RightToLeft";
     }
 }

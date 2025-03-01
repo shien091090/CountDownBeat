@@ -13,7 +13,7 @@ namespace GameCore.UnitTests
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
         private IScoreBallPresenter presenter;
-        private IScoreBallFlagChangeSetting flagChangeSetting;
+        private ICatchFlagMergeSetting flagMergeSetting;
 
         private Action<BeatEvent> beatEventCallback;
         private Action scoreBallBeatEventCallback;
@@ -26,9 +26,9 @@ namespace GameCore.UnitTests
         public void Setup()
         {
             InitEventHandlerMock();
-            flagChangeSetting = Substitute.For<IScoreBallFlagChangeSetting>();
+            flagMergeSetting = Substitute.For<ICatchFlagMergeSetting>();
 
-            scoreBall = new ScoreBall(eventRegister, eventInvoker, flagChangeSetting);
+            scoreBall = new ScoreBall(eventRegister, eventInvoker, flagMergeSetting);
 
             presenter = Substitute.For<IScoreBallPresenter>();
             scoreBall.BindPresenter(presenter);
@@ -69,14 +69,14 @@ namespace GameCore.UnitTests
             });
         }
 
-        private void GivenChangeFlagNumberInfoIsFailed()
+        private void GivenCatchFlagMergeResultIsFailed()
         {
-            flagChangeSetting.GetChangeFlagNumberInfo(Arg.Any<int>(), Arg.Any<int>()).Returns(FlagChangeResult.CreateFailInstance());
+            flagMergeSetting.GetCatchFlagMergeResult(Arg.Any<int>(), Arg.Any<TriggerFlagMergingType>()).Returns(CatchFlagMergeResult.CreateFailInstance());
         }
 
-        private void GivenChangeFlagNumberInfo(int oldFlagNum, int newFlagNum, int expectedResultFlagNum)
+        private void GivenCatchFlagMergeResult(int flagNum, TriggerFlagMergingType triggerFlagMergingType, int expectedResultFlagNum)
         {
-            flagChangeSetting.GetChangeFlagNumberInfo(oldFlagNum, newFlagNum).Returns(FlagChangeResult.CreateSuccessInstance(expectedResultFlagNum));
+            flagMergeSetting.GetCatchFlagMergeResult(flagNum, triggerFlagMergingType).Returns(CatchFlagMergeResult.CreateSuccessInstance(expectedResultFlagNum));
         }
 
         private void CallBeatEventCallback(bool isCountDownBeat = true)
@@ -541,28 +541,28 @@ namespace GameCore.UnitTests
 
         #endregion
 
-        #region 更換旗標
+        #region 旗標融合
 
         [Test]
-        //更換旗標時, 若旗標更換設定判斷為通過則更換旗標
-        public void change_flag_number_when_check_setting_pass()
+        //旗標融合時, 若旗標融合設定判斷為通過則輸出新旗標
+        public void merge_flag_success_when_check_setting_pass()
         {
-            GivenChangeFlagNumberInfo(5, 10, 11);
+            GivenCatchFlagMergeResult(5, TriggerFlagMergingType.DirectionWall_LeftToRight, 11);
 
             scoreBall.Init(10, 5);
-            scoreBall.ChangeFlagTo(10);
+            scoreBall.MergeFlagWith(TriggerFlagMergingType.DirectionWall_LeftToRight);
 
             CurrentFlagNumberShouldBe(11);
         }
 
         [Test]
-        //更換旗標時, 若旗標更換設定判斷為不通過則不更換旗標
-        public void do_not_change_flag_number_when_check_setting_fail()
+        //旗標融合時, 若旗標融合設定判斷為不通過則維持原旗標
+        public void merge_flag_failed_when_check_setting_not_pass()
         {
-            GivenChangeFlagNumberInfoIsFailed();
+            GivenCatchFlagMergeResultIsFailed();
 
             scoreBall.Init(10, 5);
-            scoreBall.ChangeFlagTo(10);
+            scoreBall.MergeFlagWith(TriggerFlagMergingType.DirectionWall_UpToDown);
 
             CurrentFlagNumberShouldBe(5);
         }

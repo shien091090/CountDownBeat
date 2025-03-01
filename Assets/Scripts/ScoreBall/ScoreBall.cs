@@ -10,7 +10,7 @@ namespace GameCore
 
         private readonly IEventRegister eventRegister;
         private readonly IEventInvoker eventInvoker;
-        private readonly IScoreBallFlagChangeSetting flagChangeSetting;
+        private readonly ICatchFlagMergeSetting flagMergeSetting;
         private readonly Debugger debugger = new Debugger("ScoreBall");
 
         private IScoreBallPresenter presenter;
@@ -20,11 +20,11 @@ namespace GameCore
         public ScoreBallState CurrentState { get; private set; }
         private bool IsCountDownInProcess => CurrentState == ScoreBallState.InCountDown;
 
-        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker, IScoreBallFlagChangeSetting flagChangeSetting)
+        public ScoreBall(IEventRegister eventRegister, IEventInvoker eventInvoker, ICatchFlagMergeSetting flagMergeSetting)
         {
             this.eventRegister = eventRegister;
             this.eventInvoker = eventInvoker;
-            this.flagChangeSetting = flagChangeSetting;
+            this.flagMergeSetting = flagMergeSetting;
         }
 
         public event Action<int> OnUpdateCatchFlagNumber;
@@ -46,10 +46,10 @@ namespace GameCore
             Hide();
         }
 
-        public void ChangeFlagTo(int newFlagNumber)
+        public void MergeFlagWith(TriggerFlagMergingType triggerFlagMergingType)
         {
-            FlagChangeResult result = flagChangeSetting.GetChangeFlagNumberInfo(CurrentFlagNumber, newFlagNumber);
-            if (result.IsChangeSuccess)
+            CatchFlagMergeResult result = flagMergeSetting.GetCatchFlagMergeResult(CurrentFlagNumber, triggerFlagMergingType);
+            if (result.IsMergeSuccess)
                 UpdateCurrentFlagNumber(result.ResultFlagNum);
         }
 

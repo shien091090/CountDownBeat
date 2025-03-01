@@ -3,17 +3,17 @@ using UnityEngine;
 namespace GameCore
 {
     [System.Serializable]
-    public class FlagChangeResultDefine
+    public class CatchFlagMergeDefine
     {
-        [SerializeField] private int newFlagNum;
+        [SerializeField] private TriggerFlagMergingType triggerFlagMergingType;
         [SerializeField] private int resultFlagNum;
 
-        public int NewFlagNum => newFlagNum;
+        public TriggerFlagMergingType TriggerFlagMergingType => triggerFlagMergingType;
         public int ResultFlagNum => resultFlagNum;
 
-        public FlagChangeResultDefine(int newFlagNum, int resultFlagNum)
+        public CatchFlagMergeDefine(TriggerFlagMergingType triggerFlagMergingType, int resultFlagNum)
         {
-            this.newFlagNum = newFlagNum;
+            this.triggerFlagMergingType = triggerFlagMergingType;
             this.resultFlagNum = resultFlagNum;
         }
 
