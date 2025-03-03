@@ -91,7 +91,7 @@ namespace GameCore
             UpdateEnergyValue(newEnergyValue);
             UpdateFeverStage();
 
-            debugger.ShowLog($"EnergyValue: {EnergyValue}, CurrentFeverStage: {CurrentFeverStage}", true);
+            // debugger.ShowLog($"EnergyValue: {EnergyValue}, CurrentFeverStage: {CurrentFeverStage}", true);
         }
 
         private void ClearData()
