@@ -11,7 +11,6 @@ namespace GameCore
 
         private ICatchNet model;
         private ICatchNetView view;
-        private IScoreBallFrameColorByFlagSetting scoreBallFrameColorByFlagSetting;
         private bool catchEnable;
 
         public CatchNetPresenter()
@@ -65,9 +64,8 @@ namespace GameCore
         {
         }
 
-        public void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode, IScoreBallFrameColorByFlagSetting scoreBallFrameColorByFlagSetting)
+        public void Init(int spawnPosIndex, CatchNetSpawnFadeInMode fadeInMode)
         {
-            this.scoreBallFrameColorByFlagSetting = scoreBallFrameColorByFlagSetting;
             SpawnPosIndex = spawnPosIndex;
             catchEnable = false;
 
@@ -109,7 +107,19 @@ namespace GameCore
 
         private void RefreshCatchFlagNumber(int flagNumber)
         {
-            view.SetFlagColor(scoreBallFrameColorByFlagSetting.ConvertToColor(flagNumber));
+            int colorNum = flagNumber > 10 ?
+                flagNumber / 10 :
+                flagNumber;
+            
+            view.SetFlagColor(colorNum);
+
+            if (flagNumber > 10)
+            {
+                int directionFlagNum = flagNumber % 10;
+                view.SetDirectionFlag(directionFlagNum);
+            }
+            else
+                view.HideAllDirectionFlag();
         }
 
         private void PlayBeatEffect()

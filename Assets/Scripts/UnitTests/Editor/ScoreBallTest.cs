@@ -13,7 +13,7 @@ namespace GameCore.UnitTests
         private IEventRegister eventRegister;
         private IEventInvoker eventInvoker;
         private IScoreBallPresenter presenter;
-        private ICatchFlagMergeSetting flagMergeSetting;
+        private ICatchFlagSetting flagSetting;
 
         private Action<BeatEvent> beatEventCallback;
         private Action scoreBallBeatEventCallback;
@@ -26,9 +26,9 @@ namespace GameCore.UnitTests
         public void Setup()
         {
             InitEventHandlerMock();
-            flagMergeSetting = Substitute.For<ICatchFlagMergeSetting>();
+            flagSetting = Substitute.For<ICatchFlagSetting>();
 
-            scoreBall = new ScoreBall(eventRegister, eventInvoker, flagMergeSetting);
+            scoreBall = new ScoreBall(eventRegister, eventInvoker, flagSetting);
 
             presenter = Substitute.For<IScoreBallPresenter>();
             scoreBall.BindPresenter(presenter);
@@ -71,12 +71,12 @@ namespace GameCore.UnitTests
 
         private void GivenCatchFlagMergeResultIsFailed()
         {
-            flagMergeSetting.GetCatchFlagMergeResult(Arg.Any<int>(), Arg.Any<TriggerFlagMergingType>()).Returns(CatchFlagMergeResult.CreateFailInstance());
+            flagSetting.GetCatchFlagMergeResult(Arg.Any<int>(), Arg.Any<TriggerFlagMergingType>()).Returns(CatchFlagMergeResult.CreateFailInstance());
         }
 
         private void GivenCatchFlagMergeResult(int flagNum, TriggerFlagMergingType triggerFlagMergingType, int expectedResultFlagNum)
         {
-            flagMergeSetting.GetCatchFlagMergeResult(flagNum, triggerFlagMergingType).Returns(CatchFlagMergeResult.CreateSuccessInstance(expectedResultFlagNum));
+            flagSetting.GetCatchFlagMergeResult(flagNum, triggerFlagMergingType).Returns(CatchFlagMergeResult.CreateSuccessInstance(expectedResultFlagNum));
         }
 
         private void CallBeatEventCallback(bool isCountDownBeat = true)

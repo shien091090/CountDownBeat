@@ -13,11 +13,18 @@ namespace GameCore
     {
         private const string ANIM_KEY_BEAT = "catch_net_beat";
 
-        [SerializeField] private float spawnAnimationDuration;
+        [Header("FlagColor")] [SerializeField] private Color flag1Color;
+        [SerializeField] private Color flag2Color;
+
+        [Header("ValueSetting")] [SerializeField] private float spawnAnimationDuration;
         [SerializeField] private Ease spawnAnimationEaseType;
-        [SerializeField] private RectTransform go_root;
-        [SerializeField] private Image img_flag;
         [SerializeField] private CatchNetNumberPosSetting[] catchNumberPosSettings;
+
+        [Header("Reference")] [SerializeField] private RectTransform go_root;
+
+        [SerializeField] private Image img_flag;
+        [SerializeField] private GameObject go_directionFlagLeftToRight;
+        [SerializeField] private GameObject go_directionFlagRightToLeft;
 
         public Vector3 Position => gameObject.transform.position;
 
@@ -26,9 +33,25 @@ namespace GameCore
         private Tween spawnCatchNetTween;
         private Animator animator;
 
-        public void SetFlagColor(Color flagColor)
+        public void SetFlagColor(int colorNum)
         {
-            img_flag.color = flagColor;
+            if (colorNum == 1)
+                img_flag.color = flag1Color;
+
+            if (colorNum == 2)
+                img_flag.color = flag2Color;
+        }
+
+        public void SetDirectionFlag(int directionFlagNum)
+        {
+            go_directionFlagLeftToRight.SetActive(directionFlagNum == 1);
+            go_directionFlagRightToLeft.SetActive(directionFlagNum == 2);
+        }
+
+        public void HideAllDirectionFlag()
+        {
+            go_directionFlagLeftToRight.SetActive(false);
+            go_directionFlagRightToLeft.SetActive(false);
         }
 
         public void Close()

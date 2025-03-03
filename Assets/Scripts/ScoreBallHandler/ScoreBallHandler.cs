@@ -109,12 +109,12 @@ namespace GameCore
             else
             {
                 ScoreBallPresenter scoreBallPresenter = new ScoreBallPresenter();
-                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, appProcessor.CurrentStageSettingContent.FlagMergeSetting);
+                ScoreBall scoreBall = new ScoreBall(eventRegister, eventInvoker, appProcessor.CurrentStageSettingContent.CatchFlagSetting);
 
                 dynamicMVPBinder.MultipleBind(scoreBall, scoreBallPresenter, scoreBallView);
 
                 scoreBallView.Init();
-                scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting, gameSetting.ScoreBallFrameColorByFlagSetting);
+                scoreBallPresenter.Init(beaterModel, gameSetting.ScoreBallTextColorSetting);
                 scoreBall.Init(appProcessor.CurrentStageSettingContent.ScoreBallStartCountDownValue, CreateFlagNumber());
 
                 inFieldScoreBallList.Add(scoreBall);

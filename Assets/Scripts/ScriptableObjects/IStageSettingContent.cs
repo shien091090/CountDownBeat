@@ -15,7 +15,7 @@ namespace GameCore
         string AudioKey { get; }
         float HpDecreasePerSecond { get; }
         float HpIncreasePerCatch { get; }
-        ICatchFlagMergeSetting FlagMergeSetting { get; }
+        CatchFlagScriptableObject CatchFlagSetting { get; }
         List<ScoreBallFlagWeightDefine> GetScoreBallFlagWeightSetting(int feverStage);
         void SetHpDecreasePerSecond(float decreaseValue);
         void SetHpIncreasePerCatch(float increaseValue);

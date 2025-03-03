@@ -122,7 +122,7 @@ namespace GameCore
                 catchNetPresenter = dynamicMVPBinder.GetPresenter<ICatchNetPresenter>(catchNet);
             }
 
-            catchNetPresenter.Init(spawnIndex, fadeInMode, gameSetting.ScoreBallFrameColorByFlagSetting);
+            catchNetPresenter.Init(spawnIndex, fadeInMode);
             catchNet.Init(CreateTargetFlagNumber());
 
             OnSpawnCatchNet?.Invoke(catchNet);

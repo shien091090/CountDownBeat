@@ -20,9 +20,14 @@ namespace GameCore
         [Inject] private IDeltaTimeGetter deltaTimeGetter;
         [Inject] private IEventInvoker eventInvoker;
 
-        [SerializeField] private ObjectPoolManager objectPool;
+        [Header("FlagColor")] [SerializeField] private Color flag1Color;
+        [SerializeField] private Color flag2Color;
+
+        [Header("Reference")] [SerializeField] private ObjectPoolManager objectPool;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
+        [SerializeField] private GameObject go_directionFlagLeftToRight;
+        [SerializeField] private GameObject go_directionFlagRightToLeft;
 
         public int CurrentFlagNumber => presenter.CurrentFlagNumber;
 
@@ -39,9 +44,19 @@ namespace GameCore
             tmp_countDownNum.text = text;
         }
 
-        public void SetFrameColor(Color color)
+        public void SetFrameColor(int colorNum)
         {
-            img_back.color = color;
+            if (colorNum == 1)
+                img_back.color = flag1Color;
+
+            if (colorNum == 2)
+                img_back.color = flag2Color;
+        }
+
+        public void SetDirectionFlag(int directionFlagNum)
+        {
+            go_directionFlagLeftToRight.SetActive(directionFlagNum == 1);
+            go_directionFlagRightToLeft.SetActive(directionFlagNum == 2);
         }
 
         public void RecordTrajectoryNode()
@@ -87,6 +102,12 @@ namespace GameCore
         public void PlayAnimation(string animKey)
         {
             animator.Play(animKey, 0, 0);
+        }
+
+        public void HideAllDirectionFlag()
+        {
+            go_directionFlagLeftToRight.SetActive(false);
+            go_directionFlagRightToLeft.SetActive(false);
         }
 
         public void Init()

@@ -1,6 +1,6 @@
 namespace GameCore
 {
-    public interface ICatchFlagMergeSetting
+    public interface ICatchFlagSetting
     {
         CatchFlagMergeResult GetCatchFlagMergeResult(int flagNum, TriggerFlagMergingType newFlagNum);
     }

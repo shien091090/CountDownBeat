@@ -8,12 +8,14 @@ namespace GameCore
         void Init();
         void SetCountDownNumberText(string text);
         void SetTextColor(Color color);
-        void SetFrameColor(Color color);
+        void SetFrameColor(int colorNum);
+        void SetDirectionFlag(int directionFlagNum);
         void RecordTrajectoryNode();
         void ClearTrajectoryNode();
         void Close();
         void TriggerCatch();
         void CreateBeatEffectPrefab();
         void PlayAnimation(string animKey);
+        void HideAllDirectionFlag();
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GameCore
 {
-    public class CatchFlagScriptableObject : SerializedScriptableObject, ICatchFlagMergeSetting
+    public class CatchFlagScriptableObject : SerializedScriptableObject, ICatchFlagSetting
     {
         [SerializeField] private CatchFlagSetting setting;
 

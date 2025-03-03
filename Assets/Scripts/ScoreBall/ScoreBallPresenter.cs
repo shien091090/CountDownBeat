@@ -1,3 +1,4 @@
+using SNShien.Common.TesterTools;
 using UnityEngine;
 
 namespace GameCore
@@ -14,9 +15,10 @@ namespace GameCore
         private IScoreBall model;
         private IScoreBallView view;
         private IScoreBallTextColorSetting scoreBallTextColorSetting;
-        private IScoreBallFrameColorByFlagSetting scoreBallFrameColorByFlagSetting;
         private IBeaterModel beaterModel;
         private ScoreBallRecordTrajectoryState recordTrajectoryState;
+
+        private readonly Debugger debugger = new Debugger("ScoreBallPresenter");
 
         public void BindView(IMVPView mvpView)
         {
@@ -77,11 +79,10 @@ namespace GameCore
             ResetRecordTrajectoryState();
         }
 
-        public void Init(IBeaterModel beaterModel, IScoreBallTextColorSetting scoreBallTextColorSetting, IScoreBallFrameColorByFlagSetting scoreBallFrameColorSetting)
+        public void Init(IBeaterModel beaterModel, IScoreBallTextColorSetting scoreBallTextColorSetting)
         {
             this.beaterModel = beaterModel;
             this.scoreBallTextColorSetting = scoreBallTextColorSetting;
-            this.scoreBallFrameColorByFlagSetting = scoreBallFrameColorSetting;
         }
 
         private Color GetScoreBallTextColor(int countDownValue)
@@ -187,7 +188,19 @@ namespace GameCore
 
         private void OnUpdateCatchFlagNumber(int flagNumber)
         {
-            view.SetFrameColor(scoreBallFrameColorByFlagSetting.ConvertToColor(flagNumber));
+            int colorNum = flagNumber > 10 ?
+                flagNumber / 10 :
+                flagNumber;
+
+            view.SetFrameColor(colorNum);
+
+            if (flagNumber > 10)
+            {
+                int directionFlagNum = flagNumber % 10;
+                view.SetDirectionFlag(directionFlagNum);
+            }
+            else
+                view.HideAllDirectionFlag();
         }
 
         private void OnScoreBallHalfBeat()
