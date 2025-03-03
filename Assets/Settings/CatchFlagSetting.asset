@@ -42,16 +42,24 @@ MonoBehaviour:
     - flagName: Red_LeftToRight
       anyFlag: 0
       flagNum: 11
-      mergeDefines: []
+      mergeDefines:
+      - triggerFlagMergingType: 4
+        resultFlagNum: 12
     - flagName: Red_RightToLeft
       anyFlag: 0
       flagNum: 12
-      mergeDefines: []
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 11
     - flagName: Green_LeftToRight
       anyFlag: 0
       flagNum: 21
-      mergeDefines: []
+      mergeDefines:
+      - triggerFlagMergingType: 4
+        resultFlagNum: 22
     - flagName: Green_RightToLeft
       anyFlag: 0
       flagNum: 22
-      mergeDefines: []
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 21
