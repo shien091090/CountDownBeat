@@ -1011,9 +1011,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTestMode: 1
-  isAutoRecord: 0
+  isAutoRecord: 1
   debugAngleText: {fileID: 683725321}
-  recordNodeFreq: 0.1
+  recordNodeFreq: 1
 --- !u!224 &391586972363630551
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1453,7 +1453,6 @@ GameObject:
   - component: {fileID: 2568228128106954716}
   - component: {fileID: 2124925157604084871}
   - component: {fileID: 21329970028737712}
-  - component: {fileID: 9017564755400202462}
   - component: {fileID: 1120050436475299569}
   - component: {fileID: 1350600590880759485}
   - component: {fileID: 734643373759344157}
@@ -1617,28 +1616,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handleType: 0
---- !u!114 &9017564755400202462
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5671283500421879480}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c87eac849c8647e68f33f9490a0f34bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isTestMode: 1
-  recordAngleFreq: 0.01
-  stoppedTimeThreshold: 0.5
-  fistLineCheckDistance: 500
-  firstLineMaxErrorThreshold: 110
-  firstLineAverageErrorThreshold: 50
-  checkmarkAngleMinMax: {x: 100, y: 150}
-  secondLineCheckDistance: 300
-  secondLineCheckAngleTimeDiff: 0.05
-  txt_debugHint: {fileID: 814755694}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
