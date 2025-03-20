@@ -8,8 +8,6 @@ namespace GameCore
         private const string ANIM_KEY_BEAT = "score_ball_beat";
         private const string ANIM_KEY_IDLE = "score_ball_idle";
 
-        private const int RECORD_TRAJECTORY_TIMES_LIMIT = 3;
-
         public int CurrentFlagNumber => model.CurrentFlagNumber;
 
         private IScoreBall model;
@@ -52,8 +50,6 @@ namespace GameCore
                 default:
                     return;
             }
-
-            CheckRecordTrajectoryNode();
         }
 
         public void CrossDirectionFlagWall(TriggerFlagMergingType triggerFlagMergingType)
@@ -96,8 +92,6 @@ namespace GameCore
             model.OnUpdateState -= UpdateState;
             model.OnUpdateCountDownValue -= UpdateCountDownNumber;
             model.OnScoreBallBeat -= PlayBeatEffect;
-            model.OnScoreBallBeat -= OnScoreBallBeat;
-            model.OnScoreBallHalfBeat -= OnScoreBallHalfBeat;
             model.OnUpdateCatchFlagNumber -= OnUpdateCatchFlagNumber;
 
             if (isListen)
@@ -106,48 +100,7 @@ namespace GameCore
                 model.OnUpdateState += UpdateState;
                 model.OnUpdateCountDownValue += UpdateCountDownNumber;
                 model.OnScoreBallBeat += PlayBeatEffect;
-                model.OnScoreBallBeat += OnScoreBallBeat;
-                model.OnScoreBallHalfBeat += OnScoreBallHalfBeat;
                 model.OnUpdateCatchFlagNumber += OnUpdateCatchFlagNumber;
-            }
-        }
-
-        private void CheckRecordTrajectoryNode(ScoreBallBeatType beatType = ScoreBallBeatType.None)
-        {
-            switch (recordTrajectoryState)
-            {
-                case ScoreBallRecordTrajectoryState.StartDragAndWaitForNextBeat:
-                    view.RecordTrajectoryNode();
-                    recordTrajectoryState = ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode;
-                    break;
-
-                case ScoreBallRecordTrajectoryState.StartDragAndWaitForAfterNextBeat:
-                    view.RecordTrajectoryNode();
-                    recordTrajectoryState = ScoreBallRecordTrajectoryState.BypassNextBeat;
-                    break;
-
-                case ScoreBallRecordTrajectoryState.BypassNextBeat:
-                    if (beatType == ScoreBallBeatType.Beat)
-                        recordTrajectoryState = ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode;
-                    break;
-
-                case ScoreBallRecordTrajectoryState.WaitForNextBeatToRecordSecondNode:
-                    if (beatType == ScoreBallBeatType.Beat)
-                    {
-                        view.RecordTrajectoryNode();
-                        recordTrajectoryState = ScoreBallRecordTrajectoryState.WaitForNextHalfBeatToRecordThirdNode;
-                    }
-
-                    break;
-
-                case ScoreBallRecordTrajectoryState.WaitForNextHalfBeatToRecordThirdNode:
-                    if (beatType == ScoreBallBeatType.HalfBeat)
-                    {
-                        view.RecordTrajectoryNode();
-                        ResetRecordTrajectoryState();
-                    }
-
-                    break;
             }
         }
 
@@ -201,16 +154,6 @@ namespace GameCore
             }
             else
                 view.HideAllDirectionFlag();
-        }
-
-        private void OnScoreBallHalfBeat()
-        {
-            CheckRecordTrajectoryNode(ScoreBallBeatType.HalfBeat);
-        }
-
-        private void OnScoreBallBeat()
-        {
-            CheckRecordTrajectoryNode(ScoreBallBeatType.Beat);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace GameCore
 {
     [RequireComponent(typeof(Collider2DAdapterComponent))]
     [RequireComponent(typeof(ComputableCollider))]
-    [RequireComponent(typeof(TrajectoryAngleCalculator))]
+    [RequireComponent(typeof(TrajectoryAngleRecorder))]
     public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
         private const string PREFAB_NAME_BEAT_EFFECT = "BeatEffect";
@@ -31,13 +31,14 @@ namespace GameCore
 
         public int CurrentFlagNumber => presenter.CurrentFlagNumber;
 
-        private Debugger debugger = new Debugger(DebuggerKeyConst.SCORE_BALL_VIEW);
         private IScoreBallPresenter presenter;
         private OperableUI operableUI;
         private Collider2DAdapterComponent colliderComponent;
         private Animator animator;
         private ComputableCollider computableCollider;
-        private TrajectoryAngleCalculator trajectoryAngleCalculator;
+        private TrajectoryAngleRecorder trajectoryAngleRecorder;
+        
+        private Debugger debugger = new Debugger(DebuggerKeyConst.SCORE_BALL_VIEW);
 
         public void SetCountDownNumberText(string text)
         {
@@ -59,14 +60,9 @@ namespace GameCore
             go_directionFlagRightToLeft.SetActive(directionFlagNum == 2);
         }
 
-        public void RecordTrajectoryNode()
-        {
-            trajectoryAngleCalculator.RecordPositionNode();
-        }
-
         public void ClearTrajectoryNode()
         {
-            trajectoryAngleCalculator.ClearData();
+            trajectoryAngleRecorder.ClearData();
         }
 
         public void SetTextColor(Color color)
@@ -135,7 +131,7 @@ namespace GameCore
             animator = GetComponent<Animator>();
             operableUI = gameObject.GetComponent<OperableUI>();
             computableCollider = GetComponent<ComputableCollider>();
-            trajectoryAngleCalculator = GetComponent<TrajectoryAngleCalculator>();
+            trajectoryAngleRecorder = GetComponent<TrajectoryAngleRecorder>();
         }
 
         private void RegisterEvent()

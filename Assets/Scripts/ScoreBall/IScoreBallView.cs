@@ -10,7 +10,6 @@ namespace GameCore
         void SetTextColor(Color color);
         void SetFrameColor(int colorNum);
         void SetDirectionFlag(int directionFlagNum);
-        void RecordTrajectoryNode();
         void ClearTrajectoryNode();
         void Close();
         void TriggerCatch();
