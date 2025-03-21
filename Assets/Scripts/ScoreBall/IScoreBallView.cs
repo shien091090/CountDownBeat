@@ -10,7 +10,6 @@ namespace GameCore
         void SetTextColor(Color color);
         void SetFrameColor(int colorNum);
         void SetDirectionFlag(int directionFlagNum);
-        void ClearTrajectoryNode();
         void Close();
         void TriggerCatch();
         void CreateBeatEffectPrefab();

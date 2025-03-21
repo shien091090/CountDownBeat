@@ -34,8 +34,6 @@ namespace GameCore
         {
             model.SetFreezeState(true);
 
-            view.ClearTrajectoryNode();
-
             BeatAccuracyResult detectBeatAccuracyResult = beaterModel.DetectBeatAccuracyCurrentTime();
             switch (detectBeatAccuracyResult.BeatTimingDirection)
             {

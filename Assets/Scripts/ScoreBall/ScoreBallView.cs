@@ -12,7 +12,6 @@ namespace GameCore
 {
     [RequireComponent(typeof(Collider2DAdapterComponent))]
     [RequireComponent(typeof(ComputableCollider))]
-    [RequireComponent(typeof(TrajectoryAngleRecorder))]
     public class ScoreBallView : MonoBehaviour, IScoreBallView
     {
         private const string PREFAB_NAME_BEAT_EFFECT = "BeatEffect";
@@ -36,7 +35,6 @@ namespace GameCore
         private Collider2DAdapterComponent colliderComponent;
         private Animator animator;
         private ComputableCollider computableCollider;
-        private TrajectoryAngleRecorder trajectoryAngleRecorder;
         
         private Debugger debugger = new Debugger(DebuggerKeyConst.SCORE_BALL_VIEW);
 
@@ -58,11 +56,6 @@ namespace GameCore
         {
             go_directionFlagLeftToRight.SetActive(directionFlagNum == 1);
             go_directionFlagRightToLeft.SetActive(directionFlagNum == 2);
-        }
-
-        public void ClearTrajectoryNode()
-        {
-            trajectoryAngleRecorder.ClearData();
         }
 
         public void SetTextColor(Color color)
@@ -131,7 +124,6 @@ namespace GameCore
             animator = GetComponent<Animator>();
             operableUI = gameObject.GetComponent<OperableUI>();
             computableCollider = GetComponent<ComputableCollider>();
-            trajectoryAngleRecorder = GetComponent<TrajectoryAngleRecorder>();
         }
 
         private void RegisterEvent()
