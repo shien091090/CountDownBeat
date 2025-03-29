@@ -15,5 +15,6 @@ namespace GameCore
         void CreateBeatEffectPrefab();
         void PlayAnimation(string animKey);
         void HideAllDirectionFlag();
+        void TriggerCheckmark();
     }
 }

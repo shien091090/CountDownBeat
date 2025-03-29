@@ -36,6 +36,7 @@ MonoBehaviour:
     - modelName: HpBarModel
     - modelName: FeverEnergyBarModel
     - modelName: DirectionFlagWallHandler
+    - modelName: CheckmarkDetectorPresenter
   - sceneName: SelectionMenuScene
     modelDefineList:
     - modelName: SelectionMenuHandler

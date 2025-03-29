@@ -35,7 +35,7 @@ namespace GameCore
         private Collider2DAdapterComponent colliderComponent;
         private Animator animator;
         private ComputableCollider computableCollider;
-        
+
         private Debugger debugger = new Debugger(DebuggerKeyConst.SCORE_BALL_VIEW);
 
         public void SetCountDownNumberText(string text)
@@ -97,6 +97,11 @@ namespace GameCore
         {
             go_directionFlagLeftToRight.SetActive(false);
             go_directionFlagRightToLeft.SetActive(false);
+        }
+
+        public void TriggerCheckmark()
+        {
+            debugger.ShowLog("TriggerCheckmark");
         }
 
         public void Init()

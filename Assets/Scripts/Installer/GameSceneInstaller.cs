@@ -21,6 +21,7 @@ namespace GameCore
             BindModel<IHpBarModel, HpBarModel>();
             BindModel<IFeverEnergyBarModel, FeverEnergyBarModel>();
             BindModel<IDirectionFlagWallHandler, DirectionFlagWallHandler>();
+            BindModel<ICheckmarkDetectorPresenter, CheckmarkDetectorPresenter>();
         }
     }
 }
