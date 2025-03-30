@@ -3,7 +3,7 @@ using SNShien.Common.ProcessTools;
 
 namespace GameCore
 {
-    public interface ICheckmarkDetectorPresenter : IArchitectureModel, ICollider2DHandler
+    public interface ICheckmarkDetectorPresenter : IArchitectureModel
     {
         ICollider2DHandler GetColliderHandler(ICheckmarkDetectorTriggerArea triggerAreaComponent);
         void BindView(ICheckmarkDetectorView view);

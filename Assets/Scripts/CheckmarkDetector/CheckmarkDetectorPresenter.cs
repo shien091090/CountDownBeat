@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SNShien.Common.AdapterTools;
 using SNShien.Common.MonoBehaviorTools;
+using SNShien.Common.ProcessTools;
 using SNShien.Common.TesterTools;
 using Zenject;
 
@@ -11,14 +11,16 @@ namespace GameCore
     public partial class CheckmarkDetectorPresenter : ICheckmarkDetectorPresenter
     {
         [Inject] private IViewManager viewManager;
+        [Inject] private IEventRegister eventRegister;
 
         private readonly Debugger debugger = new Debugger("CheckmarkDetectorPresenter");
 
         private ICheckmarkDetectorView view;
         private CheckmarkFirstTriggerAreaType firstTriggerAreaType;
         private List<ITriggerAreaColliderHandler> triggerAreaColliderHandlerList;
+        private IScoreBallView draggingScoreBall;
 
-        public bool IsAlreadyTriggerFirstArea => firstTriggerAreaType != CheckmarkFirstTriggerAreaType.None;
+        private bool IsAlreadyTriggerFirstArea => firstTriggerAreaType != CheckmarkFirstTriggerAreaType.None;
 
         public ICollider2DHandler GetColliderHandler(ICheckmarkDetectorTriggerArea triggerAreaComponent)
         {
@@ -48,6 +50,9 @@ namespace GameCore
 
         public void ColliderTriggerEnter(ICheckmarkDetectorTriggerArea triggerAreaComponent, IScoreBallView scoreBall)
         {
+            if (IsDraggingScoreBall(scoreBall) == false)
+                return;
+
             if (IsAlreadyTriggerFirstArea)
             {
                 if (IsTriggerCheckmark(triggerAreaComponent))
@@ -65,36 +70,25 @@ namespace GameCore
 
         public void ExecuteModelInit()
         {
+            ClearData();
             OpenView();
             view.InitTriggerArea();
+            SetEventRegister(true);
             RefreshTriggerAreaView();
         }
 
         public void Release()
         {
+            ClearData();
+            SetEventRegister(false);
         }
 
-        public void ColliderTriggerEnter2D(ICollider2DAdapter col)
+        private bool IsDraggingScoreBall(IScoreBallView scoreBall)
         {
-            ICheckmarkDetectorTriggerArea triggerArea = col.GetComponent<ICheckmarkDetectorTriggerArea>();
-            if (triggerArea == null)
-                return;
-        }
+            if (draggingScoreBall == null)
+                return false;
 
-        public void ColliderTriggerExit2D(ICollider2DAdapter col)
-        {
-        }
-
-        public void ColliderTriggerStay2D(ICollider2DAdapter col)
-        {
-        }
-
-        public void CollisionEnter2D(ICollision2DAdapter col)
-        {
-        }
-
-        public void CollisionExit2D(ICollision2DAdapter col)
-        {
+            return draggingScoreBall.GetHashCode() == scoreBall.GetHashCode();
         }
 
         private bool IsTriggerCheckmark(ICheckmarkDetectorTriggerArea triggerAreaComponent)
@@ -121,10 +115,29 @@ namespace GameCore
             return false;
         }
 
+        private void SetEventRegister(bool isListen)
+        {
+            eventRegister.Unregister<ScoreBallOperateEvent>(OnDragScoreBall);
+
+            if (isListen)
+            {
+                eventRegister.Register<ScoreBallOperateEvent>(OnDragScoreBall);
+            }
+        }
+
+        private void ClearData()
+        {
+            firstTriggerAreaType = CheckmarkFirstTriggerAreaType.None;
+            draggingScoreBall = null;
+        }
+
         private void RefreshTriggerAreaView()
         {
             view.HideAllFirstTriggerArea();
             view.HideAllSecondTriggerArea();
+
+            if (draggingScoreBall == null)
+                return;
 
             if (IsAlreadyTriggerFirstArea)
             {
@@ -156,6 +169,23 @@ namespace GameCore
         private void OpenView()
         {
             viewManager.OpenView<CheckmarkDetectorView>(this);
+        }
+
+        private void OnDragScoreBall(ScoreBallOperateEvent eventInfo)
+        {
+            debugger.ShowLog($"OnDragScoreBall, IsStartDrag: {eventInfo.IsStartDrag}");
+            
+            if (eventInfo.IsStartDrag)
+            {
+                draggingScoreBall = eventInfo.Target;
+                firstTriggerAreaType = CheckmarkFirstTriggerAreaType.None;
+            }
+            else
+            {
+                ClearData();
+            }
+
+            RefreshTriggerAreaView();
         }
     }
 }

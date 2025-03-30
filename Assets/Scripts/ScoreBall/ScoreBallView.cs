@@ -29,14 +29,14 @@ namespace GameCore
         [SerializeField] private GameObject go_directionFlagRightToLeft;
 
         public int CurrentFlagNumber => presenter.CurrentFlagNumber;
+        public ComputableCollider ComputableCollider { get; private set; }
 
         private IScoreBallPresenter presenter;
         private OperableUI operableUI;
         private Collider2DAdapterComponent colliderComponent;
         private Animator animator;
-        private ComputableCollider computableCollider;
 
-        private Debugger debugger = new Debugger(DebuggerKeyConst.SCORE_BALL_VIEW);
+        private readonly Debugger debugger = new Debugger(DebuggerKeyConst.SCORE_BALL_VIEW);
 
         public void SetCountDownNumberText(string text)
         {
@@ -128,7 +128,7 @@ namespace GameCore
 
             animator = GetComponent<Animator>();
             operableUI = gameObject.GetComponent<OperableUI>();
-            computableCollider = GetComponent<ComputableCollider>();
+            ComputableCollider = GetComponent<ComputableCollider>();
         }
 
         private void RegisterEvent()
@@ -143,13 +143,13 @@ namespace GameCore
         private void DragOver()
         {
             presenter.DragOver();
-            eventInvoker.SendEvent(new ScoreBallOperateEvent(false, computableCollider));
+            eventInvoker.SendEvent(new ScoreBallOperateEvent(false, this));
         }
 
         private void StartDrag()
         {
             presenter.StartDrag();
-            eventInvoker.SendEvent(new ScoreBallOperateEvent(true, computableCollider));
+            eventInvoker.SendEvent(new ScoreBallOperateEvent(true, this));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace GameCore
         private void OnOperateScoreBall(ScoreBallOperateEvent eventInfo)
         {
             if (eventInfo.IsStartDrag)
-                computableCollider.StartTrackingTarget(eventInfo.Target);
+                computableCollider.StartTrackingTarget(eventInfo.Target.ComputableCollider);
             else
                 computableCollider.RemoveTrackingTarget();
         }
