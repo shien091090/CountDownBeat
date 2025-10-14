@@ -31,6 +31,14 @@ MonoBehaviour:
         resultFlagNum: 11
       - triggerFlagMergingType: 4
         resultFlagNum: 12
+      - triggerFlagMergingType: 5
+        resultFlagNum: 13
+      - triggerFlagMergingType: 6
+        resultFlagNum: 14
+      - triggerFlagMergingType: 7
+        resultFlagNum: 15
+      - triggerFlagMergingType: 8
+        resultFlagNum: 16
     - flagName: Green
       anyFlag: 0
       flagNum: 2
@@ -39,27 +47,179 @@ MonoBehaviour:
         resultFlagNum: 21
       - triggerFlagMergingType: 4
         resultFlagNum: 22
+      - triggerFlagMergingType: 5
+        resultFlagNum: 23
+      - triggerFlagMergingType: 6
+        resultFlagNum: 24
+      - triggerFlagMergingType: 7
+        resultFlagNum: 25
+      - triggerFlagMergingType: 8
+        resultFlagNum: 26
     - flagName: Red_LeftToRight
       anyFlag: 0
       flagNum: 11
       mergeDefines:
       - triggerFlagMergingType: 4
         resultFlagNum: 12
+      - triggerFlagMergingType: 5
+        resultFlagNum: 13
+      - triggerFlagMergingType: 6
+        resultFlagNum: 14
+      - triggerFlagMergingType: 7
+        resultFlagNum: 15
+      - triggerFlagMergingType: 8
+        resultFlagNum: 16
     - flagName: Red_RightToLeft
       anyFlag: 0
       flagNum: 12
       mergeDefines:
       - triggerFlagMergingType: 2
         resultFlagNum: 11
+      - triggerFlagMergingType: 5
+        resultFlagNum: 13
+      - triggerFlagMergingType: 6
+        resultFlagNum: 14
+      - triggerFlagMergingType: 7
+        resultFlagNum: 15
+      - triggerFlagMergingType: 8
+        resultFlagNum: 16
+    - flagName: Red_Checkmark_Up
+      anyFlag: 0
+      flagNum: 13
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 11
+      - triggerFlagMergingType: 4
+        resultFlagNum: 12
+      - triggerFlagMergingType: 6
+        resultFlagNum: 14
+      - triggerFlagMergingType: 7
+        resultFlagNum: 15
+      - triggerFlagMergingType: 8
+        resultFlagNum: 16
+    - flagName: Red_Checkmark_Down
+      anyFlag: 0
+      flagNum: 14
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 11
+      - triggerFlagMergingType: 4
+        resultFlagNum: 12
+      - triggerFlagMergingType: 5
+        resultFlagNum: 13
+      - triggerFlagMergingType: 7
+        resultFlagNum: 15
+      - triggerFlagMergingType: 8
+        resultFlagNum: 16
+    - flagName: Red_Checkmark_Right
+      anyFlag: 0
+      flagNum: 15
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 11
+      - triggerFlagMergingType: 4
+        resultFlagNum: 12
+      - triggerFlagMergingType: 5
+        resultFlagNum: 13
+      - triggerFlagMergingType: 6
+        resultFlagNum: 14
+      - triggerFlagMergingType: 8
+        resultFlagNum: 16
+    - flagName: Red_Checkmark_Left
+      anyFlag: 0
+      flagNum: 16
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 11
+      - triggerFlagMergingType: 4
+        resultFlagNum: 12
+      - triggerFlagMergingType: 5
+        resultFlagNum: 13
+      - triggerFlagMergingType: 6
+        resultFlagNum: 14
+      - triggerFlagMergingType: 7
+        resultFlagNum: 15
     - flagName: Green_LeftToRight
       anyFlag: 0
       flagNum: 21
       mergeDefines:
       - triggerFlagMergingType: 4
         resultFlagNum: 22
+      - triggerFlagMergingType: 5
+        resultFlagNum: 23
+      - triggerFlagMergingType: 6
+        resultFlagNum: 24
+      - triggerFlagMergingType: 7
+        resultFlagNum: 25
+      - triggerFlagMergingType: 8
+        resultFlagNum: 26
     - flagName: Green_RightToLeft
       anyFlag: 0
       flagNum: 22
       mergeDefines:
       - triggerFlagMergingType: 2
         resultFlagNum: 21
+      - triggerFlagMergingType: 5
+        resultFlagNum: 23
+      - triggerFlagMergingType: 6
+        resultFlagNum: 24
+      - triggerFlagMergingType: 7
+        resultFlagNum: 25
+      - triggerFlagMergingType: 8
+        resultFlagNum: 26
+    - flagName: Greem_Checkmark_Up
+      anyFlag: 0
+      flagNum: 23
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 21
+      - triggerFlagMergingType: 4
+        resultFlagNum: 22
+      - triggerFlagMergingType: 6
+        resultFlagNum: 24
+      - triggerFlagMergingType: 7
+        resultFlagNum: 25
+      - triggerFlagMergingType: 8
+        resultFlagNum: 26
+    - flagName: Greem_Checkmark_Down
+      anyFlag: 0
+      flagNum: 24
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 21
+      - triggerFlagMergingType: 4
+        resultFlagNum: 22
+      - triggerFlagMergingType: 5
+        resultFlagNum: 23
+      - triggerFlagMergingType: 7
+        resultFlagNum: 25
+      - triggerFlagMergingType: 8
+        resultFlagNum: 26
+    - flagName: Greem_Checkmark_Right
+      anyFlag: 0
+      flagNum: 25
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 21
+      - triggerFlagMergingType: 4
+        resultFlagNum: 22
+      - triggerFlagMergingType: 5
+        resultFlagNum: 23
+      - triggerFlagMergingType: 6
+        resultFlagNum: 24
+      - triggerFlagMergingType: 8
+        resultFlagNum: 26
+    - flagName: Greem_Checkmark_Left
+      anyFlag: 0
+      flagNum: 26
+      mergeDefines:
+      - triggerFlagMergingType: 2
+        resultFlagNum: 21
+      - triggerFlagMergingType: 4
+        resultFlagNum: 22
+      - triggerFlagMergingType: 5
+        resultFlagNum: 23
+      - triggerFlagMergingType: 6
+        resultFlagNum: 24
+      - triggerFlagMergingType: 7
+        resultFlagNum: 25
