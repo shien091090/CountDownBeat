@@ -19,8 +19,8 @@ namespace GameCore
         [Inject] private IDeltaTimeGetter deltaTimeGetter;
         [Inject] private IEventInvoker eventInvoker;
 
-        [Header("FlagColor")] [SerializeField] private Color flag1Color;
-        [SerializeField] private Color flag2Color;
+        [Header("FlagColor")] [SerializeField] private Color redColor;
+        [SerializeField] private Color greenColor;
 
         [Header("Reference")] [SerializeField] private ObjectPoolManager objectPool;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
@@ -45,17 +45,17 @@ namespace GameCore
 
         public void SetFrameColor(int colorNum)
         {
-            if (colorNum == 1)
-                img_back.color = flag1Color;
+            if (colorNum == Stage1ColorConst.RED_COLOR)
+                img_back.color = redColor;
 
-            if (colorNum == 2)
-                img_back.color = flag2Color;
+            if (colorNum == Stage1ColorConst.GREEN_COLOR)
+                img_back.color = greenColor;
         }
 
         public void SetDirectionFlag(int directionFlagNum)
         {
-            go_directionFlagLeftToRight.SetActive(directionFlagNum == 1);
-            go_directionFlagRightToLeft.SetActive(directionFlagNum == 2);
+            go_directionFlagLeftToRight.SetActive(directionFlagNum == Stage1DirectionConst.DIRECTION_LEFT_TO_RIGHT);
+            go_directionFlagRightToLeft.SetActive(directionFlagNum == Stage1DirectionConst.DIRECTION_RIGHT_TO_LEFT);
         }
 
         public void SetTextColor(Color color)

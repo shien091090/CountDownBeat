@@ -35,4 +35,20 @@ namespace GameCore
         public const string UP_TO_DOWN = "DirectionWall_UpToDown";
         public const string RIGHT_TO_LEFT = "DirectionWall_RightToLeft";
     }
+
+    public class Stage1ColorConst
+    {
+        public const int RED_COLOR = 1;
+        public const int GREEN_COLOR = 2;
+    }
+
+    public class Stage1DirectionConst
+    {
+        public const int DIRECTION_LEFT_TO_RIGHT = 1;
+        public const int DIRECTION_RIGHT_TO_LEFT = 2;
+        public const int CHECKMARK_UP = 3;
+        public const int CHECKMARK_DOWN = 4;
+        public const int CHECKMARK_RIGHT = 5;
+        public const int CHECKMARK_LEFT = 6;
+    }
 }

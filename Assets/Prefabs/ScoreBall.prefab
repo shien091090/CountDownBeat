@@ -345,8 +345,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45a373f80fcc214c892b64bbe176d8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flag1Color: {r: 1, g: 0.45882353, b: 0.45882353, a: 1}
-  flag2Color: {r: 0.62352943, g: 1, b: 0.4862745, a: 1}
+  redColor: {r: 0.94716984, g: 0.2198148, b: 0.2198148, a: 1}
+  greenColor: {r: 0.31046635, g: 0.9622642, b: 0.36352527, a: 1}
   objectPool: {fileID: 2212391126154491868}
   tmp_countDownNum: {fileID: 520220510072512755}
   img_back: {fileID: 8844456678766894375}
@@ -413,11 +413,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0387bcdd589d4f1fbd7464ed0508cc81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passAngleMinAndMax: {x: 120, y: 180}
   isTestMode: 0
-  isAutoRecordNode: 0
-  txt_angle: {fileID: 0}
-  testRecordInterval: 0
+  isAutoRecord: 0
+  debugAngleText: {fileID: 0}
+  recordNodeFreq: 0
 --- !u!114 &1120050436895664717
 MonoBehaviour:
   m_ObjectHideFlags: 0
