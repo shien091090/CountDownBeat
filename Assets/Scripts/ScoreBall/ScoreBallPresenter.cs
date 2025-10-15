@@ -1,3 +1,4 @@
+using System;
 using SNShien.Common.TesterTools;
 using UnityEngine;
 
@@ -58,6 +59,35 @@ namespace GameCore
         public void TriggerCatch()
         {
             model.SuccessSettle();
+        }
+
+        public void TriggerCheckmark(CheckmarkSecondTriggerAreaType checkmarkType)
+        {
+            TriggerFlagMergingType triggerFlagMergingType = TriggerFlagMergingType.Any;
+            
+            switch (checkmarkType)
+            {
+                case CheckmarkSecondTriggerAreaType.RightToLeft:
+                    triggerFlagMergingType = TriggerFlagMergingType.Checkmark_Right;
+                    break;
+
+                case CheckmarkSecondTriggerAreaType.LeftToRight:
+                    triggerFlagMergingType = TriggerFlagMergingType.Checkmark_Left;
+                    break;
+
+                case CheckmarkSecondTriggerAreaType.UpToDown:
+                    triggerFlagMergingType = TriggerFlagMergingType.Checkmark_Up;
+                    break;
+
+                case CheckmarkSecondTriggerAreaType.DownToUp:
+                    triggerFlagMergingType = TriggerFlagMergingType.Checkmark_Down;
+                    break;
+
+                default:
+                    return;
+            }
+
+            model.MergeFlagWith(triggerFlagMergingType);
         }
 
         public void BindModel(IMVPModel mvpModel)

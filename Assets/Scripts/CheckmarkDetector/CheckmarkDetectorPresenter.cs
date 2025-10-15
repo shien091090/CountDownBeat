@@ -55,8 +55,8 @@ namespace GameCore
 
             if (IsAlreadyTriggerFirstArea)
             {
-                if (IsTriggerCheckmark(triggerAreaComponent))
-                    scoreBall.TriggerCheckmark();
+                if (IsTriggerCheckmark(triggerAreaComponent, out CheckmarkSecondTriggerAreaType checkmarkType))
+                    scoreBall.TriggerCheckmark(checkmarkType);
 
                 firstTriggerAreaType = CheckmarkFirstTriggerAreaType.None;
                 RefreshTriggerAreaView();
@@ -91,25 +91,25 @@ namespace GameCore
             return draggingScoreBall.GetHashCode() == scoreBall.GetHashCode();
         }
 
-        private bool IsTriggerCheckmark(ICheckmarkDetectorTriggerArea triggerAreaComponent)
+        private bool IsTriggerCheckmark(ICheckmarkDetectorTriggerArea triggerAreaComponent, out CheckmarkSecondTriggerAreaType checkmarkType)
         {
-            CheckmarkSecondTriggerAreaType secondTriggerAreaType = triggerAreaComponent.SecondTriggerAreaType();
-            if (secondTriggerAreaType == CheckmarkSecondTriggerAreaType.None)
+            checkmarkType = triggerAreaComponent.SecondTriggerAreaType();
+            if (checkmarkType == CheckmarkSecondTriggerAreaType.None)
                 return false;
 
             switch (firstTriggerAreaType)
             {
                 case CheckmarkFirstTriggerAreaType.Right:
-                    return secondTriggerAreaType == CheckmarkSecondTriggerAreaType.RightToLeft;
+                    return checkmarkType == CheckmarkSecondTriggerAreaType.RightToLeft;
 
                 case CheckmarkFirstTriggerAreaType.Left:
-                    return secondTriggerAreaType == CheckmarkSecondTriggerAreaType.LeftToRight;
+                    return checkmarkType == CheckmarkSecondTriggerAreaType.LeftToRight;
 
                 case CheckmarkFirstTriggerAreaType.Up:
-                    return secondTriggerAreaType == CheckmarkSecondTriggerAreaType.UpToDown;
+                    return checkmarkType == CheckmarkSecondTriggerAreaType.UpToDown;
 
                 case CheckmarkFirstTriggerAreaType.Down:
-                    return secondTriggerAreaType == CheckmarkSecondTriggerAreaType.DownToUp;
+                    return checkmarkType == CheckmarkSecondTriggerAreaType.DownToUp;
             }
 
             return false;
@@ -174,7 +174,7 @@ namespace GameCore
         private void OnDragScoreBall(ScoreBallOperateEvent eventInfo)
         {
             debugger.ShowLog($"OnDragScoreBall, IsStartDrag: {eventInfo.IsStartDrag}");
-            
+
             if (eventInfo.IsStartDrag)
             {
                 draggingScoreBall = eventInfo.Target;

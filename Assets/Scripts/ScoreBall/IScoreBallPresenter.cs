@@ -7,5 +7,6 @@ namespace GameCore
         void StartDrag();
         void CrossDirectionFlagWall(TriggerFlagMergingType triggerFlagMergingType);
         void TriggerCatch();
+        void TriggerCheckmark(CheckmarkSecondTriggerAreaType checkmarkType);
     }
 }

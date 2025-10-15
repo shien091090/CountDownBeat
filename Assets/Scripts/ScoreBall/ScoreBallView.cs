@@ -25,8 +25,8 @@ namespace GameCore
         [Header("Reference")] [SerializeField] private ObjectPoolManager objectPool;
         [SerializeField] private TextMeshProUGUI tmp_countDownNum;
         [SerializeField] private Image img_back;
-        [SerializeField] private GameObject go_directionFlagLeftToRight;
-        [SerializeField] private GameObject go_directionFlagRightToLeft;
+        [SerializeField] private GameObject go_directionFlagArrow;
+        [SerializeField] private GameObject go_directionFlagCheckmark;
 
         public int CurrentFlagNumber => presenter.CurrentFlagNumber;
         public ComputableCollider ComputableCollider { get; private set; }
@@ -54,8 +54,52 @@ namespace GameCore
 
         public void SetDirectionFlag(int directionFlagNum)
         {
-            go_directionFlagLeftToRight.SetActive(directionFlagNum == Stage1DirectionConst.DIRECTION_LEFT_TO_RIGHT);
-            go_directionFlagRightToLeft.SetActive(directionFlagNum == Stage1DirectionConst.DIRECTION_RIGHT_TO_LEFT);
+            bool isArrowFlag = directionFlagNum == Stage1DirectionConst.DIRECTION_LEFT_TO_RIGHT ||
+                               directionFlagNum == Stage1DirectionConst.DIRECTION_RIGHT_TO_LEFT;
+
+            bool isCheckmarkFlag = directionFlagNum == Stage1DirectionConst.CHECKMARK_UP ||
+                                   directionFlagNum == Stage1DirectionConst.CHECKMARK_DOWN ||
+                                   directionFlagNum == Stage1DirectionConst.CHECKMARK_RIGHT ||
+                                   directionFlagNum == Stage1DirectionConst.CHECKMARK_LEFT;
+
+            go_directionFlagArrow.SetActive(isArrowFlag);
+            go_directionFlagCheckmark.SetActive(isCheckmarkFlag);
+
+            if (isArrowFlag)
+            {
+                switch (directionFlagNum)
+                {
+                    case Stage1DirectionConst.DIRECTION_LEFT_TO_RIGHT:
+                        go_directionFlagArrow.transform.localRotation = Quaternion.Euler(0, 0, 180);
+                        break;
+
+                    case Stage1DirectionConst.DIRECTION_RIGHT_TO_LEFT:
+                        go_directionFlagArrow.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        break;
+                }
+            }
+
+            if (isCheckmarkFlag)
+            {
+                switch (directionFlagNum)
+                {
+                    case Stage1DirectionConst.CHECKMARK_UP:
+                        go_directionFlagCheckmark.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                        break;
+
+                    case Stage1DirectionConst.CHECKMARK_DOWN:
+                        go_directionFlagCheckmark.transform.localRotation = Quaternion.Euler(0, 0, 180);
+                        break;
+
+                    case Stage1DirectionConst.CHECKMARK_RIGHT:
+                        go_directionFlagCheckmark.transform.localRotation = Quaternion.Euler(0, 0, -90);
+                        break;
+
+                    case Stage1DirectionConst.CHECKMARK_LEFT:
+                        go_directionFlagCheckmark.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                        break;
+                }
+            }
         }
 
         public void SetTextColor(Color color)
@@ -95,13 +139,13 @@ namespace GameCore
 
         public void HideAllDirectionFlag()
         {
-            go_directionFlagLeftToRight.SetActive(false);
-            go_directionFlagRightToLeft.SetActive(false);
+            go_directionFlagArrow.SetActive(false);
+            go_directionFlagCheckmark.SetActive(false);
         }
 
-        public void TriggerCheckmark()
+        public void TriggerCheckmark(CheckmarkSecondTriggerAreaType checkmarkType)
         {
-            debugger.ShowLog("TriggerCheckmark");
+            presenter.TriggerCheckmark(checkmarkType);
         }
 
         public void Init()
